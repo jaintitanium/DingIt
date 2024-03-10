@@ -13,6 +13,9 @@ erDiagram
     ServiceProvider ||--o{ Product : "can offer many"
 
     Review ||--|| ServiceProvider : "reviews"
-    Review ||--o| ServiceMember : "can include"
+    Review ||--o| ServiceMember : "can include one"
     Review ||--o{ Product : "can include many"
+    Review ||--o| Tip : "can include one"
+    CustomerUser }|--|| Tip : "sends"
+    Tip ||--|| ServiceMember : "benefits"
 ```
