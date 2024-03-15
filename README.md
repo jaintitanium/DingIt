@@ -9,13 +9,14 @@ erDiagram
     User ||--o| ServiceMember : "can be"
 
     ServiceProviderUser ||--|{ ServiceProvider : "owns many"
-    ServiceProvider ||--o{ ServiceMember : "can employ many"
     ServiceProvider ||--o{ Product : "can offer many"
 
     Review ||--|| ServiceProvider : "reviews"
     Review ||--o| ServiceMember : "can include one"
     Review ||--o{ Product : "can include many"
+    ServiceProvider ||--o{ ServiceMember : "can employ many"
     Review ||--o| Tip : "can include one"
+    CustomerUser ||--|{ Review : "creates"
     CustomerUser }|--|| Tip : "sends"
     Tip ||--|| ServiceMember : "benefits"
 ```
