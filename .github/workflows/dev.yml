@@ -22,5 +22,16 @@ jobs:
         with:
           version: latest
 
-      - run: supabase link --project-ref $SUPABASE_PROJECT_ID
-      - run: supabase db push
+      - name: Supabase Setup
+        run: supabase link --project-ref $SUPABASE_PROJECT_ID
+
+      - name: Write db to Supabase Dev
+        run: supabase db push
+
+      - name: Generate Types
+        working-directory: ./app
+        run: npx supabase gen types typescript --project-id "$PROJECT_REF" --schema public > types/supabase.ts
+
+      - name: Build App
+        working-directory: ./app
+        run: npx build --configuration=development
