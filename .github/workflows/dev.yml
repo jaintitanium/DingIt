@@ -32,6 +32,22 @@ jobs:
         working-directory: ./app
         run: npx supabase gen types typescript --project-id "$PROJECT_REF" --schema public > types/supabase.ts
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('app/package-lock.json') }}
+          restore-keys: npm-
+
+      - name: npm Install
+        working-directory: ./app
+        run: npm install
+
       - name: Build App
         working-directory: ./app
         run: npx build --configuration=development
