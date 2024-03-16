@@ -50,4 +50,4 @@ jobs:
 
       - name: Build App
         working-directory: ./app
-        run: npm build --configuration=development
+        run: npm run build --configuration=development
