@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "update-types": "npx supabase gen types typescript --local --schema public,storage > types/supabase.ts"
   },
   "private": true,
   "dependencies": {
