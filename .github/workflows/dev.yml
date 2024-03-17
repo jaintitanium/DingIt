@@ -46,8 +46,25 @@ jobs:
 
       - name: Generate Types
         working-directory: ./app
-        run: npx supabase gen types typescript --project-id "$PROJECT_REF" --schema public > types/supabase.ts
+        run: npx supabase gen types typescript --project-id "$PROJECT_REF" --schema public,storage > types/supabase.ts
 
       - name: Build App
         working-directory: ./app
         run: npm run build --configuration=development
+
+      - name: copy file via ssh password
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: app.2dingit.com
+          username: www-data
+          key: ${{ secrets.SSH_PRIVATE_KEY_APP_SERVER }}
+          source: "app/dist/app/browser/*"
+          target: "/var/www/dev/${{ github.sha }}"
+      
+      - name: Set up symbolic link alias
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: app.2dingit.com
+          username: www-data
+          key: ${{ secrets.SSH_PRIVATE_KEY_APP_SERVER }}
+          script: rm /var/www/dev.app.2dingit.com && ln -s /var/www/dev/${{ github.sha }} /var/www/dev.app.2dingit.com

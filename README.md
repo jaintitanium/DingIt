@@ -20,3 +20,9 @@ erDiagram
     CustomerUser }|--|| Tip : "sends"
     Tip ||--|| ServiceMember : "benefits"
 ```
+
+## Development
+```
+supabase start
+supabase db diff -f <diff_file_title>
+```
