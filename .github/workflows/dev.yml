@@ -60,6 +60,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY_APP_SERVER }}
           source: "app/dist/app/browser/*"
           target: "/var/www/dev/${{ github.sha }}"
+          strip_components: 3
       
       - name: Set up symbolic link alias
         uses: appleboy/ssh-action@v1.0.3
