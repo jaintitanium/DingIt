@@ -9,7 +9,7 @@ module.exports = {
     },
     extend: {},
     borderRadius: {
-      'lg': '1rem',
+      'lg': '4rem',
     },
     fontFamily: {
       'sans': ['Raleway', 'Helvetica', 'Arial', 'sans-serif'],
@@ -25,6 +25,7 @@ module.exports = {
         dingit: {
           "primary": "#192A73",
           "secondary": "#069BB4",
+          "secondary-content": "#FAFAFA",
           "accent": "#2640B5",
           "neutral": "#0C0A29",
           // "neutral": "#e5e7eb",
