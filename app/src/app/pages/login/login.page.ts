@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { RouterModule } from '@angular/router';
@@ -23,7 +23,7 @@ export class LoginPage {
     username: new FormControl('', [Validators.required]),
     password: new FormControl('', [Validators.required])
   });
-  toastError: string | null = null;
+  @ViewChild('errorToast') errorToast!: ToastComponent;
 
   constructor(
     private auth: AuthService,
@@ -38,10 +38,7 @@ export class LoginPage {
       password: this.loginForm.get('password')?.value,
     });
     if(error) {
-      this.toastError = error.message;
-      setTimeout(() => {
-        this.toastError = null;
-      }, 3000);
+      this.errorToast.message(error.message);
     } else {
 
     }

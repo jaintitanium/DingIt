@@ -31,21 +31,15 @@ import {
   ],
 })
 export class ToastComponent {
-  private _message: string | null = null;
-  @Input('message') 
-  public get message() {
-    return this._message;
-  }
-  public set message(m: string | null) {
-    if(m) {
-      this._message = m;
-      setTimeout(() => {
-        this._message = null;
-      }, this.timeout);
-    }
-  }
   @Input('type') type!: string;
   @Input('timeout') timeout: number = 3000;
 
+  public _message: string | null = null;
 
+  public message(m: string) {
+    this._message = m;
+    setTimeout(() => {
+      this._message = null;
+    }, this.timeout);
+  }
 }
