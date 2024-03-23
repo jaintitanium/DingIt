@@ -4,10 +4,10 @@
     </div>
     <div class="flex-1 items-start bg-primary rounded-t-lg">
         <div class="grid justify-items-center items-start pt-8 px-10 gap-4">
-            <form class="w-full max-w-xs flex flex-col gap-4 pb-6">
-                <input type="text" placeholder="Username" class="input input-block text-lg" />
-                <input type="text" placeholder="Password" class="input input-block text-lg" />
-                <button class="btn btn-secondary rounded-lg btn-block text-lg">Sign In</button>
+            <form [formGroup]="loginForm" class="w-full max-w-xs flex flex-col gap-4 pb-6">
+                <input type="text" formControlName="username" placeholder="Username" class="input input-block text-lg" />
+                <input type="password" formControlName="password" placeholder="Password" class="input input-block text-lg" />
+                <button (click)="signIn()" class="btn btn-secondary rounded-lg btn-block text-lg">Sign In</button>
             </form>
 
             <button class="btn btn-secondary btn-outline btn-bordered rounded-lg w-full max-w-xs">
@@ -22,7 +22,8 @@
                 </svg>
                 Sign In with Google
             </button>
-            <p class="text-primary-content">Don't have an account?<button class="btn btn-link text-secondary">Create Account</button></p>
+            <p class="text-primary-content">Don't have an account?<button routerLink="/signup" class="btn btn-link text-secondary">Create Account</button></p>
         </div>
     </div>
 </div>
+<app-toast [message]="toastError" type="error"></app-toast>
