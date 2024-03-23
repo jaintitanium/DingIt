@@ -4,5 +4,5 @@
 @tailwind utilities;
 
 input.input {
-    @apply input-ghost input-bordered border-primary-content rounded-lg;
+    @apply input-ghost input-bordered border-primary-content;
 }

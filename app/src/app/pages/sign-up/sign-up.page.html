@@ -1,1 +1,19 @@
-<p>sign-up works!</p>
+<form [formGroup]="signupForm">
+    <app-text-field 
+        name="email"
+        [form]="signupForm"
+        label="Email"
+        [validation]="[
+            { name: 'required', message: 'Email is required'},
+            { name: 'email', message: 'Must be a valid email'}]" 
+    />
+    <app-text-field 
+        name="password"
+        type="password"
+        [form]="signupForm"
+        label="Password"
+        [validation]="[
+            { name: 'required', message: 'Password is required'},
+            { name: 'minlength', message: 'Must be at least 6 characters long'}]" 
+    />
+</form>
