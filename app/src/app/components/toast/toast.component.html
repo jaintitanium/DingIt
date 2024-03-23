@@ -1,0 +1,13 @@
+<div 
+    @fade
+    *ngIf="message" class="toast toast-center">
+    <div *ngIf="type == 'error'" class="alert alert-error">
+        <span>{{message}}</span>
+    </div>
+    <div *ngIf="type == 'info'" class="alert alert-info">
+        <span>{{message}}</span>
+    </div>
+    <div *ngIf="type == 'warning'" class="alert alert-warning">
+        <span>{{message}}</span>
+    </div>
+</div>
