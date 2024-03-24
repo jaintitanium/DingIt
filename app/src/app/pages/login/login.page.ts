@@ -1,6 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
@@ -26,21 +25,24 @@ export class LoginPage {
   @ViewChild('errorToast') errorToast!: ToastComponent;
 
   constructor(
-    private auth: AuthService,
     private api: ApiService,
   ) {
 
   }
 
   async signIn() {
-    const { data, error } = await this.api.client().auth.signInWithPassword({
-      email: this.loginForm.get('username')?.value,
-      password: this.loginForm.get('password')?.value,
-    });
-    if(error) {
-      this.errorToast.message(error.message);
+    if(this.loginForm.valid) {
+      const { data, error } = await this.api.client().auth.signInWithPassword({
+        email: this.loginForm.get('username')?.value,
+        password: this.loginForm.get('password')?.value,
+      });
+      if(error) {
+        this.errorToast.message(error.message);
+      } else {
+  
+      }
     } else {
-
+      this.loginForm.markAllAsTouched();
     }
   }
 }

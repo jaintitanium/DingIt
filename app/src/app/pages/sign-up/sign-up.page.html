@@ -1,19 +1,45 @@
-<form [formGroup]="signupForm">
-    <app-text-field 
-        name="email"
-        [form]="signupForm"
-        label="Email"
-        [validation]="[
-            { name: 'required', message: 'Email is required'},
-            { name: 'email', message: 'Must be a valid email'}]" 
-    />
-    <app-text-field 
-        name="password"
-        type="password"
-        [form]="signupForm"
-        label="Password"
-        [validation]="[
-            { name: 'required', message: 'Password is required'},
-            { name: 'minlength', message: 'Must be at least 6 characters long'}]" 
-    />
-</form>
+<div class="flex h-screen flex-col">
+    <div class="grid w-full justify-items-center p-8 prose">
+        <h1 class="text-center">Sign up for a DingIt! account</h1>
+    </div>
+    <div class="flex-1 items-start bg-secondary rounded-t-lg">
+        <div class="grid justify-items-center items-start pt-8 px-10 gap-2">
+            <form [formGroup]="signupForm" class="flex flex-col gap-4 pb-6">
+                <app-text-field 
+                    name="email"
+                    [form]="signupForm"
+                    label="Email"
+                    [validation]="[
+                        { name: 'required', message: 'Email is required'},
+                        { name: 'email', message: 'Must be a valid email'}]" 
+                />
+                <app-text-field 
+                    name="password"
+                    type="password"
+                    [form]="signupForm"
+                    label="Password"
+                    [validation]="[
+                        { name: 'required', message: 'Password is required'},
+                        { name: 'minlength', message: 'Must be at least 6 characters long'}]" 
+                />
+                <app-text-field 
+                    name="confirmPassword"
+                    type="password"
+                    [form]="signupForm"
+                    label="Confirm Password"
+                    [validation]="[
+                        { name: 'required', message: 'Password is required'}]" 
+                />
+                <app-whole-form-validation 
+                    [form]="signupForm"
+                    [validation]="[
+                        { name: 'notSame', message: 'Passwords must match' }]"
+                />
+                <button (click)="signup()" class="btn btn-neutral rounded-lg btn-block text-lg"> Sign Up</button>
+            </form>
+
+        </div>
+    </div>
+</div>
+<app-toast #errorToast type="error" />
+<app-toast #infoToast type="info" [timeout]="5000" />

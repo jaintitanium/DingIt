@@ -1,7 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { TextFieldComponent } from "../../components/forms/text-field/text-field.component";
+import { environment } from '../../../environments/environment';
+import { ToastComponent } from "../../components/toast/toast.component";
+import { WholeFormValidationComponent } from "../../components/forms/whole-form-validation/whole-form-validation.component";
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-sign-up',
@@ -10,10 +14,14 @@ import { TextFieldComponent } from "../../components/forms/text-field/text-field
     styleUrl: './sign-up.page.scss',
     imports: [
         ReactiveFormsModule,
-        TextFieldComponent
+        TextFieldComponent,
+        ToastComponent,
+        WholeFormValidationComponent
     ]
 })
 export class SignUpPage {
+  @ViewChild('errorToast') errorToast!: ToastComponent;
+  @ViewChild('infoToast') infoToast!: ToastComponent;
   signupForm: FormGroup = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(6)]),
@@ -21,11 +29,30 @@ export class SignUpPage {
   }, { validators: this.checkPasswords });
 
   constructor(
-    private api: ApiService
+    private api: ApiService,
+    private router: Router,
   ) {}
 
-  signup() {
-
+  async signup() {
+    if(this.signupForm.valid) {
+      const { data, error } = await this.api.client().auth.signUp({
+        email: this.signupForm.get('email')?.value,
+        password: this.signupForm.get('password')?.value,
+        options: {
+          emailRedirectTo: environment.appUrl,
+        },
+      });
+      if(error) {
+        this.errorToast.message(error.message);
+      } else {
+        this.infoToast.message('Account created');
+        setTimeout(() => {
+          this.router.navigate(['']);
+        }, 5000);
+      }
+    } else {
+      this.signupForm.markAllAsTouched();
+    }
   }
 
   checkPasswords (group: AbstractControl):  ValidationErrors | null { 
