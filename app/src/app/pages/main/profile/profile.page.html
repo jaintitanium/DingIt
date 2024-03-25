@@ -1,0 +1,11 @@
+<div class="prose text-center">
+    <h2>Manage your Profile</h2>
+    <ng-container *ngIf="data">
+        <h3>Full Name</h3>
+        <p>{{ data.name }}</p>
+    </ng-container>
+    <ng-container *ngIf="!data">
+        <app-loading />
+    </ng-container>
+    <button (click)="signOut()" class="btn btn-warning">Sign Out</button>
+</div>

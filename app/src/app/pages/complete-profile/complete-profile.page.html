@@ -1,0 +1,13 @@
+<div class="text-center prose grid justify-items-center items-start pt-8 px-10 gap-2">
+    <h2>Complete your Profile</h2>
+    <form [formGroup]="profileForm">
+        <app-text-field 
+            name="name"
+            [form]="profileForm"
+            label="Full Name"
+            [validation]="[
+                { name: 'required', message: 'Full Name is required'}]" 
+        />
+        <button (click)="setProfile()" class="btn rounded-lg btn-block text-lg">Complete Setup</button>
+    </form>
+</div>

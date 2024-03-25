@@ -1,9 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { ToastComponent } from "../../components/toast/toast.component";
+import { UserService } from '../../services/user.service';
 
 @Component({
     selector: 'app-login',
@@ -26,6 +27,8 @@ export class LoginPage {
 
   constructor(
     private api: ApiService,
+    private usr: UserService,
+    private router: Router,
   ) {
 
   }
@@ -39,7 +42,14 @@ export class LoginPage {
       if(error) {
         this.errorToast.message(error.message);
       } else {
-  
+        this.usr.isLoggedIn.set(true);
+        let url = this.usr.getRedirectUrl();
+        if(url) {
+          this.usr.clearRedirectUrl();
+          this.router.navigateByUrl(url);
+        } else {
+          this.router.navigate(['']);
+        }
       }
     } else {
       this.loginForm.markAllAsTouched();

@@ -1,16 +1,16 @@
 <router-outlet></router-outlet>
 
 <div class="btm-nav bg-primary btm-nav-lg">
-    <button class="max-h-3/4">
+    <button class="max-h-3/4" routerLink="/">
       <img class="justify-self-end" src="assets/searchbutton.svg" />
     </button>
-    <button class="max-h-3/4">
+    <button class="max-h-3/4" routerLink="money">
       <img src="assets/moneybutton.svg" />
     </button>
-    <button class="max-h-3/4">
+    <button class="max-h-3/4" routerLink="messages">
       <app-messages-indicator [count]="12"></app-messages-indicator>
     </button>
-    <button class="max-h-full">
+    <button class="max-h-full" routerLink="profile">
       <img src="assets/profilebutton.svg" />
     </button>
   </div>
