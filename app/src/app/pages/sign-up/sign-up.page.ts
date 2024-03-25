@@ -39,13 +39,13 @@ export class SignUpPage {
         email: this.signupForm.get('email')?.value,
         password: this.signupForm.get('password')?.value,
         options: {
-          emailRedirectTo: environment.appUrl,
+          emailRedirectTo: environment.appUrl + 'complete-profile',
         },
       });
       if(error) {
         this.errorToast.message(error.message);
       } else {
-        this.infoToast.message('Account created');
+        this.infoToast.message('Please check your email to verify your account');
         setTimeout(() => {
           this.router.navigate(['']);
         }, 5000);
