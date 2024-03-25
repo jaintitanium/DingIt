@@ -46,10 +46,14 @@ export class CompleteProfilePage {
         id: id,
         name: this.profileForm.get('name')?.value
       }).select('*');
-      if(data && url) {
+      if(data) {
         await this.userService.checkProfileComplete();
-        this.router.navigateByUrl(url);
-        this.userService.clearRedirectUrl();
+        if(url) {
+          this.router.navigateByUrl(url);
+          this.userService.clearRedirectUrl();
+        } else {
+          this.router.navigate(['profile']);
+        }
       }
     }
   }
