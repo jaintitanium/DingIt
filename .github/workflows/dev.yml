@@ -44,9 +44,9 @@ jobs:
         working-directory: ./app
         run: npm install
 
-      # - name: Generate Types
-      #   working-directory: ./app
-      #   run: npx supabase gen types typescript --linked --schema public,storage > types/supabase.ts
+      - name: Generate Types
+        working-directory: ./app
+        run: npx supabase gen types typescript --linked --schema public,storage > src/types/supabase.ts
 
       - name: Build App
         working-directory: ./app

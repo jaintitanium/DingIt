@@ -9,11 +9,18 @@ import { ProfilePage } from './pages/main/profile/profile.page';
 import { profileCompleteGuard } from './guards/profile-complete.guard';
 import { CompleteProfilePage } from './pages/complete-profile/complete-profile.page';
 import { authenticatedGuard } from './guards/authenticated.guard';
+import { SettingsPage } from './pages/settings/settings.page';
+import { AccountSettingsPage } from './pages/settings/account/account.page';
+import { MainSettingsPage } from './pages/settings/main/main.page';
 
 export const routes: Routes = [
     { path: 'login', component: LoginPage },
     { path: 'signup', component: SignUpPage },
     { path: 'complete-profile', component: CompleteProfilePage },
+    { path: 'settings', component: SettingsPage, canActivate: [authenticatedGuard, profileCompleteGuard], children: [
+        { path: 'account', component: AccountSettingsPage, data: { title: "Account Settings" } },
+        { path: '', component: MainSettingsPage, data: { title: "Settings" } },
+    ] },
     { path: '', component: RootPage, children: [
         { path: 'test', component: TestPage },
         { path: 'messages', component: MessagesPage, canActivate: [authenticatedGuard, profileCompleteGuard] },

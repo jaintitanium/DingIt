@@ -5,6 +5,7 @@ import { ApiService } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
 import { ToastComponent } from "../../components/toast/toast.component";
 import { UserService } from '../../services/user.service';
+import { BackButtonComponent } from "../../components/back-button/back-button.component";
 
 @Component({
     selector: 'app-login',
@@ -15,7 +16,8 @@ import { UserService } from '../../services/user.service';
         CommonModule,
         RouterModule,
         ReactiveFormsModule,
-        ToastComponent
+        ToastComponent,
+        BackButtonComponent
     ]
 })
 export class LoginPage {

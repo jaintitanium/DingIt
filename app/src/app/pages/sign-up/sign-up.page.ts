@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 import { ToastComponent } from "../../components/toast/toast.component";
 import { WholeFormValidationComponent } from "../../components/forms/whole-form-validation/whole-form-validation.component";
 import { Router } from '@angular/router';
+import { BackButtonComponent } from "../../components/back-button/back-button.component";
 
 @Component({
     selector: 'app-sign-up',
@@ -16,7 +17,8 @@ import { Router } from '@angular/router';
         ReactiveFormsModule,
         TextFieldComponent,
         ToastComponent,
-        WholeFormValidationComponent
+        WholeFormValidationComponent,
+        BackButtonComponent
     ]
 })
 export class SignUpPage {
