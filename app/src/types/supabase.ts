@@ -182,21 +182,59 @@ export type Database = {
       }
       service_provider: {
         Row: {
+          address_1: string | null
+          address_2: string | null
+          city: string | null
           created_at: string
           display_name: string
           id: string
+          location: unknown | null
+          owner: string
+          phone_number: string | null
+          postal_code: string | null
+          state: string | null
+          sub_title: string | null
+          website: string | null
         }
         Insert: {
+          address_1?: string | null
+          address_2?: string | null
+          city?: string | null
           created_at?: string
           display_name: string
           id?: string
+          location?: unknown | null
+          owner: string
+          phone_number?: string | null
+          postal_code?: string | null
+          state?: string | null
+          sub_title?: string | null
+          website?: string | null
         }
         Update: {
+          address_1?: string | null
+          address_2?: string | null
+          city?: string | null
           created_at?: string
           display_name?: string
           id?: string
+          location?: unknown | null
+          owner?: string
+          phone_number?: string | null
+          postal_code?: string | null
+          state?: string | null
+          sub_title?: string | null
+          website?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "service_provider_owner_fkey"
+            columns: ["owner"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       service_provider_user: {
         Row: {
