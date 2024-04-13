@@ -1,22 +1,26 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ApiService } from '../../../../services/api.service';
-import { TitleService } from '../../../../services/title.service';
+import { ApiService } from '@app/services/api.service';
+import { TitleService } from '@app/services/title.service';
 import { PostgrestError, QueryData } from '@supabase/supabase-js';
-import { ServiceProviderService } from '../../../../queries/service-provider.service';
+import { ServiceProviderService } from '@app/queries/service-provider.service';
 import { CommonModule } from '@angular/common';
-import { LoadingErrorBlockComponent } from '../../../../components/loading-error-block/loading-error-block.component';
-import { Tables } from '../../../../../types/supabase';
+import { LoadingErrorBlockComponent } from '@components/loading-error-block/loading-error-block.component';
+import { Tables } from '@custom-types/supabase';
+import { BackButtonComponent } from "@components/back-button/back-button.component";
+import { RatingComponent } from "@components/rating/rating.component";
 
 @Component({
-  selector: 'app-detail',
-  standalone: true,
-  imports: [
-    CommonModule,
-    LoadingErrorBlockComponent,
-  ],
-  templateUrl: './detail.page.html',
-  styleUrl: './detail.page.scss'
+    selector: 'app-detail',
+    standalone: true,
+    templateUrl: './detail.page.html',
+    styleUrl: './detail.page.scss',
+    imports: [
+        CommonModule,
+        LoadingErrorBlockComponent,
+        BackButtonComponent,
+        RatingComponent
+    ]
 })
 export class DetailPage {
   id: string;
@@ -24,6 +28,7 @@ export class DetailPage {
   queryType;
   sp: QueryData<typeof this.queryType> | null = null;
   error: PostgrestError | null = null;
+  headerImageUrl: string | null = null;
   daysOfWeek: string[] = [
     'Sunday',
     'Monday',
@@ -51,6 +56,14 @@ export class DetailPage {
     const {data, error} = await this.query.eq('id', this.id).single();
     this.sp = data;
     this.error = error;
+    if(data?.header_image_path) {
+      this.headerImageUrl = this.api.client().storage.from('service_providers')
+        .getPublicUrl(data.header_image_path)
+        .data
+        .publicUrl;
+        console.log(this.headerImageUrl)
+    }
+    
   }
   reorganizeHours(raw: Tables<'service_provider_hours'>[]) {
     raw.sort((a,b) => {

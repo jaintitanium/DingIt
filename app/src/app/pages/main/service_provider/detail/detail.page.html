@@ -1,7 +1,12 @@
 <app-loading-error-block [data]="sp" [error]="error" />
 <div *ngIf="sp">
-    <div>
-        Header
+    <div id="header" [ngStyle]="{'background-image': headerImageUrl ? 'url('+headerImageUrl+')' : ''}">
+        <app-back-button color="base-100" />
+        <div class="m-4">
+            <h1 class="text-base-100 text-4xl font-extra-bold text-shadow shadow-black my-4">{{sp.display_name}}</h1>
+            <h3 class="text-base-100 text-md text-shadow shadow-black my-2">{{sp.sub_title}}</h3>
+            <app-rating [value]="3.5" />
+        </div>
     </div>
     <div>
         Featured

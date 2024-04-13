@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+const plugin = require('tailwindcss/plugin')
 module.exports = {
   content: [
     "./src/**/*.{html,ts}",
@@ -7,7 +8,13 @@ module.exports = {
     container: {
       center: true,
     },
-    extend: {},
+    extend: {
+      textShadow: {
+        sm: '0 1px 2px var(--tw-shadow-color)',
+        DEFAULT: '0 2px 4px var(--tw-shadow-color)',
+        lg: '0 8px 16px var(--tw-shadow-color)',
+      },
+    },
     borderRadius: {
       'lg': '4rem',
     },
@@ -18,6 +25,16 @@ module.exports = {
   plugins: [
     require('@tailwindcss/typography'),
     require("daisyui"),
+    plugin(function ({ matchUtilities, theme }) {
+      matchUtilities(
+        {
+          'text-shadow': (value) => ({
+            textShadow: value,
+          }),
+        },
+        { values: theme('textShadow') }
+      )
+    }),
   ],
   daisyui: {
     themes: [

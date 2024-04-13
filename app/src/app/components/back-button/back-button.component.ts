@@ -11,6 +11,7 @@ import { Location } from '@angular/common';
 })
 export class BackButtonComponent {
   @Input('size') size: number = 24;
+  @Input('color') color: string = 'primary';
   constructor(private _location: Location) 
   {}
 
