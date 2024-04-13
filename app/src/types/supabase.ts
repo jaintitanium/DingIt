@@ -187,6 +187,7 @@ export type Database = {
           city: string | null
           created_at: string
           display_name: string
+          header_image: string | null
           id: string
           location: unknown | null
           owner: string
@@ -194,6 +195,7 @@ export type Database = {
           postal_code: string | null
           state: string | null
           sub_title: string | null
+          timezone: string | null
           website: string | null
         }
         Insert: {
@@ -202,6 +204,7 @@ export type Database = {
           city?: string | null
           created_at?: string
           display_name: string
+          header_image?: string | null
           id?: string
           location?: unknown | null
           owner: string
@@ -209,6 +212,7 @@ export type Database = {
           postal_code?: string | null
           state?: string | null
           sub_title?: string | null
+          timezone?: string | null
           website?: string | null
         }
         Update: {
@@ -217,6 +221,7 @@ export type Database = {
           city?: string | null
           created_at?: string
           display_name?: string
+          header_image?: string | null
           id?: string
           location?: unknown | null
           owner?: string
@@ -224,14 +229,54 @@ export type Database = {
           postal_code?: string | null
           state?: string | null
           sub_title?: string | null
+          timezone?: string | null
           website?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "service_provider_header_image_fkey"
+            columns: ["header_image"]
+            isOneToOne: false
+            referencedRelation: "objects"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "service_provider_owner_fkey"
             columns: ["owner"]
             isOneToOne: false
             referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_provider_hours: {
+        Row: {
+          close_time: string
+          day_of_week: number
+          id: string
+          open_time: string
+          service_provider: string
+        }
+        Insert: {
+          close_time: string
+          day_of_week?: number
+          id?: string
+          open_time: string
+          service_provider: string
+        }
+        Update: {
+          close_time?: string
+          day_of_week?: number
+          id?: string
+          open_time?: string
+          service_provider?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_provider_hours_service_provider_fkey"
+            columns: ["service_provider"]
+            isOneToOne: false
+            referencedRelation: "service_provider"
             referencedColumns: ["id"]
           },
         ]
