@@ -12,6 +12,7 @@ import { authenticatedGuard } from './guards/authenticated.guard';
 import { SettingsPage } from './pages/settings/settings.page';
 import { AccountSettingsPage } from './pages/settings/account/account.page';
 import { MainSettingsPage } from './pages/settings/main/main.page';
+import { DetailPage } from './pages/main/service_provider/detail/detail.page';
 
 export const routes: Routes = [
     { path: 'login', component: LoginPage },
@@ -25,6 +26,9 @@ export const routes: Routes = [
         { path: 'test', component: TestPage },
         { path: 'messages', component: MessagesPage, canActivate: [authenticatedGuard, profileCompleteGuard] },
         { path: 'money', component: MoneyPage, canActivate: [authenticatedGuard, profileCompleteGuard] },
-        { path: 'profile', component: ProfilePage, canActivate: [authenticatedGuard, profileCompleteGuard] }
+        { path: 'profile', component: ProfilePage, canActivate: [authenticatedGuard, profileCompleteGuard] },
+        { path: 'service-provider', children: [
+            { path: ':id', component: DetailPage }
+        ]}
     ]}
 ];
