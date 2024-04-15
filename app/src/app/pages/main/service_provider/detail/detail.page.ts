@@ -9,6 +9,7 @@ import { LoadingErrorBlockComponent } from '@components/loading-error-block/load
 import { Tables } from '@custom-types/supabase';
 import { BackButtonComponent } from "@components/back-button/back-button.component";
 import { RatingComponent } from "@components/rating/rating.component";
+import { GoogleMap, MapMarker } from '@angular/google-maps';
 
 @Component({
     selector: 'app-detail',
@@ -19,7 +20,9 @@ import { RatingComponent } from "@components/rating/rating.component";
         CommonModule,
         LoadingErrorBlockComponent,
         BackButtonComponent,
-        RatingComponent
+        RatingComponent,
+        GoogleMap,
+        MapMarker,
     ]
 })
 export class DetailPage {
@@ -29,6 +32,19 @@ export class DetailPage {
   sp: QueryData<typeof this.queryType> | null = null;
   error: PostgrestError | null = null;
   headerImageUrl: string | null = null;
+
+  mapOptions: google.maps.MapOptions = {
+    disableDefaultUI: true,
+    // center: {lat: 40, lng: -20},
+    zoom: 14,
+    draggable: false
+  };
+  center: google.maps.LatLngLiteral = {lat: 24, lng: 12};
+  mapShow = false;
+  mapDistance: number | null = null;
+  markerOptions: google.maps.MarkerOptions = {draggable: false};
+  public getScreenWidth: any;
+
   daysOfWeek: string[] = [
     'Sunday',
     'Monday',
@@ -45,23 +61,27 @@ export class DetailPage {
     public title: TitleService,
     public service: ServiceProviderService,
   ) {
-    this.query = this.service.query();
-    this.queryType = this.service.query().single();
     this.id = route.snapshot.params['id'];
-
-    //this.titleService.setTitle("Account Settings");
+    this.query = this.service.query().eq('id', this.id).single();
+    this.queryType = this.service.query().single();
   }
 
   async ngOnInit() {
-    const {data, error} = await this.query.eq('id', this.id).single();
+    const {data, error} = await this.query;
     this.sp = data;
     this.error = error;
-    if(data?.header_image_path) {
-      this.headerImageUrl = this.api.client().storage.from('service_providers')
-        .getPublicUrl(data.header_image_path)
-        .data
-        .publicUrl;
-        console.log(this.headerImageUrl)
+    this.getScreenWidth = window.innerWidth;
+    if(data) {
+      this.title.setTitle(data.display_name);
+      if(data.header_image_path) {
+        this.headerImageUrl = this.api.client().storage.from('service_providers')
+          .getPublicUrl(data.header_image_path)
+          .data
+          .publicUrl;
+      }
+      this.refreshMap(data);
+    } else {
+      this.title.setTitle("");
     }
     
   }
@@ -87,5 +107,34 @@ export class DetailPage {
     var strTime = hours + (date.getMinutes() == 0 ? '' : ':' + strMinutes) + ampm;
     return strTime;
     // return dt.getHours() + (dt.getMinutes() == 0 ? '' : ':'+dt.getMinutes()) + ' ' + dt.get
+  }
+  async refreshMap(sp: Tables<'service_provider'>) {
+    if(sp.lat && sp.lng) {
+      this.mapShow = true;
+      console.log(sp.lat, sp.lng)
+      this.mapOptions.center = {
+        lat: sp.lat,
+        lng: sp.lng
+      }
+
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        const crd = pos.coords;
+      
+        const { data, error } = await this.api.client().rpc('get_service_provider_distance', {
+          id: sp.id,
+          input_lat: crd.latitude,
+          input_lng: crd.longitude
+        });
+        if(data) {
+          this.mapDistance = data;
+        }
+      }, (err) => {
+        console.warn(`ERROR(${err.code}): ${err.message}`);
+      }, {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0,
+      });
+    }
   }
 }

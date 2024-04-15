@@ -1,4 +1,5 @@
 import { Injectable, signal } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +8,9 @@ export class TitleService {
   public readonly prefix: string = 'DingIt!'; 
   public short = signal('');
   public long = signal(this.prefix);
-  constructor() { }
+  constructor(
+    private title: Title
+  ) { }
 
   setTitle(title: string) {
     this.short.set(title);
@@ -16,5 +19,6 @@ export class TitleService {
     } else {
       this.long.set(this.prefix);
     }
+    this.title.setTitle(this.long());
   }
 }

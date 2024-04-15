@@ -189,6 +189,8 @@ export type Database = {
           display_name: string
           header_image_path: string | null
           id: string
+          lat: number | null
+          lng: number | null
           location: unknown | null
           owner: string
           phone_number: string | null
@@ -206,6 +208,8 @@ export type Database = {
           display_name: string
           header_image_path?: string | null
           id?: string
+          lat?: number | null
+          lng?: number | null
           location?: unknown | null
           owner: string
           phone_number?: string | null
@@ -223,6 +227,8 @@ export type Database = {
           display_name?: string
           header_image_path?: string | null
           id?: string
+          lat?: number | null
+          lng?: number | null
           location?: unknown | null
           owner?: string
           phone_number?: string | null
@@ -317,7 +323,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_service_provider_distance: {
+        Args: {
+          id: string
+          input_lat: number
+          input_lng: number
+        }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never

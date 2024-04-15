@@ -9,19 +9,32 @@
         </div>
     </div>
     <div>
-        Featured
+        <h3 class="text-md text-shadow shadow-white my-2">Featured</h3>
     </div>
     <div>
-        Menu
+        <h3 class="text-md text-shadow shadow-white my-2">Menu</h3>
     </div>
     <div>
-        Directions
+        <h3 class="text-md text-shadow shadow-white my-2">Location</h3>
+        <div class="max-w-full" *ngIf="mapShow">
+            <google-map [options]="mapOptions" height="240px" [width]="getScreenWidth">
+                <map-marker *ngIf="sp.lat && sp.lng" [position]="{lat: sp.lat, lng: sp.lng}" [options]="markerOptions" />
+            </google-map>
+            <div class="mx-2 items-center"><span class="material-symbols-outlined text-primary">
+                directions_car
+                </span> Navigate</div>
+            <div class="flex flex-row mx-2">
+                <div class="text-start">{{ sp.address_1 }}, {{ sp.address_2 ? sp.address_2+', ' : '' }}{{ sp.city }}, {{ sp.state }} {{ sp.postal_code }}</div>
+                <div *ngIf="mapDistance" class="flex-grow text-end">{{ mapDistance | number: '1.0-1' }} mi</div>
+            </div>
+        </div>
+        <!-- x:120, y:240 for pin point -->
     </div>
     <div>
-        Employees
+        <h3 class="text-md text-shadow shadow-white my-2">Employees</h3>
     </div>
     <div>
-        Reviews
+        <h3 class="text-md text-shadow shadow-white my-2">Reviews</h3>
     </div>
     <!-- Hours -->
     <div class="bg-secondary rounded-t-lg">
