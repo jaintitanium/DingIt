@@ -43,7 +43,6 @@ export class DetailPage {
   mapShow = false;
   mapDistance: number | null = null;
   markerOptions: google.maps.MarkerOptions = {draggable: false};
-  public getScreenWidth: any;
 
   daysOfWeek: string[] = [
     'Sunday',
@@ -70,7 +69,6 @@ export class DetailPage {
     const {data, error} = await this.query;
     this.sp = data;
     this.error = error;
-    this.getScreenWidth = window.innerWidth;
     if(data) {
       this.title.setTitle(data.display_name);
       if(data.header_image_path) {
@@ -137,4 +135,8 @@ export class DetailPage {
       });
     }
   }
+
+  public getScreenWidth(): number {
+    return Math.min(window.innerWidth, 637);
+  };
 }
