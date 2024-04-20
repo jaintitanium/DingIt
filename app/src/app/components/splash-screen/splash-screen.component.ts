@@ -31,11 +31,13 @@ export class SplashScreenComponent {
         
         if(redir) {
           this.router.navigateByUrl(redir, {
-            onSameUrlNavigation: 'reload'
+            onSameUrlNavigation: 'reload',
+            skipLocationChange: true
           });
         } else {
           this.router.navigateByUrl('', {
-            onSameUrlNavigation: 'reload'
+            onSameUrlNavigation: 'reload',
+            skipLocationChange: true
           });
         }
       }

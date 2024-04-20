@@ -9,7 +9,9 @@ export const authenticatedGuard: CanActivateFn = (route, state) => {
     return true;
   } else {
     usr.setRedirectUrl(state.url);
-    inject(Router).navigate(['login']);
+    inject(Router).navigate(['login'], {
+      skipLocationChange: true
+    });
   }
   return false;
 };

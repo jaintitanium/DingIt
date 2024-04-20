@@ -9,7 +9,9 @@ export const splashGuard: CanActivateFn = (route, state) => {
     return true;
   } else {
     usr.setRedirectUrl(state.url);
-    inject(Router).navigate(['loading']);
+    inject(Router).navigate(['loading'], {
+      skipLocationChange: true
+    });
   }
   return false;
 

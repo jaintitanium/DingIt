@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Location } from '@angular/common';
+import { AppComponent } from '@app/app.component';
 
 @Component({
   selector: 'app-back-button',
@@ -12,10 +13,18 @@ import { Location } from '@angular/common';
 export class BackButtonComponent {
   @Input('size') size: number = 24;
   @Input('color') color: string = 'primary';
-  constructor(private _location: Location) 
-  {}
+  
+  constructor(
+    private _location: Location,
+    private router: Router,
+    private app: AppComponent,
+  ) { }
 
   backClicked() {
-    this._location.back();
+    if (this.app.getPreviousUrl() != '/loading') {
+      this._location.back()
+    } else {
+      this.router.navigate(['/'])
+    }
   }
 }

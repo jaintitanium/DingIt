@@ -59,7 +59,6 @@ export class ProfilePage {
     const element = event.currentTarget as HTMLInputElement;
     let fileList: FileList | null = element.files;
     if (fileList) {
-      console.log("FileUpload -> files", fileList);
       this.api.client().storage.from('users').upload(this.data?.id + '/profile.png', fileList[0], {
         upsert: true
       }).then((data) => {

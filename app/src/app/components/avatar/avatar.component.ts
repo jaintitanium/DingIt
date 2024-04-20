@@ -24,6 +24,6 @@ export class AvatarComponent {
       .publicUrl;
   }
   forceUpdate(force: boolean) {
-    return force ? new Date().getTime() : '';
+    return force ? Math.round((new Date().getTime()) / 100) : '';
   }
 }
