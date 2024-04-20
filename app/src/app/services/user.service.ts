@@ -10,6 +10,7 @@ export class UserService {
   isLoggedIn = signal(false);
 
   constructor(private api: ApiService) {
+    this.userId();
     this.checkProfileComplete();
   }
 

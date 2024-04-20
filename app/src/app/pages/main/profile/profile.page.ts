@@ -6,6 +6,8 @@ import { ToastComponent } from '../../../components/toast/toast.component';
 import { Tables } from '../../../../types/supabase';
 import { LoadingComponent } from "../../../components/loading/loading.component";
 import { Router } from '@angular/router';
+import { LoadingErrorBlockComponent } from "../../../components/loading-error-block/loading-error-block.component";
+import { PostgrestError } from '@supabase/supabase-js';
 
 @Component({
     selector: 'app-profile',
@@ -14,12 +16,14 @@ import { Router } from '@angular/router';
     styleUrl: './profile.page.scss',
     imports: [
         CommonModule,
-        LoadingComponent
+        LoadingComponent,
+        LoadingErrorBlockComponent
     ]
 })
 export class ProfilePage {
   @ViewChild('errorToast') errorToast!: ToastComponent;
   data?: Tables<'user'>;
+  error: PostgrestError | null = null;
 
   constructor(
     private usr: UserService,
@@ -32,11 +36,13 @@ export class ProfilePage {
   async loadUser() {
     let id = await this.usr.userId();
     if(id) {
-      const {data, error} = await this.api.client().from('user').select('*').eq('id', id);
-      if(error) {
-        this.errorToast.message(error.message);
-      } else if(data && data[0]) {
-        this.data = data[0];
+      const {data, error} = await this.api.client().from('user')
+        .select('*')
+        .eq('id', id)
+        .single();
+      this.error = error;
+      if(data) {
+        this.data = data;
       }
     }
   }

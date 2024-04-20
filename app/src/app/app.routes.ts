@@ -14,23 +14,28 @@ import { AccountSettingsPage } from './pages/settings/account/account.page';
 import { MainSettingsPage } from './pages/settings/main/main.page';
 import { DetailPage } from './pages/main/service_provider/detail/detail.page';
 import { HomePage } from './pages/main/home/home.page';
+import { SplashScreenComponent } from './components/splash-screen/splash-screen.component';
+import { splashGuard } from './guards/splash.guard';
 
 export const routes: Routes = [
-    { path: 'login', component: LoginPage },
-    { path: 'signup', component: SignUpPage },
-    { path: 'complete-profile', component: CompleteProfilePage },
-    { path: 'settings', component: SettingsPage, canActivate: [authenticatedGuard, profileCompleteGuard], children: [
-        { path: 'account', component: AccountSettingsPage, data: { title: "Account Settings" } },
-        { path: '', component: MainSettingsPage, data: { title: "Settings" } },
-    ] },
-    { path: '', component: RootPage, children: [
-        { path: 'test', component: TestPage },
-        { path: 'messages', component: MessagesPage, canActivate: [authenticatedGuard, profileCompleteGuard] },
-        { path: 'money', component: MoneyPage, canActivate: [authenticatedGuard, profileCompleteGuard] },
-        { path: 'profile', component: ProfilePage, canActivate: [authenticatedGuard, profileCompleteGuard] },
-        { path: 'service-provider', children: [
-            { path: ':id', component: DetailPage }
-        ]},
-        { path: '', component: HomePage }
-    ]}
+    { path: '', canActivate: [splashGuard], children: [
+        { path: 'login', component: LoginPage },
+        { path: 'signup', component: SignUpPage },
+        { path: 'complete-profile', component: CompleteProfilePage },
+        { path: 'settings', component: SettingsPage, canActivate: [authenticatedGuard, profileCompleteGuard], children: [
+            { path: 'account', component: AccountSettingsPage, data: { title: "Account Settings" } },
+            { path: '', component: MainSettingsPage, data: { title: "Settings" } },
+        ] },
+        { path: '', component: RootPage, children: [
+            { path: 'test', component: TestPage },
+            { path: 'messages', component: MessagesPage, canActivate: [authenticatedGuard, profileCompleteGuard] },
+            { path: 'money', component: MoneyPage, canActivate: [authenticatedGuard, profileCompleteGuard] },
+            { path: 'profile', component: ProfilePage, canActivate: [authenticatedGuard, profileCompleteGuard] },
+            { path: 'service-provider', children: [
+                { path: ':id', component: DetailPage }
+            ]},
+            { path: '', component: HomePage }
+        ]}
+    ]},
+    { path: 'loading', component: SplashScreenComponent }
 ];
