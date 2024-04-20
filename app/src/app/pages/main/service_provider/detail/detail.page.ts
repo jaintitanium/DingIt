@@ -139,4 +139,15 @@ export class DetailPage {
   public getScreenWidth(): number {
     return Math.min(window.innerWidth, 637);
   };
+
+  navigate(lat: number, lng: number) {
+    var mapUrl = '?q=' + lat + ',' + lng;
+    // Check if a mobile device exists, or is web browser
+    // if ( typeof(device) !== 'undefined') {
+    // var mapUrlFullPath = (this.platform.is("ios")) ? "maps://" + mapUrl : "geo:" + mapUrl;
+    // } else {
+    // var mapUrlType = "geo:" + mapUrl;
+    // }
+    window.open("maps://" + mapUrl, '_blank');
+  }
 }
