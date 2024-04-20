@@ -1,0 +1,9 @@
+<div class="avatar">
+    <div class="w-24 rounded-full">
+        @if (path) {
+            <img class="m-0 mask mask-circle" src="{{ getPublicUrl(path) }}?{{ forceUpdate(force) }}" />
+        } @else {
+            <img class="m-0" src="assets/profilebutton.svg" />
+        }
+    </div>
+</div>

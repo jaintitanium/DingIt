@@ -33,22 +33,22 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          owner: string
+          service_provider: string
         }
         Insert: {
           created_at?: string
           id?: string
-          owner: string
+          service_provider: string
         }
         Update: {
           created_at?: string
           id?: string
-          owner?: string
+          service_provider?: string
         }
         Relationships: [
           {
             foreignKeyName: "product_owner_fkey"
-            columns: ["owner"]
+            columns: ["service_provider"]
             isOneToOne: false
             referencedRelation: "service_provider"
             referencedColumns: ["id"]
@@ -305,16 +305,19 @@ export type Database = {
           created_at: string
           id: string
           name: string
+          profile_path: string | null
         }
         Insert: {
           created_at?: string
           id?: string
           name: string
+          profile_path?: string | null
         }
         Update: {
           created_at?: string
           id?: string
           name?: string
+          profile_path?: string | null
         }
         Relationships: []
       }

@@ -8,6 +8,7 @@ import { LoadingComponent } from "../../../components/loading/loading.component"
 import { Router } from '@angular/router';
 import { LoadingErrorBlockComponent } from "../../../components/loading-error-block/loading-error-block.component";
 import { PostgrestError } from '@supabase/supabase-js';
+import { AvatarComponent } from "../../../components/avatar/avatar.component";
 
 @Component({
     selector: 'app-profile',
@@ -17,7 +18,8 @@ import { PostgrestError } from '@supabase/supabase-js';
     imports: [
         CommonModule,
         LoadingComponent,
-        LoadingErrorBlockComponent
+        LoadingErrorBlockComponent,
+        AvatarComponent,
     ]
 })
 export class ProfilePage {
@@ -26,7 +28,7 @@ export class ProfilePage {
   error: PostgrestError | null = null;
 
   constructor(
-    private usr: UserService,
+    public usr: UserService,
     private api: ApiService,
     private router: Router,
   ) {
@@ -51,5 +53,23 @@ export class ProfilePage {
     this.usr.isLoggedIn.set(false);
     this.api.supabase.auth.signOut();
     this.router.navigate(['']);
+  }
+
+  uploadProfilePhoto(event: Event) {
+    const element = event.currentTarget as HTMLInputElement;
+    let fileList: FileList | null = element.files;
+    if (fileList) {
+      console.log("FileUpload -> files", fileList);
+      this.api.client().storage.from('users').upload(this.data?.id + '/profile.png', fileList[0], {
+        upsert: true
+      }).then((data) => {
+        if(this.data) {
+          this.api.client().from('user')
+            .update({profile_path: data.data?.path})
+            .eq('id', this.data.id)
+            .then(() => this.loadUser());
+        }
+      })
+    }
   }
 }

@@ -21,7 +21,7 @@ export class SplashScreenComponent {
     private router: Router,
     private user: UserService,
   ) {
-    timer(environment.production ? 3990 : 100).subscribe(() => {
+    timer(environment.production ? 3990 : 50).subscribe(() => {
       this.videoDone = true;
     });
     this.checker$ = interval(1000).subscribe(() => {
