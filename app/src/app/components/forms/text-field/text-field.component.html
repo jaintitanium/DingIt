@@ -3,7 +3,7 @@
         <div *ngIf="label" class="label">
             <span class="label-text"><strong>{{label}}</strong></span>
         </div>
-        <input [type]="type" [formControlName]="name" [placeholder]="placeholder ?? ''"
+        <input [id]="name" [type]="type" [formControlName]="name" [placeholder]="placeholder ?? ''"
             class="input input-block {{classes}}" />
         <div class="label">
             <span class="label-text">

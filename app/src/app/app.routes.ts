@@ -17,6 +17,8 @@ import { HomePage } from './pages/main/home/home.page';
 import { SplashScreenComponent } from './components/splash-screen/splash-screen.component';
 import { splashGuard } from './guards/splash.guard';
 import { ServiceProviderPage } from './pages/settings/service-provider/service-provider.page';
+import { EditPage } from './pages/settings/service-provider/edit/edit.page';
+import { CreatePage } from './pages/settings/service-provider/create/create.page';
 
 export const routes: Routes = [
     { path: '', canActivate: [splashGuard], children: [
@@ -25,7 +27,9 @@ export const routes: Routes = [
         { path: 'complete-profile', component: CompleteProfilePage },
         { path: 'settings', component: SettingsPage, canActivate: [authenticatedGuard, profileCompleteGuard], children: [
             { path: 'account', component: AccountSettingsPage },
-            { path: 'service-provider', component: ServiceProviderPage },
+            { path: 'service-providers', component: ServiceProviderPage },
+            { path: 'service-providers/create', component: CreatePage },
+            { path: 'service-providers/edit/:id', component: EditPage },
             { path: '', component: MainSettingsPage, data: { title: "Settings" } },
         ] },
         { path: '', component: RootPage, children: [

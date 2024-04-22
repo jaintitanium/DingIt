@@ -5,13 +5,17 @@ import { UserService } from '@app/services/user.service';
 import { Tables } from '@custom-types/supabase';
 import { PostgrestError } from '@supabase/supabase-js';
 import { MenuItemComponent } from "../../../components/menu-item/menu-item.component";
+import { RouterModule } from '@angular/router';
 
 @Component({
     selector: 'app-service-provider',
     standalone: true,
     templateUrl: './service-provider.page.html',
     styleUrl: './service-provider.page.scss',
-    imports: [MenuItemComponent]
+    imports: [
+      MenuItemComponent,
+      RouterModule,
+    ]
 })
 export class ServiceProviderPage {
   query;
