@@ -1,57 +1,7 @@
-<form [formGroup]="form" class="flex flex-col gap-4 pb-6 m-4">
-    <app-text-field
-        name="display_name"
-        [form]="form"
-        label="Name"
-        [validation]="[
-            { name: 'required', message: 'Name is required'}]" 
-    />
-    <app-text-field
-        name="sub_title"
-        [form]="form"
-        label="Sub-title"
-        placeholder="e.g. Coffee and Donuts"
-    />
-    <app-text-field
-        name="phone_number"
-        [form]="form"
-        label="Phone Number"
-    />
-    <app-text-field
-        name="website"
-        [form]="form"
-        label="Website"
-    />
-    <label class="form-control w-full max-w-xs">
-        <div class="label">
-            <span class="label-text"><strong>Address Search</strong></span>
-        </div>
-        <input id="address_search" type="text" placeholder="Start typing the address"
-            class="input input-block" />
-    </label>
-    <app-text-field
-        name="address_1"
-        [form]="form"
-        label="Address 1"
-    />
-    <app-text-field
-        name="address_2"
-        [form]="form"
-        label="Address 2"
-    />
-    <app-text-field
-        name="city"
-        [form]="form"
-        label="City"
-    />
-    <app-text-field
-        name="state"
-        [form]="form"
-        label="State"
-    />
-    <app-text-field
-        name="postal_code"
-        [form]="form"
-        label="Postal Code"
-    />
-</form>
+<div class="flex flex-col justify-center">
+    <app-service-provider-form #form />
+    <button class="btn btn-block btn-primary max-w-64 mx-auto mb-4" (click)="create()" [disabled]="!form.valid()"><span class="material-symbols-outlined">
+        add_circle
+        </span> Create</button>
+</div>
+<app-toast #errorToast type="error" />

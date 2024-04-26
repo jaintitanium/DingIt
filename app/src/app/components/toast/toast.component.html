@@ -1,6 +1,9 @@
 <div 
     @fade
     *ngIf="_message" class="toast toast-center toast-middle">
+    <div *ngIf="type == 'success'" class="alert alert-success">
+        <span>{{_message}}</span>
+    </div>
     <div *ngIf="type == 'error'" class="alert alert-error">
         <span>{{_message}}</span>
     </div>

@@ -1,6 +1,7 @@
 @for (provider of data; track $index) {
-    <app-menu-item [text]="provider.display_name" />
+    <app-menu-item [text]="provider.display_name" routerLink="/settings/service-providers/edit/{{provider.id}}" />
 }
-<button class="btn btn-primary mx-4" routerLink="/settings/service-providers/create"><span class="material-symbols-outlined">
-    add_circle
+<button class="btn btn-primary mx-4" routerLink="/settings/service-providers/create">
+    <span class="material-symbols-outlined">
+        add_circle
     </span> Add New Service Provider</button>
