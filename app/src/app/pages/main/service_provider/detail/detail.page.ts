@@ -10,6 +10,7 @@ import { Tables } from '@custom-types/supabase';
 import { BackButtonComponent } from "@components/back-button/back-button.component";
 import { RatingComponent } from "@components/rating/rating.component";
 import { GoogleMap, MapMarker } from '@angular/google-maps';
+import { DateService } from '@app/services/date.service';
 
 @Component({
     selector: 'app-detail',
@@ -44,15 +45,7 @@ export class DetailPage {
   mapDistance: number | null = null;
   markerOptions: google.maps.MarkerOptions = {draggable: false};
 
-  daysOfWeek: string[] = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday'
-  ];
+  public DateService = DateService;
 
   constructor(
     private route: ActivatedRoute,
@@ -93,18 +86,6 @@ export class DetailPage {
       raw.filter((x) => x.day_of_week == index).forEach((x) => org[index].push(x));
     }
     return org;
-  }
-  formatTime(input: string): string {
-    let date = new Date('1/1/00 '+input);
-    var hours = date.getHours();
-    var minutes = date.getMinutes();
-    var ampm = hours >= 12 ? 'pm' : 'am';
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-    var strMinutes = minutes < 10 ? '0'+minutes : minutes;
-    var strTime = hours + (date.getMinutes() == 0 ? '' : ':' + strMinutes) + ampm;
-    return strTime;
-    // return dt.getHours() + (dt.getMinutes() == 0 ? '' : ':'+dt.getMinutes()) + ' ' + dt.get
   }
   async refreshMap(sp: Tables<'service_provider'>) {
     if(sp.lat && sp.lng) {

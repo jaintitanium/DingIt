@@ -44,11 +44,11 @@
             <h2 class="mt-0 text-base-100">Hours</h2>
             <table>
             @for (item of reorganizeHours(sp.service_provider_hours); track $index) {
-                <tr><td>{{daysOfWeek[$index]}}</td>
+                <tr><td>{{DateService.daysOfWeek[$index]}}</td>
                     <td>
                     @if(item.length > 0) {
                         @for (hour of item; track $index) {
-                            {{ formatTime(hour.open_time) }}-{{ formatTime(hour.close_time) }}{{ ($index + 1) == item.length ? '' : ', '}}
+                            {{ DateService.formatTime(hour.open_time) }}-{{ DateService.formatTime(hour.close_time) }}{{ ($index + 1) == item.length ? '' : ', '}}
                             
                         }
                     }

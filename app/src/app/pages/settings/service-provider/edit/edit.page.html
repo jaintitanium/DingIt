@@ -3,7 +3,7 @@
         <summary class="collapse-title text-xl font-bold">
           General
         </summary>
-        <div class="collapse-content flex flex-col"> 
+        <div class="collapse-content flex flex-col">
             <app-loading-error-block [data]="sp?.data" [error]="sp?.error" />
             @if(sp?.data?.header_image_path) {
                 <app-s3-img [src]="sp?.data?.header_image_path" bucket="service_providers" (click)="headerUploader.click()"/>
@@ -20,8 +20,57 @@
         <summary class="collapse-title text-xl font-bold">
           Hours
         </summary>
-        <div class="collapse-content"> 
+        <div class="collapse-content flex flex-col">
+            <app-loading-error-block [data]="hours?.data" [error]="hours?.error" />
+            @for (item of hours?.data; track $index) {
+                @if(item.id == editHour) {
+                    <ng-container *ngTemplateOutlet="hoursInput" />
+                    <div class="flex gap-4 my-2">
+                        <button (click)="cancelEditHours()" class="flex-auto btn">Cancel</button>
+                        <button (click)="saveEditHours()" class="flex-auto btn btn-primary">Save</button>
+                    </div>
+                } @else {
+                    <div class="flex items-center">
+                        <div>{{ DateService.daysOfWeek[item.day_of_week] }}: {{DateService.formatTime(item.open_time)}}-{{DateService.formatTime(item.close_time)}}</div>
+                        <div class="justify-self-end">
+                            <span *ngIf="!editHour && !newHour" class="material-symbols-outlined p-2" (click)="startEditHour(item.id)">edit</span>
+                            <span *ngIf="!editHour && !newHour" class="material-symbols-outlined p-2" (click)="deleteHour(item.id)">delete</span>
+                        </div>
+                    </div>
+                }
+            }
+            @if(newHour) {
+                <ng-container *ngTemplateOutlet="hoursInput" />
+                <div class="flex gap-4 my-2">
+                    <button (click)="cancelNewHours()" class="flex-auto btn">Cancel</button>
+                    <button (click)="saveNewHours()" class="flex-auto btn btn-primary">Save New Hours</button>
+                </div>
+            } @else if(editHour == null) {
+                <button (click)="startNewHours()" class="btn btn-primary">Add Open Hours</button>
+            }
         </div>
+        <ng-template #hoursInput>
+            <form [formGroup]="hourForm" (change)="hoursFormChange($event)">
+                <app-select-field 
+                    [form]="hourForm"
+                    name="day_of_week"
+                    [options]="daysOfWeekSelect()"
+                    label="Day of Week"
+                />
+                <app-text-field 
+                    [form]="hourForm"
+                    name="open_time"
+                    type="time"
+                    label="Open Time"
+                />
+                <app-text-field 
+                    [form]="hourForm"
+                    name="close_time"
+                    type="time"
+                    label="Close Time"
+                />
+            </form>
+        </ng-template>
     </details>
 </div>
 
