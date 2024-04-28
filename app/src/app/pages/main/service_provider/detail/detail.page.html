@@ -26,7 +26,7 @@
                     directions_car
                     </span> Navigate
                 </button>
-                <div *ngIf="mapDistance" class="flex-grow mx-8">{{ mapDistance | number: '1.0-1' }} mi</div>
+                <div *ngIf="mapDistance" class="flex-grow mx-8">{{ mapDistance | number: '1.0-1' }} mi away</div>
             </div>
             <div class="mx-2 text-start">{{ sp.address_1 }}, {{ sp.address_2 ? sp.address_2+', ' : '' }}{{ sp.city }}, {{ sp.state }} {{ sp.postal_code }}</div>
         </div>

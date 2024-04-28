@@ -29,8 +29,7 @@ import { DateService } from '@app/services/date.service';
 export class DetailPage {
   id: string;
   query;
-  queryType;
-  sp: QueryData<typeof this.queryType> | null = null;
+  sp: QueryData<typeof this.query> | null = null;
   error: PostgrestError | null = null;
   headerImageUrl: string | null = null;
 
@@ -54,8 +53,11 @@ export class DetailPage {
     public service: ServiceProviderService,
   ) {
     this.id = route.snapshot.params['id'];
-    this.query = this.service.query().eq('id', this.id).single();
-    this.queryType = this.service.query().single();
+    this.query = this.api.client()
+      .from('service_provider')
+      .select('*,service_provider_hours(*)')
+      .eq('id', this.id)
+      .single();
   }
 
   async ngOnInit() {
@@ -90,7 +92,6 @@ export class DetailPage {
   async refreshMap(sp: Tables<'service_provider'>) {
     if(sp.lat && sp.lng) {
       this.mapShow = true;
-      console.log(sp.lat, sp.lng)
       this.mapOptions.center = {
         lat: sp.lat,
         lng: sp.lng
@@ -100,7 +101,7 @@ export class DetailPage {
         const crd = pos.coords;
       
         const { data, error } = await this.api.client().rpc('get_service_provider_distance', {
-          id: sp.id,
+          input_id: sp.id,
           input_lat: crd.latitude,
           input_lng: crd.longitude
         });

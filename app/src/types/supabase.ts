@@ -328,7 +328,7 @@ export type Database = {
     Functions: {
       get_service_provider_distance: {
         Args: {
-          id: string
+          input_id: string
           input_lat: number
           input_lng: number
         }
