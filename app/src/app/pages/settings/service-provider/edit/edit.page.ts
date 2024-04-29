@@ -192,9 +192,7 @@ export class EditPage {
       }
     }
   }
-  hoursFormChange(evt: Event) {
-    console.log(this.hourForm.value)
-  }
+  
   daysOfWeekSelect(): {value: number | string, label: string}[] {
     return DateService.daysOfWeek.map((v, i) => { return { value: i, label: v}});
   }

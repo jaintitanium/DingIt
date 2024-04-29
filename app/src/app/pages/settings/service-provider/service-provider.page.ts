@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { ServiceProviderService } from '@app/queries/service-provider.service';
 import { TitleService } from '@app/services/title.service';
 import { UserService } from '@app/services/user.service';
 import { Tables } from '@custom-types/supabase';
 import { PostgrestError } from '@supabase/supabase-js';
 import { MenuItemComponent } from "../../../components/menu-item/menu-item.component";
 import { RouterModule } from '@angular/router';
+import { ApiService } from '@app/services/api.service';
 
 @Component({
     selector: 'app-service-provider',
@@ -19,18 +19,18 @@ import { RouterModule } from '@angular/router';
 })
 export class ServiceProviderPage {
   query;
-  queryType;
 
   data?: Tables<'service_provider'>[] | null;
   error: PostgrestError | null = null;
   constructor(
     public titleService: TitleService,
     private user: UserService,
-    public service: ServiceProviderService,
+    private api: ApiService
   ) {
 
-    this.query = this.service.query();
-    this.queryType = this.service.query();
+    this.query = this.api.client()
+      .from('service_provider')
+      .select('*,service_provider_hours(*)');
   }
 
   ngOnInit() {

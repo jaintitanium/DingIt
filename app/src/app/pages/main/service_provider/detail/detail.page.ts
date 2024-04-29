@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '@app/services/api.service';
 import { TitleService } from '@app/services/title.service';
 import { PostgrestError, QueryData } from '@supabase/supabase-js';
-import { ServiceProviderService } from '@app/queries/service-provider.service';
 import { CommonModule } from '@angular/common';
 import { LoadingErrorBlockComponent } from '@components/loading-error-block/loading-error-block.component';
 import { Tables } from '@custom-types/supabase';
@@ -50,7 +49,6 @@ export class DetailPage {
     private route: ActivatedRoute,
     private api: ApiService,
     public title: TitleService,
-    public service: ServiceProviderService,
   ) {
     this.id = route.snapshot.params['id'];
     this.query = this.api.client()

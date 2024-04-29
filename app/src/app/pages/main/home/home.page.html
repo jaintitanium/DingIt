@@ -1,13 +1,13 @@
 <app-loading-error-block [data]="list" [error]="error" />
 @for (sp of list; track $index) {
-    <div class="card card-compact w-96 max-w-full bg-base-100 shadow-xl">
-        <figure><img src="{{getPublicUrl(sp.header_image_path)}}" /></figure>
-        <div class="card-body">
-          <h2 class="card-title">{{sp.display_name}}</h2>
-          <p>{{sp.sub_title}}</p>
-          <div class="card-actions justify-end">
-            <button class="btn btn-primary" [routerLink]="'/service-provider/' + sp.id">Details</button>
-          </div>
-        </div>
+  <div class="card card-compact w-96 max-w-full shadow-xl mx-auto">
+    <figure><img src="{{getPublicUrl(sp.header_image_path)}}" /></figure>
+    <div class="card-body">
+      <h2 class="card-title">{{sp.display_name}}</h2>
+      <p>{{sp.sub_title}}</p>
+      <div class="card-actions justify-end">
+        <button class="btn btn-primary" [routerLink]="'/service-provider/' + sp.id">Details</button>
+      </div>
     </div>
+  </div>
 }
