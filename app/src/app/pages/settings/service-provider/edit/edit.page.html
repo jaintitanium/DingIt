@@ -18,6 +18,65 @@
     </details>
     <details class="collapse collapse-arrow border border-base-300">
         <summary class="collapse-title text-xl font-bold">
+          Menu/Products
+        </summary>
+        <div class="collapse-content flex flex-col">
+            <app-loading-error-block [data]="products?.data" [error]="products?.error" />
+            @for (item of products?.data; track $index) {
+                @if(item.id == editProduct) {
+                    <ng-container *ngTemplateOutlet="productInput" />
+                    <div class="flex gap-4 my-2">
+                        <button (click)="cancelEditProduct()" class="flex-auto btn">Cancel</button>
+                        <button (click)="saveEditProduct()" class="flex-auto btn btn-primary">Save</button>
+                    </div>
+                } @else {
+                    <div class="flex items-center">
+                        <div class="flex-grow truncate text-left"><b>{{ item.display_name }}</b> - {{ item.description }}</div>
+                        
+                        <button *ngIf="!editProduct && !newProduct" class="btn btn-square btn-outline m-1" (click)="startEditProduct(item.id)">
+                            <span class="material-symbols-outlined">attach_money</span>
+                        </button>
+                        <button *ngIf="!editProduct && !newProduct" class="btn btn-square btn-outline m-1" (click)="startEditProduct(item.id)">
+                            <span class="material-symbols-outlined">edit</span>
+                        </button>
+                        <button *ngIf="!editProduct && !newProduct" class="btn btn-square btn-outline m-1" (click)="deleteProduct(item.id)">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    </div>
+                }
+            }
+            @if(newProduct) {
+                <ng-container *ngTemplateOutlet="productInput" />
+                <div class="flex gap-4 my-2">
+                    <button (click)="cancelNewProduct()" class="flex-auto btn">Cancel</button>
+                    <button (click)="saveNewProduct()" class="flex-auto btn btn-primary">Save New Product</button>
+                </div>
+            } @else if(editProduct == null) {
+                <div class="flex gap-4 my-2">
+                    <button class="flex-auto btn btn-secondary" onclick="reorderMenuModal.showModal()">Reorder Menu</button>
+                    <button class="flex-auto btn btn-primary" (click)="startNewProduct()">Add Product</button>
+                </div>
+            }
+        </div>
+        <ng-template #productInput>
+            <form [formGroup]="productForm">
+                <app-text-field 
+                    [form]="productForm"
+                    name="display_name"
+                    type="text"
+                    label="Name"
+                />
+                <app-text-field 
+                    [form]="productForm"
+                    name="description"
+                    type="textarea"
+                    label="Description"
+                />
+            </form>
+        </ng-template>
+    </details>
+    <details class="collapse collapse-arrow border border-base-300">
+        <summary class="collapse-title text-xl font-bold">
           Hours
         </summary>
         <div class="collapse-content flex flex-col">
@@ -31,10 +90,14 @@
                     </div>
                 } @else {
                     <div class="flex items-center">
-                        <div>{{ DateService.daysOfWeek[item.day_of_week] }}: {{DateService.formatTime(item.open_time)}}-{{DateService.formatTime(item.close_time)}}</div>
-                        <div class="justify-self-end">
-                            <span *ngIf="!editHour && !newHour" class="material-symbols-outlined p-2" (click)="startEditHour(item.id)">edit</span>
-                            <span *ngIf="!editHour && !newHour" class="material-symbols-outlined p-2" (click)="deleteHour(item.id)">delete</span>
+                        <div class="flex-grow">{{ DateService.daysOfWeek[item.day_of_week] }}: {{DateService.formatTime(item.open_time)}}-{{DateService.formatTime(item.close_time)}}</div>
+                        <div>
+                            <button *ngIf="!editHour && !newHour" class="btn btn-square btn-outline m-1" (click)="startEditHour(item.id)">
+                                <span class="material-symbols-outlined">edit</span>
+                            </button>
+                            <button *ngIf="!editHour && !newHour" class="btn btn-square btn-outline m-1" (click)="deleteHour(item.id)">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
                         </div>
                     </div>
                 }
@@ -76,3 +139,59 @@
 
 <app-toast #successToast type="success" />
 <app-toast #errorToast type="error" />
+
+<dialog id="reorderMenuModal" class="modal" (close)="loadProducts(this.id)">
+    <div class="modal-box">
+        <h3 class="font-bold text-lg">Re-order menu items</h3>
+        @if(products && products.data) {
+            <div class="overflow-y-scroll h-96 max-w-full">
+                <table cdkDropList class="table table-auto" (cdkDropListDropped)="dropProduct($event)">
+                    <tbody>
+                        @for (p of products.data; track $index) {
+                            <tr cdkDrag>
+                                <td>
+                                    <span cdkDragHandle class="material-symbols-outlined">
+                                        drag_handle
+                                    </span>
+                                </td>
+                                <td>
+                                    <b>{{ p.display_name }}</b>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        <div class="modal-action">
+            <form method="dialog">
+            <!-- if there is a button in form, it will close the modal -->
+                <button class="btn">Close</button>
+            </form>
+        </div>
+    </div>
+</dialog>
+                    <tbody>
+                        <tr class="dndPlaceholder border rounded-1 bg-warning bg-gradient" dndPlaceholderRef></tr>
+                        @for (p of products.data; track $index) {
+                            <tr [dndDraggable]="p"
+                            [dndType]="'product'"
+                            (dndMoved)="onDragged($index, p, products.data)"
+                            class="border rounded-1 bg-white"
+                            dndEffectAllowed="move">
+                                {{ p.display_name }}
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        <p class="py-4">Press ESC key or click the button below to close</p>
+        <div class="modal-action">
+            <form method="dialog">
+            <!-- if there is a button in form, it will close the modal -->
+                <button class="btn">Save and Close</button>
+            </form>
+        </div>
+    </div>
+</dialog>

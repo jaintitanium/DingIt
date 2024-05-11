@@ -32,17 +32,29 @@ export type Database = {
       product: {
         Row: {
           created_at: string
+          description: string | null
+          display_name: string
           id: string
+          image_path: string | null
+          order: number
           service_provider: string
         }
         Insert: {
           created_at?: string
+          description?: string | null
+          display_name: string
           id?: string
+          image_path?: string | null
+          order?: number
           service_provider: string
         }
         Update: {
           created_at?: string
+          description?: string | null
+          display_name?: string
           id?: string
+          image_path?: string | null
+          order?: number
           service_provider?: string
         }
         Relationships: [
@@ -51,6 +63,41 @@ export type Database = {
             columns: ["service_provider"]
             isOneToOne: false
             referencedRelation: "service_provider"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_price: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          order: number
+          price: unknown
+          product: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name?: string
+          order?: number
+          price: unknown
+          product?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          order?: number
+          price?: unknown
+          product?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_product_price_product_fkey"
+            columns: ["product"]
+            isOneToOne: false
+            referencedRelation: "product"
             referencedColumns: ["id"]
           },
         ]

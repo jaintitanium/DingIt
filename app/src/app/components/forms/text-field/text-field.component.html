@@ -3,8 +3,13 @@
         <div *ngIf="label" class="label">
             <span class="label-text"><strong>{{label}}</strong></span>
         </div>
-        <input [id]="name" [type]="type" [formControlName]="name" [placeholder]="placeholder ?? ''"
-            class="input input-block {{classes}}" />
+        @if(type == 'textarea') {
+            <textarea [id]="name" [formControlName]="name" [placeholder]="placeholder ?? ''"
+             class="textarea textarea-bordered"></textarea>
+        } @else {
+            <input [id]="name" [type]="type" [formControlName]="name" [placeholder]="placeholder ?? ''"
+                class="input input-block {{classes}}" />
+        }
         <div class="label">
             <span class="label-text">
                 <ng-container *ngIf="form.controls[name] as ctl">

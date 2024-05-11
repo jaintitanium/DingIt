@@ -4,15 +4,16 @@ import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '@app/services/api.service';
 import { Tables } from '@custom-types/supabase';
 import { PostgrestError } from '@supabase/supabase-js';
-import { LoadingErrorBlockComponent } from "../../../../components/loading-error-block/loading-error-block.component";
-import { S3ImgComponent } from "../../../../components/s3-img/s3-img.component";
-import { ToastComponent } from "../../../../components/toast/toast.component";
+import { LoadingErrorBlockComponent } from "@app/components/loading-error-block/loading-error-block.component";
+import { S3ImgComponent } from "@app/components/s3-img/s3-img.component";
+import { ToastComponent } from "@app/components/toast/toast.component";
 import { TitleService } from '@app/services/title.service';
 import { ServiceProviderEntryComponent } from '@app/components/forms/service-provider-entry/service-provider-entry.component';
 import { DateService } from '@app/services/date.service';
 import { CommonModule } from '@angular/common';
-import { TextFieldComponent } from "../../../../components/forms/text-field/text-field.component";
-import { SelectFieldComponent } from "../../../../components/forms/select-field/select-field.component";
+import { TextFieldComponent } from "@app/components/forms/text-field/text-field.component";
+import { SelectFieldComponent } from "@app/components/forms/select-field/select-field.component";
+import { CdkDrag, CdkDragDrop, CdkDropList, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
     selector: 'app-edit',
@@ -28,6 +29,9 @@ import { SelectFieldComponent } from "../../../../components/forms/select-field/
         CommonModule,
         TextFieldComponent,
         SelectFieldComponent,
+        DragDropModule,
+        CdkDropList,
+        CdkDrag,
     ]
 })
 export class EditPage {
@@ -39,8 +43,10 @@ export class EditPage {
   public id: string | null;
   public sp?: { data: Tables<'service_provider'> | null, error: PostgrestError | null };
   public hours?: { data: Tables<'service_provider_hours'>[] | null, error: PostgrestError | null };
+  public products?: { data: Tables<'product'>[] | null, error: PostgrestError | null };
 
 
+  // General Editing State
   form: FormGroup = new FormGroup({
     display_name: new FormControl<string>('', [Validators.required]),
     sub_title: new FormControl<string>(''),
@@ -53,6 +59,23 @@ export class EditPage {
     website: new FormControl<string>(''),
   });
 
+
+  // Product Editing State
+  editProduct: string | null = null;
+  newProduct: boolean = false;
+  productForm: FormGroup = new FormGroup({
+    display_name: new FormControl<string>('', [Validators.required]),
+    description: new FormControl<string>(''),
+  });
+  resetProduct() {
+    this.productForm.setValue({
+      display_name: '',
+      description: '',
+    });
+  }
+
+
+  // Hours Editing State
   editHour: string | null = null;
   newHour: boolean = false;
   hourForm: FormGroup = new FormGroup({
@@ -80,11 +103,13 @@ export class EditPage {
     if(this.id) {
       this.loadBase(this.id);
       this.loadHours(this.id);
+      this.loadProducts(this.id);
     } else {
 
     }
   }
 
+  // General
   async loadBase(id: string) {
     this.sp = await this.api.client().from('service_provider').select('*').eq('id', id).single();
     this.titleService.setTitle('Edit: ' + this.sp.data?.display_name);
@@ -127,6 +152,105 @@ export class EditPage {
   }
 
 
+  // Products
+  async loadProducts(id: string | null) {
+    if(id == null) {
+      id = this.id;
+    }
+    if(id) {
+      this.products = await this.api.client().from('product').select('*,product_price(*)').eq('service_provider', id).order('order');
+    }
+  }
+  cancelNewProduct() {
+    this.newProduct = false;
+  }
+  startNewProduct() {
+    this.resetProduct();
+    this.newProduct = true;
+  }
+  saveNewProduct() {
+    if(this.id) {
+      let id = this.id;
+      let payload = this.productForm.value;
+      payload['service_provider'] = id;
+      payload['order'] = this.getNextProductOrder();
+      console.log(payload)
+      this.api.client().from('product').insert(payload).then((result) => {
+        if(result.error) {
+          this.errorToast.message(result.error.message)
+        } else {
+          this.loadProducts(id)
+          this.newProduct = false;
+        }
+      });
+    }
+  }
+  startEditProduct(id: string) {
+    let product = this.products?.data?.find((x) => x.id == id);
+    if(product) {
+      this.productForm.get('display_name')?.setValue(product.display_name);
+      this.productForm.get('description')?.setValue(product.description);
+      this.editProduct = id;
+    }
+  }
+  cancelEditProduct() {
+    this.editProduct = null;
+  }
+  async deleteProduct(id: string) {
+    const {data, error} = await this.api.client().from('product')
+      .delete()
+      .eq('id', id);
+    if(error) {
+      this.errorToast.message(error.message);
+    }
+    if(this.id) {
+      this.loadProducts(this.id)
+    }
+  }
+  async saveEditProduct() {
+    if(this.editProduct) {
+      let payload = this.productForm.value;
+      console.log(this.editProduct, payload)
+      const {data, error} = await this.api.client().from('product')
+        .update(payload)
+        .eq('id', this.editProduct);
+      if(error) {
+        this.errorToast.message(error.message);
+      } else {
+        if(this.id)
+          this.loadProducts(this.id);
+        this.editProduct = null;
+      }
+    }
+  }
+  getNextProductOrder() {
+    if(this.products?.data) {
+      return this.products.data
+        .map(x => x.order)
+        .reduce((prev, curr) => {
+          return Math.max(prev, curr);
+        }) + 1;
+    } else {
+      return 0;
+    }
+  }
+  async dropProduct(event: CdkDragDrop<Tables<'product'>[]>) {
+    if(this.products?.data) {
+      moveItemInArray(this.products.data, event.previousIndex, event.currentIndex);
+      for (let index = 0; index < this.products.data.length; index++) {
+        const element = this.products.data[index];
+        if(index != element.order) {
+          await this.api.client().from('product').update({
+            order: index
+          }).eq('id', element.id);
+        }
+      }
+      this.loadProducts(null);
+    }
+  }
+
+
+  // Hours
   async loadHours(id: string) {
     this.hours = await this.api.client().from('service_provider_hours').select('*').eq('service_provider', id).order('day_of_week');
   }
