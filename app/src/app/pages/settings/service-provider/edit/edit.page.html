@@ -171,26 +171,34 @@
         </div>
     </div>
 </dialog>
+
+<dialog id="menuPricesModal" class="modal">
+    <div class="modal-box">
+        <h3 class="font-bold text-lg">Re-order menu items</h3>
+        @if(products && products.data) {
+            <div class="overflow-y-scroll h-96 max-w-full">
+                <table cdkDropList class="table table-auto" (cdkDropListDropped)="dropProduct($event)">
                     <tbody>
-                        <tr class="dndPlaceholder border rounded-1 bg-warning bg-gradient" dndPlaceholderRef></tr>
                         @for (p of products.data; track $index) {
-                            <tr [dndDraggable]="p"
-                            [dndType]="'product'"
-                            (dndMoved)="onDragged($index, p, products.data)"
-                            class="border rounded-1 bg-white"
-                            dndEffectAllowed="move">
-                                {{ p.display_name }}
+                            <tr cdkDrag>
+                                <td>
+                                    <span cdkDragHandle class="material-symbols-outlined">
+                                        drag_handle
+                                    </span>
+                                </td>
+                                <td>
+                                    <b>{{ p.display_name }}</b>
+                                </td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
         }
-        <p class="py-4">Press ESC key or click the button below to close</p>
         <div class="modal-action">
             <form method="dialog">
             <!-- if there is a button in form, it will close the modal -->
-                <button class="btn">Save and Close</button>
+                <button class="btn">Close</button>
             </form>
         </div>
     </div>
