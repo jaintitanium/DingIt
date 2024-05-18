@@ -72,7 +72,6 @@ export type Database = {
           created_at: string
           id: string
           name: string
-          order: number
           price: unknown
           product: string | null
         }
@@ -80,7 +79,6 @@ export type Database = {
           created_at?: string
           id?: string
           name?: string
-          order?: number
           price: unknown
           product?: string | null
         }
@@ -88,7 +86,6 @@ export type Database = {
           created_at?: string
           id?: string
           name?: string
-          order?: number
           price?: unknown
           product?: string | null
         }
