@@ -3,27 +3,28 @@
 
 <app-loading-error-block [data]="menuItems?.data" [error]="menuItems?.error" />
 
-@for (item of menuItems?.data; track $index) {
-    <div class="px-4">
-        <table class="table table-zebra">
-            <thead>
+<div class="px-4">
+    <table class="table table-zebra">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price(s)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (item of menuItems?.data; track $index) {
                 <tr>
-                    <th>Product</th>
-                    <th>Price(s)</th>
+                    <td class="flex-col">
+                        <div><strong>{{item.display_name}}</strong></div>
+                        <div>{{item.description}}</div>
+                    </td>
+                    <td class="flex-col">
+                        @for (price of item.prices; track price.id) {
+                            <div><b>{{price.name}}:</b> {{price.price}}</div>
+                        }
+                    </td>
                 </tr>
-            </thead>
-        </table>
-        <div class="flex">
-            <div class="flex-col">
-                <div><strong>{{item.display_name}}</strong></div>
-                <div>{{item.description}}</div>
-            </div>
-            <div class="grow text-right flex-col">
-                @for (price of item.prices; track price.id) {
-                    <div><b>{{price.name}}:</b> {{price.price}}</div>
-                }
-            </div>
-        </div>
-        <div class="divider divider-primary"></div>
-    </div>
-}
+            }
+        </tbody>
+    </table>
+</div>
