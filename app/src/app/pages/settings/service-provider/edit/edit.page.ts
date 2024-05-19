@@ -78,6 +78,9 @@ export class EditPage {
       description: '',
     });
   }
+  editProductImagePath: string | null = null;
+
+  // Price Editing State
   editProductPriceId: string | null = null;
   modalForm: FormGroup = new FormGroup({
     priceModal: new FormControl<boolean>(false)
@@ -149,7 +152,7 @@ export class EditPage {
         if(data.error) {
           this.errorToast.message(data.error.message);
         } else {
-          this.successToast.message("Updated General Section");
+          this.successToast.message("Updated Header Photo");
         }
         if(this.id && this.sp?.data) {
           let id = this.id;
@@ -192,6 +195,7 @@ export class EditPage {
   startNewProduct() {
     this.resetProduct();
     this.newProduct = true;
+    this.editProductImagePath = null;
   }
   saveNewProduct() {
     if(this.id) {
@@ -199,11 +203,13 @@ export class EditPage {
       let payload = this.productForm.value;
       payload['service_provider'] = id;
       payload['order'] = this.getNextProductOrder();
+      payload['image_path'] = this.editProductImagePath;
       console.log(payload)
       this.api.client().from('product').insert(payload).then((result) => {
         if(result.error) {
           this.errorToast.message(result.error.message)
         } else {
+          this.successToast.message("Added Product");
           this.loadProducts(id)
           this.newProduct = false;
         }
@@ -215,6 +221,7 @@ export class EditPage {
     if(product) {
       this.productForm.get('display_name')?.setValue(product.display_name);
       this.productForm.get('description')?.setValue(product.description);
+      this.editProductImagePath = product.image_path;
       this.editProduct = id;
     }
   }
@@ -227,6 +234,8 @@ export class EditPage {
       .eq('id', id);
     if(error) {
       this.errorToast.message(error.message);
+    } else {
+      this.successToast.message("Deleted Product");
     }
     if(this.id) {
       this.loadProducts(this.id)
@@ -235,6 +244,7 @@ export class EditPage {
   async saveEditProduct() {
     if(this.editProduct) {
       let payload = this.productForm.value;
+      payload['image_path'] = this.editProductImagePath;
       console.log(this.editProduct, payload)
       const {data, error} = await this.api.client().from('product')
         .update(payload)
@@ -242,6 +252,7 @@ export class EditPage {
       if(error) {
         this.errorToast.message(error.message);
       } else {
+        this.successToast.message("Saved Product");
         if(this.id)
           this.loadProducts(this.id);
         this.editProduct = null;
@@ -273,6 +284,26 @@ export class EditPage {
       this.loadProducts(null);
     }
   }
+  uploadMenuPhoto(event: Event) {
+    const element = event.currentTarget as HTMLInputElement;
+    let fileList: FileList | null = element.files;
+    if (fileList) {
+      const path = this.editProduct ? (this.id + '/menu/' + this.editProduct + '.png') : (this.id + '/menu/' + self.crypto.randomUUID().substring(24) + '.png');
+      this.api.client().storage.from('service_providers').upload(path, fileList[0], {
+        upsert: true
+      }).then((data) => {
+        if(data.error) {
+          this.errorToast.message(data.error.message);
+        } else {
+          this.editProductImagePath = path;
+          this.successToast.message("Uploaded menu photo");
+        }
+      })
+    }
+  }
+
+
+  // Prices
   async startEditPricesForProduct(productId: string) {
     this.editProductPriceId = productId;
     if(this.products?.data) {
@@ -297,6 +328,8 @@ export class EditPage {
       .eq('id', id);
     if(error) {
       this.errorToast.message(error.message);
+    } else {
+      this.successToast.message("Deleted Price");
     }
     if(this.editProductPriceId) {
       this.startEditPricesForProduct(this.editProductPriceId);
@@ -323,6 +356,7 @@ export class EditPage {
         if(result.error) {
           this.errorToast.message(result.error.message);
         } else {
+          this.successToast.message("Price Added");
           this.startEditPricesForProduct(productId);
           this.newPrice = false;
           if(this.id) {
@@ -352,6 +386,7 @@ export class EditPage {
       if(error) {
         this.errorToast.message(error.message);
       } else {
+        this.successToast.message("Price Saved");
         if(this.editProductPriceId)
           this.startEditPricesForProduct(this.editProductPriceId);
         this.editPrice = null;
@@ -366,7 +401,10 @@ export class EditPage {
 
   // Hours
   async loadHours(id: string) {
-    this.hours = await this.api.client().from('service_provider_hours').select('*').eq('service_provider', id).order('day_of_week');
+    this.hours = await this.api.client().from('service_provider_hours')
+      .select('*')
+      .eq('service_provider', id)
+      .order('day_of_week,open_time');
   }
   cancelNewHours() {
     this.newHour = false;
@@ -384,6 +422,7 @@ export class EditPage {
         if(result.error) {
           this.errorToast.message(result.error.message)
         } else {
+          this.successToast.message("Added Hours");
           this.loadHours(id)
           this.newHour = false;
         }
@@ -409,6 +448,8 @@ export class EditPage {
       .eq('id', id);
     if(error) {
       this.errorToast.message(error.message);
+    } else {
+      this.successToast.message("Deleted Hours");
     }
     if(this.id) {
       this.loadHours(this.id)
@@ -424,6 +465,7 @@ export class EditPage {
       if(error) {
         this.errorToast.message(error.message);
       } else {
+        this.successToast.message("Updated Hours");
         if(this.id)
           this.loadHours(this.id);
         this.editHour = null;
