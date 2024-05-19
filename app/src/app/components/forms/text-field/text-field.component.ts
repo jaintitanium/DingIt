@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormValidation } from '../../../interfaces/form-validation';
+import { NgxCurrencyDirective } from "ngx-currency";
 
 @Component({
   selector: 'app-text-field',
@@ -10,6 +11,7 @@ import { FormValidation } from '../../../interfaces/form-validation';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    NgxCurrencyDirective,
   ],
   templateUrl: './text-field.component.html',
   styleUrl: './text-field.component.scss'

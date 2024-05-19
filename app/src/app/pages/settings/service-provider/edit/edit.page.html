@@ -34,10 +34,10 @@
                         <div class="flex-grow truncate text-left"><b>{{ item.display_name }}</b> - {{ item.description }}</div>
                         
                         <button *ngIf="!editProduct && !newProduct" class="btn btn-square btn-outline m-1" (click)="startEditProduct(item.id)">
-                            <span class="material-symbols-outlined">attach_money</span>
-                        </button>
-                        <button *ngIf="!editProduct && !newProduct" class="btn btn-square btn-outline m-1" (click)="startEditProduct(item.id)">
                             <span class="material-symbols-outlined">edit</span>
+                        </button>
+                        <button *ngIf="!editProduct && !newProduct" class="btn btn-square {{ item.product_prices.length == 0 ? 'btn-warning' : 'btn-outline' }} m-1" (click)="startEditPricesForProduct(item.id)">
+                            <span class="material-symbols-outlined">attach_money</span>
                         </button>
                         <button *ngIf="!editProduct && !newProduct" class="btn btn-square btn-outline m-1" (click)="deleteProduct(item.id)">
                             <span class="material-symbols-outlined">delete</span>
@@ -90,7 +90,7 @@
                     </div>
                 } @else {
                     <div class="flex items-center">
-                        <div class="flex-grow">{{ DateService.daysOfWeek[item.day_of_week] }}: {{DateService.formatTime(item.open_time)}}-{{DateService.formatTime(item.close_time)}}</div>
+                        <div class="flex-grow text-left">{{ DateService.daysOfWeek[item.day_of_week] }}: {{DateService.formatTime(item.open_time)}}-{{DateService.formatTime(item.close_time)}}</div>
                         <div>
                             <button *ngIf="!editHour && !newHour" class="btn btn-square btn-outline m-1" (click)="startEditHour(item.id)">
                                 <span class="material-symbols-outlined">edit</span>
@@ -145,7 +145,7 @@
         <h3 class="font-bold text-lg">Re-order menu items</h3>
         @if(products && products.data) {
             <div class="overflow-y-scroll h-96 max-w-full">
-                <table cdkDropList class="table table-auto" (cdkDropListDropped)="dropProduct($event)">
+                <table cdkDropList class="table table-sm" (cdkDropListDropped)="dropProduct($event)">
                     <tbody>
                         @for (p of products.data; track $index) {
                             <tr cdkDrag>
@@ -172,34 +172,61 @@
     </div>
 </dialog>
 
-<dialog id="menuPricesModal" class="modal">
-    <div class="modal-box">
-        <h3 class="font-bold text-lg">Re-order menu items</h3>
-        @if(products && products.data) {
-            <div class="overflow-y-scroll h-96 max-w-full">
-                <table cdkDropList class="table table-auto" (cdkDropListDropped)="dropProduct($event)">
-                    <tbody>
-                        @for (p of products.data; track $index) {
-                            <tr cdkDrag>
-                                <td>
-                                    <span cdkDragHandle class="material-symbols-outlined">
-                                        drag_handle
-                                    </span>
-                                </td>
-                                <td>
-                                    <b>{{ p.display_name }}</b>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
-        <div class="modal-action">
-            <form method="dialog">
-            <!-- if there is a button in form, it will close the modal -->
-                <button class="btn">Close</button>
-            </form>
+<form [formGroup]="modalForm">
+    <input type="checkbox" id="my_modal_6" class="modal-toggle" formControlName="priceModal" (change)="priceModalChange($event)" />
+    <div class="modal" role="dialog">
+        <div class="modal-box">
+            @if(editProductPrice) {
+                <h3 class="font-bold text-lg">Prices for {{ editProductPrice.display_name }}</h3>
+                @for(p of editPrices; track $index) {
+                    @if(p.id == editPrice) {
+                        <ng-container *ngTemplateOutlet="priceInput" />
+                        <div class="flex gap-4 my-2">
+                            <button (click)="cancelEditPrice()" class="flex-auto btn">Cancel</button>
+                            <button (click)="saveEditPrice()" class="flex-auto btn btn-primary">Save</button>
+                        </div>
+                    } @else {
+                        <div class="flex items-center">
+                            <div class="flex-grow truncate text-left"><b>{{ p.name }}:</b> {{ priceString(p) }}</div>
+                            
+                            <button *ngIf="!editPrice && !newPrice" class="btn btn-square btn-outline m-1" (click)="startEditPrice(p.id)">
+                                <span class="material-symbols-outlined">edit</span>
+                            </button>
+                            <button *ngIf="!editPrice && !newPrice" class="btn btn-square btn-outline m-1" (click)="deletePrice(p.id)">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
+                        </div>
+                    }
+                }
+                @if(newPrice) {
+                    <ng-container *ngTemplateOutlet="priceInput" />
+                    <div class="flex gap-4 my-2">
+                        <button (click)="cancelNewPrice()" class="flex-auto btn">Cancel</button>
+                        <button (click)="saveNewPrice()" class="flex-auto btn btn-primary">Save New Price</button>
+                    </div>
+                } @else if(editPrice == null) {
+                    <button (click)="startNewPrice()" class="btn btn-primary">Add New Price</button>
+                }
+                <div class="modal-action">
+                    <label for="my_modal_6" class="btn">Close</label>
+                </div>
+            }
         </div>
     </div>
-</dialog>
+    <ng-template #priceInput>
+        <form [formGroup]="priceForm">
+            <app-text-field 
+                [form]="priceForm"
+                name="name"
+                type="text"
+                label="Name"
+            />
+            <app-text-field 
+                [form]="priceForm"
+                name="price"
+                type="money"
+                label="Price"
+            />
+        </form>
+    </ng-template>
+</form>

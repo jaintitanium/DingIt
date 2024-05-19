@@ -3,14 +3,14 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '@app/services/api.service';
 import { Tables } from '@custom-types/supabase';
-import { PostgrestError } from '@supabase/supabase-js';
+import { PostgrestError, QueryData, QueryResult } from '@supabase/supabase-js';
 import { LoadingErrorBlockComponent } from "@app/components/loading-error-block/loading-error-block.component";
 import { S3ImgComponent } from "@app/components/s3-img/s3-img.component";
 import { ToastComponent } from "@app/components/toast/toast.component";
 import { TitleService } from '@app/services/title.service';
 import { ServiceProviderEntryComponent } from '@app/components/forms/service-provider-entry/service-provider-entry.component';
 import { DateService } from '@app/services/date.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { TextFieldComponent } from "@app/components/forms/text-field/text-field.component";
 import { SelectFieldComponent } from "@app/components/forms/select-field/select-field.component";
 import { CdkDrag, CdkDragDrop, CdkDropList, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -32,6 +32,7 @@ import { CdkDrag, CdkDragDrop, CdkDropList, DragDropModule, moveItemInArray } fr
         DragDropModule,
         CdkDropList,
         CdkDrag,
+        CurrencyPipe,
     ]
 })
 export class EditPage {
@@ -40,11 +41,15 @@ export class EditPage {
 
   public DateService = DateService;
 
+  productQuery = this.api.client()
+    .from('product')
+    .select('*,product_prices:product_price(*)')
+    // .eq('service_provider', this.id)
+    .order('order');
   public id: string | null;
   public sp?: { data: Tables<'service_provider'> | null, error: PostgrestError | null };
   public hours?: { data: Tables<'service_provider_hours'>[] | null, error: PostgrestError | null };
-  public products?: { data: Tables<'product'>[] | null, error: PostgrestError | null };
-
+  public products?: QueryResult<typeof this.productQuery>; //{ data: Tables<'product'>[] | null , error: PostgrestError | null };
 
   // General Editing State
   form: FormGroup = new FormGroup({
@@ -73,6 +78,24 @@ export class EditPage {
       description: '',
     });
   }
+  editProductPriceId: string | null = null;
+  modalForm: FormGroup = new FormGroup({
+    priceModal: new FormControl<boolean>(false)
+  });
+  editProductPrice: Tables<'product'> | undefined | null = null;
+  editPrices: Tables<'product_price'>[] | null = null;
+  priceForm: FormGroup = new FormGroup({
+    price: new FormControl<string>('', [Validators.required]),
+    name: new FormControl<string>('', [Validators.required])
+  });
+  editPrice: string | null = null;
+  newPrice: boolean = false;
+  resetPrice() {
+    this.priceForm.setValue({
+      name: '',
+      price: '',
+    });
+  }
 
 
   // Hours Editing State
@@ -97,6 +120,8 @@ export class EditPage {
     private titleService: TitleService,
   ) {
     this.id = this.route.snapshot.params['id'];
+    if(this.id)
+      this.productQuery.eq('service_provider', this.id);
   }
 
   async ngOnInit() {
@@ -158,7 +183,7 @@ export class EditPage {
       id = this.id;
     }
     if(id) {
-      this.products = await this.api.client().from('product').select('*,product_price(*)').eq('service_provider', id).order('order');
+      this.products = await this.productQuery;
     }
   }
   cancelNewProduct() {
@@ -247,6 +272,95 @@ export class EditPage {
       }
       this.loadProducts(null);
     }
+  }
+  async startEditPricesForProduct(productId: string) {
+    this.editProductPriceId = productId;
+    if(this.products?.data) {
+      this.editProductPrice = this.products?.data?.find(x => x.id == productId);
+      let priceResp = await this.api.client()
+        .from('product_price')
+        .select('*')
+        .eq('product', productId)
+        .order('price');
+      if(priceResp.error) {
+        this.errorToast.message(priceResp.error.message);
+      }
+      if(priceResp.data) {
+        this.editPrices = priceResp.data;
+        this.modalForm.get('priceModal')?.setValue(true);
+      }
+    }
+  }
+  async deletePrice(id: string) {
+    const {data, error} = await this.api.client().from('product_price')
+      .delete()
+      .eq('id', id);
+    if(error) {
+      this.errorToast.message(error.message);
+    }
+    if(this.editProductPriceId) {
+      this.startEditPricesForProduct(this.editProductPriceId);
+    }
+  }
+  priceString(p: Tables<'product_price'>) {
+    return p.price as string;
+  }
+  cancelNewPrice() {
+    this.newPrice = false;
+  }
+  startNewPrice() {
+    this.resetPrice();
+    this.newPrice = true;
+  }
+  saveNewPrice() {
+    console.log(this.editProductPriceId)
+    if(this.editProductPriceId) {
+      let productId = this.editProductPriceId;
+      let payload = this.priceForm.value;
+      payload['product'] = productId;
+      console.log(payload)
+      this.api.client().from('product_price').insert(payload).then((result) => {
+        if(result.error) {
+          this.errorToast.message(result.error.message);
+        } else {
+          this.startEditPricesForProduct(productId);
+          this.newPrice = false;
+          if(this.id) {
+            this.loadProducts(this.id);
+          }
+        }
+      });
+    }
+  }
+  startEditPrice(id: string) {
+    let price = this.editPrices?.find((x) => x.id == id);
+    if(price) {
+      this.priceForm.get('name')?.setValue(price.name);
+      this.priceForm.get('price')?.setValue(price.price);
+      this.editPrice = id;
+    }
+  }
+  cancelEditPrice() {
+    this.editPrice = null;
+  }
+  async saveEditPrice() {
+    if(this.editPrice) {
+      let payload = this.priceForm.value;
+      const {data, error} = await this.api.client().from('product_price')
+        .update(payload)
+        .eq('id', this.editPrice);
+      if(error) {
+        this.errorToast.message(error.message);
+      } else {
+        if(this.editProductPriceId)
+          this.startEditPricesForProduct(this.editProductPriceId);
+        this.editPrice = null;
+      }
+    }
+  }
+  priceModalChange(evt: Event) {
+    this.editPrice = null;
+    this.newPrice = false;
   }
 
 

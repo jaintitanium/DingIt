@@ -6,6 +6,9 @@
         @if(type == 'textarea') {
             <textarea [id]="name" [formControlName]="name" [placeholder]="placeholder ?? ''"
              class="textarea textarea-bordered"></textarea>
+        } @else if (type == 'money') {
+            <input currencyMask type="text" [id]="name" [formControlName]="name" [placeholder]="placeholder ?? ''"
+                class="input input-block {{classes}}" />
         } @else {
             <input [id]="name" [type]="type" [formControlName]="name" [placeholder]="placeholder ?? ''"
                 class="input input-block {{classes}}" />
