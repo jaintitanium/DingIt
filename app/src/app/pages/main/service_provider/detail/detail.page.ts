@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ApiService } from '@app/services/api.service';
 import { TitleService } from '@app/services/title.service';
 import { PostgrestError, QueryData } from '@supabase/supabase-js';
@@ -23,6 +23,7 @@ import { DateService } from '@app/services/date.service';
         RatingComponent,
         GoogleMap,
         MapMarker,
+        RouterModule,
     ]
 })
 export class DetailPage {

@@ -19,6 +19,7 @@ import { splashGuard } from './guards/splash.guard';
 import { ServiceProviderPage } from './pages/settings/service-provider/service-provider.page';
 import { EditPage } from './pages/settings/service-provider/edit/edit.page';
 import { CreatePage } from './pages/settings/service-provider/create/create.page';
+import { MenuPage } from './pages/main/service_provider/menu/menu.page';
 
 export const routes: Routes = [
     { path: '', canActivate: [splashGuard], children: [
@@ -38,7 +39,8 @@ export const routes: Routes = [
             { path: 'money', component: MoneyPage, canActivate: [authenticatedGuard, profileCompleteGuard] },
             { path: 'profile', component: ProfilePage, canActivate: [authenticatedGuard, profileCompleteGuard] },
             { path: 'service-provider', children: [
-                { path: ':id', component: DetailPage }
+                { path: ':id', component: DetailPage },
+                { path: ':id/menu', component: MenuPage }
             ]},
             { path: '', component: HomePage }
         ]}

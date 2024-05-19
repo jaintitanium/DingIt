@@ -1,0 +1,29 @@
+<app-back-button /> <span class="text-md"><strong>{{ sp ? sp.display_name + ' Menu' : 'Menu' }}</strong></span>
+<app-loading-error-block [data]="sp" [error]="error" />
+
+<app-loading-error-block [data]="menuItems?.data" [error]="menuItems?.error" />
+
+@for (item of menuItems?.data; track $index) {
+    <div class="px-4">
+        <table class="table table-zebra">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price(s)</th>
+                </tr>
+            </thead>
+        </table>
+        <div class="flex">
+            <div class="flex-col">
+                <div><strong>{{item.display_name}}</strong></div>
+                <div>{{item.description}}</div>
+            </div>
+            <div class="grow text-right flex-col">
+                @for (price of item.prices; track price.id) {
+                    <div><b>{{price.name}}:</b> {{price.price}}</div>
+                }
+            </div>
+        </div>
+        <div class="divider divider-primary"></div>
+    </div>
+}
