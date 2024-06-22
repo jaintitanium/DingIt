@@ -260,7 +260,7 @@ export class EditPage {
     }
   }
   getNextProductOrder() {
-    if(this.products?.data) {
+    if(this.products?.data && this.products.data.length > 0) {
       return this.products.data
         .map(x => x.order)
         .reduce((prev, curr) => {
