@@ -32,22 +32,22 @@ Deno.serve(async (req) => {
     const file = form.get('file') as File;
     const originalImage = await (file).arrayBuffer();
     console.log('Converting')
-    const modifiedImage = await modifyImage(new Uint8Array(originalImage), { width: 150, height: 150, mode: 'cover' });
+    const modifiedImage = await modifyImage(new Uint8Array(originalImage));
   
-    console.log('Uploading Original')
-    const upload = await supabaseAdminClient.storage
-      .from('service_providers')
-      .upload(data.image_path, originalImage, {
-        contentType: file.type,
-        upsert: true,
-      });
-    if(upload.error) throw (upload.error);
+    // console.log('Uploading Original')
+    // const upload = await supabaseAdminClient.storage
+    //   .from('service_providers')
+    //   .upload(data.image_path, webpImage, {
+    //     contentType: file.type,
+    //     upsert: true,
+    //   });
+    // if(upload.error) throw (upload.error);
 
     console.log('Uploading Thumbnail')
     const thumb_upload = await supabaseAdminClient.storage
       .from('service_providers')
       .upload(data.thumbnail_path, modifiedImage, {
-        contentType: 'image/webp',
+        contentType: 'image/*',
         upsert: true,
       });
     if(thumb_upload.error) throw (thumb_upload.error);
@@ -67,18 +67,11 @@ Deno.serve(async (req) => {
 
 function modifyImage(
   imageBuffer: Uint8Array,
-  params: { width: number; height: number; mode: string },
 ) {
-  const sizingData = new MagickGeometry(
-    params.width,
-    params.height,
-  );
-  sizingData.ignoreAspectRatio = params.height > 0 && params.width > 0;
   return new Promise<Uint8Array>((resolve) => {
     ImageMagick.read(imageBuffer, (image) => {
-      let horizontal = image.width > image.height;
       image.resize(new MagickGeometry(150));
-      image.write(MagickFormat.Webp, (data) => resolve(data));
+      image.write((data) => resolve(data));
       return;
     });
   });

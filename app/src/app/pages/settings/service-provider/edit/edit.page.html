@@ -61,16 +61,15 @@
         <ng-template #productInput>
             <form [formGroup]="productForm">
                 @if(editProductImagePath) {
-                    <app-s3-img [src]="editProductImagePath" bucket="service_providers" (click)="productImageUploader.click()"/>
+                    <app-s3-img [src]="editProductImagePath" bucket="service_providers" (click)="uploadMenuPhoto()"/>
                     <div class="flex-row">
                         <button (click)="editProductImagePath = null; productForm.get('thumbnail_path')?.setValue(null)" class="btn btn-warning m-4">Clear Menu Image</button>
-                        <button (click)="productImageUploader.click()" class="btn btn-primary m-4">Replace Menu Image</button>
+                        <button (click)="uploadMenuPhoto()" class="btn btn-primary m-4">Replace Menu Image</button>
                     </div>
                 } @else {
-                    <div class="skeleton w-64 h-32 mx-auto" (click)="productImageUploader.click()"></div>
-                    <button (click)="productImageUploader.click()" class="btn btn-primary m-4">Add Menu Image</button>
+                    <div class="skeleton w-64 h-32 mx-auto" (click)="uploadMenuPhoto()"></div>
+                    <button (click)="uploadMenuPhoto()" class="btn btn-primary m-4">Add Menu Image</button>
                 }
-                <input hidden type="file" #productImageUploader accept="image/*" (change)="uploadMenuPhoto($event)"/>
                 <app-text-field 
                     [form]="productForm"
                     name="display_name"

@@ -14,6 +14,7 @@ import { CommonModule, CurrencyPipe } from '@angular/common';
 import { TextFieldComponent } from "@app/components/forms/text-field/text-field.component";
 import { SelectFieldComponent } from "@app/components/forms/select-field/select-field.component";
 import { CdkDrag, CdkDragDrop, CdkDropList, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { NgxImageCompressService } from 'ngx-image-compress';
 
 @Component({
     selector: 'app-edit',
@@ -123,6 +124,7 @@ export class EditPage {
     private route: ActivatedRoute,
     private api: ApiService,
     private titleService: TitleService,
+    private imageCompress: NgxImageCompressService,
   ) {
     this.id = this.route.snapshot.params['id'];
     if(this.id)
@@ -286,29 +288,44 @@ export class EditPage {
       this.loadProducts(null);
     }
   }
-  uploadMenuPhoto(event: Event) {
-    const element = event.currentTarget as HTMLInputElement;
-    let fileList: FileList | null = element.files;
-    if (fileList) {
+  async uploadMenuPhoto() {
       const path = this.editProduct ? (this.id + '/menu/' + this.editProduct) : (this.id + '/menu/' + self.crypto.randomUUID().substring(24));
-      const formData = new FormData();
-      formData.append('file', fileList[0]);
-      formData.append('path', path);
-      this.api.client().functions.invoke('upload-image', { method: 'POST', body: formData })
-      // this.api.client().storage.from('service_providers').upload(path, fileList[0], {
-      //   upsert: true
-      // })
-      .then((data) => {
-        console.log(data)
-        if(data.error) {
-          this.errorToast.message(data.error.message);
-        } else {
-          this.editProductImagePath = data.data.image_path;
-          this.productForm.get('thumbnail_path')?.setValue(data.data.thumbnail_path);
-          this.successToast.message("Uploaded menu photo");
+
+      this.imageCompress.uploadFile().then(async ({image, orientation}) => {
+        const fullUpload = await this.api.client().storage.from('service_providers').upload(path, this.dataURLtoBlob(image), {
+          upsert: true
+        });
+        if(fullUpload.error) {
+          this.errorToast.message(fullUpload.error.message);
+          this.editProductImagePath = null;
+          return;
         }
-      })
+        console.log(fullUpload)
+        this.editProductImagePath = fullUpload.data.path;
+
+        this.imageCompress
+            .compressFile(image, orientation, 50, 50) // 50% ratio, 50% quality
+            .then(async compressedImage => {
+                const thumbUpload = await this.api.client().storage.from('service_providers').upload(path+'_thumb', this.dataURLtoBlob(compressedImage), {
+                  upsert: true
+                });
+                if(thumbUpload.error) {
+                  this.errorToast.message(thumbUpload.error.message);
+                  return;
+                } else {
+                  this.productForm.get('thumbnail_path')?.setValue(thumbUpload.data.path);
+                  this.successToast.message("Uploaded menu photo");
+                }
+            });
+      });
+  }
+  dataURLtoBlob(dataurl: string) {
+    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/),
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
     }
+    return new Blob([u8arr], {type: mime ? mime[1] : ''});
   }
 
 
