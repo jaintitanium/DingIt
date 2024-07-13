@@ -76,7 +76,8 @@ export class EditPage {
   resetProduct() {
     this.productForm.setValue({
       display_name: '',
-      description: '',
+      description: null,
+      thumbnail_path: null,
     });
   }
   editProductImagePath: string | null = null;
