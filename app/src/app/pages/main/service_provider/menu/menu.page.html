@@ -7,6 +7,9 @@
     <table class="table table-zebra">
         <thead>
             <tr>
+                @if(showPhotoColumn()) {
+                    <th>Photo</th>
+                }
                 <th>Product</th>
                 <th>Price(s)</th>
             </tr>
@@ -14,12 +17,19 @@
         <tbody>
             @for (item of menuItems?.data; track $index) {
                 <tr>
+                    @if(showPhotoColumn()) {
+                        @if(item.thumbnail_path != null || item.image_path != null) {
+                            <td routerLink="/image/product/{{item.id}}"><app-s3-img class="max-w-32 block cursor-pointer" [src]="item.thumbnail_path ?? item.image_path" /></td>
+                        } @else {
+                            <td></td>
+                        }
+                    }
                     <td class="flex-col">
                         <div><strong>{{item.display_name}}</strong></div>
                         <div>{{item.description}}</div>
                     </td>
                     <td class="flex-col">
-                        @for (price of item.prices; track price.id) {
+                        @for (price of sortPrices(item.prices); track price.id) {
                             <div><b>{{price.name}}:</b> {{price.price}}</div>
                         }
                     </td>

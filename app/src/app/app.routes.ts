@@ -20,6 +20,7 @@ import { ServiceProviderPage } from './pages/settings/service-provider/service-p
 import { EditPage } from './pages/settings/service-provider/edit/edit.page';
 import { CreatePage } from './pages/settings/service-provider/create/create.page';
 import { MenuPage } from './pages/main/service_provider/menu/menu.page';
+import { ImageViewPage } from './pages/image/view/view.page';
 
 export const routes: Routes = [
     { path: '', canActivate: [splashGuard], children: [
@@ -33,6 +34,7 @@ export const routes: Routes = [
             { path: 'service-providers/edit/:id', component: EditPage },
             { path: '', component: MainSettingsPage, data: { title: "Settings" } },
         ] },
+        { path: 'image/:type/:id', component: ImageViewPage },
         { path: '', component: RootPage, children: [
             { path: 'test', component: TestPage },
             { path: 'messages', component: MessagesPage, canActivate: [authenticatedGuard, profileCompleteGuard] },

@@ -62,7 +62,10 @@
             <form [formGroup]="productForm">
                 @if(editProductImagePath) {
                     <app-s3-img [src]="editProductImagePath" bucket="service_providers" (click)="productImageUploader.click()"/>
-                    <button (click)="productImageUploader.click()" class="btn btn-primary m-4">Replace Menu Image</button>
+                    <div class="flex-row">
+                        <button (click)="editProductImagePath = null; productForm.get('thumbnail_path')?.setValue(null)" class="btn btn-warning m-4">Clear Menu Image</button>
+                        <button (click)="productImageUploader.click()" class="btn btn-primary m-4">Replace Menu Image</button>
+                    </div>
                 } @else {
                     <div class="skeleton w-64 h-32 mx-auto" (click)="productImageUploader.click()"></div>
                     <button (click)="productImageUploader.click()" class="btn btn-primary m-4">Add Menu Image</button>

@@ -1,0 +1,7 @@
+<div [ngStyle]="{'background-image': imageUrl ? 'url('+imageUrl+')' : ''}" class="h-screen bg-no-repeat bg-contain bg-center bg-neutral">
+    <app-back-button color="base-100" [size]="36" />
+    <div class="prose absolute bottom-8 left-8 text-shadow shadow-black">
+        <h1 class="text-base-100">{{title}}</h1>
+        <h2 class="text-base-100">{{subtitle}}</h2>
+    </div>
+</div>

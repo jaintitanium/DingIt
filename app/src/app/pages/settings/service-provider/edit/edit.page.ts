@@ -71,6 +71,7 @@ export class EditPage {
   productForm: FormGroup = new FormGroup({
     display_name: new FormControl<string>('', [Validators.required]),
     description: new FormControl<string>(''),
+    thumbnail_path: new FormControl<string>(''),
   });
   resetProduct() {
     this.productForm.setValue({
@@ -288,14 +289,21 @@ export class EditPage {
     const element = event.currentTarget as HTMLInputElement;
     let fileList: FileList | null = element.files;
     if (fileList) {
-      const path = this.editProduct ? (this.id + '/menu/' + this.editProduct + '.png') : (this.id + '/menu/' + self.crypto.randomUUID().substring(24) + '.png');
-      this.api.client().storage.from('service_providers').upload(path, fileList[0], {
-        upsert: true
-      }).then((data) => {
+      const path = this.editProduct ? (this.id + '/menu/' + this.editProduct) : (this.id + '/menu/' + self.crypto.randomUUID().substring(24));
+      const formData = new FormData();
+      formData.append('file', fileList[0]);
+      formData.append('path', path);
+      this.api.client().functions.invoke('upload-image', { method: 'POST', body: formData })
+      // this.api.client().storage.from('service_providers').upload(path, fileList[0], {
+      //   upsert: true
+      // })
+      .then((data) => {
+        console.log(data)
         if(data.error) {
           this.errorToast.message(data.error.message);
         } else {
-          this.editProductImagePath = path;
+          this.editProductImagePath = data.data.image_path;
+          this.productForm.get('thumbnail_path')?.setValue(data.data.thumbnail_path);
           this.successToast.message("Uploaded menu photo");
         }
       })

@@ -38,6 +38,7 @@ export type Database = {
           image_path: string | null
           order: number
           service_provider: string
+          thumbnail_path: string | null
         }
         Insert: {
           created_at?: string
@@ -47,6 +48,7 @@ export type Database = {
           image_path?: string | null
           order?: number
           service_provider: string
+          thumbnail_path?: string | null
         }
         Update: {
           created_at?: string
@@ -56,6 +58,7 @@ export type Database = {
           image_path?: string | null
           order?: number
           service_provider?: string
+          thumbnail_path?: string | null
         }
         Relationships: [
           {
@@ -662,6 +665,10 @@ export type Database = {
           metadata: Json
           updated_at: string
         }[]
+      }
+      operation: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       search: {
         Args: {

@@ -28,6 +28,9 @@ jobs:
       - name: Write db to Supabase Dev
         run: supabase db push
 
+      - name: Deploy edge functions to Supabase Dev
+        run: supabase functions deploy
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
