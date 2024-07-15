@@ -29,7 +29,7 @@ export class S3ImgComponent {
 
   async ngOnInit() {
     if(this.src) {
-      this.url = (await this.api.client().storage.from(this.bucket).getPublicUrl(this.src)).data.publicUrl + '?' + this.timestamp;
+      this.url = (await this.api.client().storage.from(this.bucket).getPublicUrl(this.src)).data.publicUrl + (this.timestamp ? '?' + this.timestamp : '');
     }
   }
 
