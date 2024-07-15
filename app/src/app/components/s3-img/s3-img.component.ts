@@ -14,14 +14,15 @@ import { ApiService } from '@app/services/api.service';
 export class S3ImgComponent {
   @Input('src') src?: string | null;
   @Input('bucket') bucket: string = 'service_providers';
-  @Input('timestamp') timestamp?: number;
+  @Input('bustCache') bustCache: boolean = false;
 
   public url?: string;
+  timestamp?: number;
 
   constructor(
     private api: ApiService,
   ) {
-    if(!this.timestamp) {
+    if(this.bustCache) {
       this.timestamp = Math.round((new Date().getTime()) / 100);
     }
   }
