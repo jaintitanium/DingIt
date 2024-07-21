@@ -17,19 +17,21 @@ import { DateService } from '@app/services/date.service';
     templateUrl: './detail.page.html',
     styleUrl: './detail.page.scss',
     imports: [
-        CommonModule,
-        LoadingErrorBlockComponent,
-        BackButtonComponent,
-        RatingComponent,
-        GoogleMap,
-        MapMarker,
-        RouterModule,
-    ]
+    CommonModule,
+    LoadingErrorBlockComponent,
+    BackButtonComponent,
+    RatingComponent,
+    GoogleMap,
+    MapMarker,
+    RouterModule,
+]
 })
 export class DetailPage {
   id: string;
   query;
   sp: QueryData<typeof this.query> | null = null;
+  featured?: Tables<'product'>;
+  featuredHeader?: string;
   error: PostgrestError | null = null;
   headerImageUrl: string | null = null;
 
@@ -54,7 +56,7 @@ export class DetailPage {
     this.id = route.snapshot.params['id'];
     this.query = this.api.client()
       .from('service_provider')
-      .select('*,service_provider_hours(*)')
+      .select('*,service_provider_hours(*),product:featured_product(*)')
       .eq('id', this.id)
       .single();
   }
@@ -68,6 +70,13 @@ export class DetailPage {
       if(data.header_image_path) {
         this.headerImageUrl = this.api.client().storage.from('service_providers')
           .getPublicUrl(data.header_image_path)
+          .data
+          .publicUrl;
+      }
+      this.featured = data.product as unknown as Tables<'product'>;
+      if(this.featured && this.featured.image_path) {
+        this.featuredHeader = this.api.client().storage.from('service_providers')
+          .getPublicUrl(this.featured.image_path)
           .data
           .publicUrl;
       }

@@ -263,6 +263,18 @@ export class EditPage {
       }
     }
   }
+  async setFeaturedProduct(evt: EventTarget | null) {
+    if(evt && this.id) {
+      let v: string | null = (evt as HTMLSelectElement).value;
+      if(v == "null") { v = null }
+      const {data, error} = await this.api.client().from('service_provider').update({featured_product: v}).eq('id', this.id);
+      if(error) {
+        this.errorToast.message(error.message);
+      } else {
+        this.successToast.message("Updated Featured Product");
+      }
+    }
+  }
   getNextProductOrder() {
     if(this.products?.data && this.products.data.length > 0) {
       return this.products.data

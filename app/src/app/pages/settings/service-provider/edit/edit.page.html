@@ -22,6 +22,21 @@
         </summary>
         <div class="collapse-content flex flex-col">
             <app-loading-error-block [data]="products?.data" [error]="products?.error" />
+            @if (editProduct == null && newProduct == false) {
+                <div class="flex items-center gap-4">
+                    <div>
+                        <b>Featured Product</b>
+                    </div>
+                    <div>
+                        <select class="select select-bordered w-full max-w-xs" (change)="setFeaturedProduct($event.target)">
+                            <option [value]="null" [selected]="sp?.data?.featured_product == null ? 'selected' : ''">None</option>
+                            @for (item of products?.data; track $index) {
+                                <option [value]="item.id" [selected]="sp?.data?.featured_product == item.id ? 'selected' : ''">{{ item.display_name }}</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            }
             @for (item of products?.data; track $index) {
                 @if(item.id == editProduct) {
                     <ng-container *ngTemplateOutlet="productInput" />

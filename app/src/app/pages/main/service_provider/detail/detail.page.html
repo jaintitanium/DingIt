@@ -8,16 +8,34 @@
             <app-rating [value]="3.5" />
         </div>
     </div>
-    <div>
-        <h3 class="text-md text-shadow shadow-white my-2">Featured</h3>
-    </div>
     <div class="bg-neutral rounded-t-lg">
-        <div class="p-6 text-base-100">
-            <h2 class="mt-0 text-base-100">Most Popular</h2>
-            <button class="btn btn-primary btn-sm" routerLink="menu"><span class="material-symbols-outlined">
-                menu_book
-                </span> See Full Menu</button>
-        </div>
+        @if(featured) {
+            <div class="p-6 text-base-100">
+                <h2 class="m-0 text-base-100">Most Popular</h2>
+                <div class="card bg-base-100 w-96 max-w-fit shadow-xl m-2 cursor-pointer" routerLink="menu">
+                    <figure class="m-0">
+                    <img
+                        [src]="this.featuredHeader"
+                        alt="Shoes" />
+                    </figure>
+                    <div class="card-body">
+                        <h2 class="card-title not-prose text-neutral">
+                            {{ featured.display_name }}
+                        </h2>
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-sm m-2" routerLink="menu"><span class="material-symbols-outlined">
+                    menu_book
+                    </span> See Full Menu</button>
+            </div>
+        } @else {
+            <div class="p-6 text-base-100">
+                <h2 class="mt-0 text-base-100">Menu</h2>
+                <button class="btn btn-primary btn-sm" routerLink="menu"><span class="material-symbols-outlined">
+                    menu_book
+                    </span> See Full Menu</button>
+            </div>
+        }
     </div>
     <div>
         <h3 class="text-md text-shadow shadow-white my-2">Location</h3>
