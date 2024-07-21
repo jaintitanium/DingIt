@@ -234,6 +234,7 @@ export type Database = {
           city: string | null
           created_at: string
           display_name: string
+          featured_product: string | null
           header_image_path: string | null
           id: string
           lat: number | null
@@ -253,6 +254,7 @@ export type Database = {
           city?: string | null
           created_at?: string
           display_name: string
+          featured_product?: string | null
           header_image_path?: string | null
           id?: string
           lat?: number | null
@@ -272,6 +274,7 @@ export type Database = {
           city?: string | null
           created_at?: string
           display_name?: string
+          featured_product?: string | null
           header_image_path?: string | null
           id?: string
           lat?: number | null
@@ -286,6 +289,13 @@ export type Database = {
           website?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "service_provider_featured_product_fkey"
+            columns: ["featured_product"]
+            isOneToOne: false
+            referencedRelation: "product"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "service_provider_owner_fkey"
             columns: ["owner"]

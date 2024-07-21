@@ -49,7 +49,7 @@ jobs:
 
       - name: Generate Types
         working-directory: ./app
-        run: npx supabase gen types typescript --linked --schema public,storage > src/types/supabase.ts
+        run: npx supabase gen types --lang=typescript --linked --schema public,storage > src/types/supabase.ts
 
       - name: Build App
         working-directory: ./app

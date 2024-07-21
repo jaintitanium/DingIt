@@ -8,7 +8,7 @@
     "build-dev": "ng build --output-hashing=all --configuration=development",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "update-types": "npx supabase gen types typescript --local --schema public,storage > src/types/supabase.ts"
+    "update-types": "npx supabase gen types --lang=typescript --local --schema public,storage > src/types/supabase.ts"
   },
   "private": true,
   "dependencies": {
