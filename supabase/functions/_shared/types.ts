@@ -337,42 +337,35 @@ export type Database = {
           },
         ]
       }
-      service_provider_user: {
+      service_provider_member: {
         Row: {
           id: string
-          service_provider: string
-          user_id: string
+          service_member_id: string
+          service_provider_id: string
         }
         Insert: {
           id?: string
-          service_provider: string
-          user_id: string
+          service_member_id: string
+          service_provider_id: string
         }
         Update: {
           id?: string
-          service_provider?: string
-          user_id?: string
+          service_member_id?: string
+          service_provider_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "service_provider_user_id_fkey"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "user"
+            foreignKeyName: "service_provider_member_service_member_id_fkey"
+            columns: ["service_member_id"]
+            isOneToOne: false
+            referencedRelation: "service_member_user"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "service_provider_user_service_provider_fkey"
-            columns: ["service_provider"]
+            foreignKeyName: "service_provider_member_service_provider_id_fkey"
+            columns: ["service_provider_id"]
             isOneToOne: false
             referencedRelation: "service_provider"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "service_provider_user_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "user"
             referencedColumns: ["id"]
           },
         ]

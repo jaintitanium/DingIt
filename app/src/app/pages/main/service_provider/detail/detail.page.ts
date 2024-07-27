@@ -10,6 +10,7 @@ import { BackButtonComponent } from "@components/back-button/back-button.compone
 import { RatingComponent } from "@components/rating/rating.component";
 import { GoogleMap, MapMarker } from '@angular/google-maps';
 import { DateService } from '@app/services/date.service';
+import { AvatarComponent } from "../../../../components/avatar/avatar.component";
 
 @Component({
     selector: 'app-detail',
@@ -24,6 +25,7 @@ import { DateService } from '@app/services/date.service';
     GoogleMap,
     MapMarker,
     RouterModule,
+    AvatarComponent
 ]
 })
 export class DetailPage {
@@ -56,7 +58,7 @@ export class DetailPage {
     this.id = route.snapshot.params['id'];
     this.query = this.api.client()
       .from('service_provider')
-      .select('*,service_provider_hours(*),product:featured_product(*)')
+      .select('*,service_provider_hours(*),product:featured_product(*),team:service_provider_member(*,service_member_user(user(*)))')
       .eq('id', this.id)
       .single();
   }

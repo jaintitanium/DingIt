@@ -38,6 +38,7 @@
       }
 
       // Look for existing user
+      let userCreated = false;
       let currentId: string | null | undefined = (await supabaseAdminClient.rpc('get_user_by_email', {email_address: input.email})).data;
       if(currentId == null) {
         // Create User
@@ -50,6 +51,7 @@
           console.log(service_member.error)
         }
         currentId = service_member.data?.user?.email;
+        userCreated = true;
       }
       if(currentId == null || currentId == undefined) {
         throw({message: 'Could not find or create User'});
@@ -61,17 +63,25 @@
         await supabaseAdminClient.from('user').insert({ id: currentId, name: input.display_name});
       }
 
+      const currentServiceUser = (await supabaseAdminClient.from('service_member_user').select().eq('id', currentId).single()).data;
+      if(currentServiceUser == null) {
+        await supabaseAdminClient.from('service_member_user').insert({ id: currentId });
+      }
+
       // Create service_member_user entry
-      let result = await userClient.from('service_provider_user').insert({
-        user_id: currentId,
-        service_provider: input.provider_id
+      let result = await userClient.from('service_provider_member').insert({
+        service_member_id: currentId,
+        service_provider_id: input.provider_id
       });
       console.log(result)
       if(result.error) {
         throw result.error;
       }
 
-      // Send email
+      if(!userCreated) {
+        // Need to send Email if user already existed
+        // TODO: Send email
+      }
     
       return new Response(JSON.stringify(data), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

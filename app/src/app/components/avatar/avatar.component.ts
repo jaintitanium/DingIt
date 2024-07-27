@@ -12,7 +12,7 @@ import { ApiService } from '@app/services/api.service';
   styleUrl: './avatar.component.scss'
 })
 export class AvatarComponent {
-  @Input('path') path: string | null = null;
+  @Input('path') path: string | null | undefined = null;
   @Input('force') force: boolean = false;
   @Input('size') size: 'lg' | 'md' | 'sm' = 'lg';
   @Input('shape') shape: 'circle' | 'square' = 'circle';

@@ -168,8 +168,8 @@
             <app-loading-error-block [data]="team?.data" [error]="team?.error" />
             @for (item of team?.data; track $index) {
                 <div class="flex items-center gap-2">
-                    <app-avatar *ngIf="item.user" [path]="item.user.profile_path" size="sm"/>
-                    <div class="flex-grow text-left">{{ item.user?.name }}</div>
+                    <app-avatar [path]="item.service_member_user?.user?.profile_path" size="sm"/>
+                    <div class="flex-grow text-left">{{ item.service_member_user?.user?.name }}</div>
                     <div>
                         <button *ngIf="!newHour" class="btn btn-square btn-sm btn-outline m-2" (click)="deleteServiceMember(item.id)">
                             <span class="material-symbols-outlined">delete</span>
