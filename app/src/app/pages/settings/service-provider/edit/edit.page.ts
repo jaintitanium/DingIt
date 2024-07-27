@@ -15,6 +15,7 @@ import { TextFieldComponent } from "@app/components/forms/text-field/text-field.
 import { SelectFieldComponent } from "@app/components/forms/select-field/select-field.component";
 import { CdkDrag, CdkDragDrop, CdkDropList, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgxImageCompressService } from 'ngx-image-compress';
+import { AvatarComponent } from "../../../../components/avatar/avatar.component";
 
 @Component({
     selector: 'app-edit',
@@ -22,19 +23,20 @@ import { NgxImageCompressService } from 'ngx-image-compress';
     templateUrl: './edit.page.html',
     styleUrl: './edit.page.scss',
     imports: [
-        LoadingErrorBlockComponent,
-        S3ImgComponent,
-        ToastComponent,
-        ServiceProviderEntryComponent,
-        ReactiveFormsModule,
-        CommonModule,
-        TextFieldComponent,
-        SelectFieldComponent,
-        DragDropModule,
-        CdkDropList,
-        CdkDrag,
-        CurrencyPipe,
-    ]
+    LoadingErrorBlockComponent,
+    S3ImgComponent,
+    ToastComponent,
+    ServiceProviderEntryComponent,
+    ReactiveFormsModule,
+    CommonModule,
+    TextFieldComponent,
+    SelectFieldComponent,
+    DragDropModule,
+    CdkDropList,
+    CdkDrag,
+    CurrencyPipe,
+    AvatarComponent
+]
 })
 export class EditPage {
   @ViewChild('errorToast') errorToast!: ToastComponent;
@@ -51,6 +53,10 @@ export class EditPage {
   public sp?: { data: Tables<'service_provider'> | null, error: PostgrestError | null };
   public hours?: { data: Tables<'service_provider_hours'>[] | null, error: PostgrestError | null };
   public products?: QueryResult<typeof this.productQuery>; //{ data: Tables<'product'>[] | null , error: PostgrestError | null };
+  serviceMemberQuery = this.api.client().from('service_provider_user')
+    .select('*,user(*)')
+    .order('user(name)');
+  public team?: QueryResult<typeof this.serviceMemberQuery>;
 
   // General Editing State
   form: FormGroup = new FormGroup({
@@ -120,6 +126,21 @@ export class EditPage {
     });
   }
 
+  // Team Editing State
+  newServiceMember: boolean = false;
+  serviceMemberForm: FormGroup = new FormGroup({
+    email: new FormControl<string>('', [Validators.required]),
+    display_name: new FormControl<string>('', [Validators.required]),
+    provider_id: new FormControl<string>('', [Validators.required]),
+  });
+  resetServiceMember() {
+    this.serviceMemberForm.setValue({
+      email: null,
+      display_name: null,
+      provider_id: this.id,
+    });
+  }
+
   constructor(
     private route: ActivatedRoute,
     private api: ApiService,
@@ -127,8 +148,10 @@ export class EditPage {
     private imageCompress: NgxImageCompressService,
   ) {
     this.id = this.route.snapshot.params['id'];
-    if(this.id)
+    if(this.id) {
       this.productQuery.eq('service_provider', this.id);
+      this.serviceMemberQuery.eq('service_provider', this.id);
+    }
   }
 
   async ngOnInit() {
@@ -136,6 +159,7 @@ export class EditPage {
       this.loadBase(this.id);
       this.loadHours(this.id);
       this.loadProducts(this.id);
+      this.loadTeam(this.id);
     } else {
 
     }
@@ -509,6 +533,53 @@ export class EditPage {
         this.editHour = null;
       }
     }
+  }
+
+  // Team
+  async loadTeam(id: string) {
+    this.team = await this.api.client().from('service_provider_user')
+      .select('*,user(*)')
+      .eq('service_provider', id)
+      .order('user(name)');
+  }
+  async deleteServiceMember(id: string) {
+    const {data, error} = await this.api.client().from('service_provider_user')
+      .delete()
+      .eq('id', id);
+    if(error) {
+      this.errorToast.message(error.message);
+    } else {
+      this.successToast.message("Deleted Team Member");
+    }
+    if(this.id) {
+      this.loadTeam(this.id)
+    }
+  }
+  startNewServiceMember() {
+    this.resetServiceMember();
+    this.newServiceMember = true;
+  }
+  cancelNewServiceMember() {
+    this.newServiceMember = false;
+  }
+  saveNewServiceMember() {
+    if(this.id) {
+      let id = this.id;
+      let payload = this.serviceMemberForm.value;
+      payload['service_provider'] = id;
+      this.api.client().functions.invoke('invite-service-member', {
+        body: payload
+      }).then((result) => {
+        if(result.error) {
+          this.errorToast.message(result.error.message)
+        } else {
+          this.successToast.message("Invited Team Member");
+          this.loadTeam(id)
+          this.newServiceMember = false;
+        }
+      });
+    }
+
   }
   
   daysOfWeekSelect(): {value: number | string, label: string}[] {

@@ -1,16 +1,21 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { ApiService } from '@app/services/api.service';
 
 @Component({
   selector: 'app-avatar',
   standalone: true,
-  imports: [],
+  imports: [
+    CommonModule
+  ],
   templateUrl: './avatar.component.html',
   styleUrl: './avatar.component.scss'
 })
 export class AvatarComponent {
   @Input('path') path: string | null = null;
   @Input('force') force: boolean = false;
+  @Input('size') size: 'lg' | 'md' | 'sm' = 'lg';
+  @Input('shape') shape: 'circle' | 'square' = 'circle';
 
   constructor(
     private api: ApiService

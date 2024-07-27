@@ -160,6 +160,50 @@
             </form>
         </ng-template>
     </details>
+    <details class="collapse collapse-arrow border border-base-300">
+        <summary class="collapse-title text-xl font-bold">
+          Team
+        </summary>
+        <div class="collapse-content flex flex-col">
+            <app-loading-error-block [data]="team?.data" [error]="team?.error" />
+            @for (item of team?.data; track $index) {
+                <div class="flex items-center gap-2">
+                    <app-avatar *ngIf="item.user" [path]="item.user.profile_path" size="sm"/>
+                    <div class="flex-grow text-left">{{ item.user?.name }}</div>
+                    <div>
+                        <button *ngIf="!newHour" class="btn btn-square btn-sm btn-outline m-2" (click)="deleteServiceMember(item.id)">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    </div>
+                </div>
+            }
+            @if(newServiceMember) {
+                <ng-container *ngTemplateOutlet="serviceMemberInput" />
+                <div class="flex gap-4 my-2">
+                    <button (click)="cancelNewServiceMember()" class="flex-auto btn">Cancel</button>
+                    <button (click)="saveNewServiceMember()" class="flex-auto btn btn-primary">Invite</button>
+                </div>
+            } @else if(editHour == null) {
+                <button (click)="startNewServiceMember()" class="btn btn-primary">Invite New Team Member</button>
+            }
+        </div>
+        <ng-template #serviceMemberInput>
+            <form [formGroup]="serviceMemberForm">
+                <app-text-field 
+                    [form]="serviceMemberForm"
+                    name="email"
+                    type="email"
+                    label="Email Address"
+                />
+                <app-text-field 
+                    [form]="serviceMemberForm"
+                    name="display_name"
+                    type="text"
+                    label="Team Member Name"
+                />
+            </form>
+        </ng-template>
+    </details>
 </div>
 
 <app-toast #successToast type="success" />
