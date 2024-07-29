@@ -53,9 +53,10 @@ export class EditPage {
   public sp?: { data: Tables<'service_provider'> | null, error: PostgrestError | null };
   public hours?: { data: Tables<'service_provider_hours'>[] | null, error: PostgrestError | null };
   public products?: QueryResult<typeof this.productQuery>; //{ data: Tables<'product'>[] | null , error: PostgrestError | null };
+  
   serviceMemberQuery = this.api.client().from('service_provider_member')
     .select('*,service_member_user(user(*))')
-    .order('user(name)');
+    .order('service_member_user(user(name))');
   public team?: QueryResult<typeof this.serviceMemberQuery>;
 
   // General Editing State
@@ -539,8 +540,8 @@ export class EditPage {
   async loadTeam(id: string) {
     this.team = await this.api.client().from('service_provider_member')
       .select('*,service_member_user(user(*))')
-      .eq('service_provider', id)
-      .order('user(name)');
+      .eq('service_provider_id', id)
+      .order('name', {referencedTable: 'service_member_user.user'});
   }
   async deleteServiceMember(id: string) {
     const {data, error} = await this.api.client().from('service_provider_member')

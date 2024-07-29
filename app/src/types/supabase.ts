@@ -105,23 +105,26 @@ export type Database = {
       review: {
         Row: {
           created_at: string
+          description: string
           id: string
-          overall_rating: number
           owner: string
+          rating: number
           service_provider: string
         }
         Insert: {
           created_at?: string
+          description: string
           id?: string
-          overall_rating: number
           owner: string
+          rating: number
           service_provider: string
         }
         Update: {
           created_at?: string
+          description?: string
           id?: string
-          overall_rating?: number
           owner?: string
+          rating?: number
           service_provider?: string
         }
         Relationships: [
@@ -143,18 +146,24 @@ export type Database = {
       }
       review_product: {
         Row: {
+          description: string
           id: string
           product: string
+          rating: number
           review: string
         }
         Insert: {
+          description: string
           id?: string
           product: string
+          rating: number
           review: string
         }
         Update: {
+          description?: string
           id?: string
           product?: string
+          rating?: number
           review?: string
         }
         Relationships: [
@@ -176,17 +185,23 @@ export type Database = {
       }
       review_service_member: {
         Row: {
+          description: string | null
           id: string
+          rating: number
           review: string
           service_member: string
         }
         Insert: {
+          description?: string | null
           id?: string
+          rating: number
           review: string
           service_member: string
         }
         Update: {
+          description?: string | null
           id?: string
+          rating?: number
           review?: string
           service_member?: string
         }
@@ -202,7 +217,7 @@ export type Database = {
             foreignKeyName: "review_service_member_service_member_fkey"
             columns: ["service_member"]
             isOneToOne: false
-            referencedRelation: "service_member_user"
+            referencedRelation: "service_provider_member"
             referencedColumns: ["id"]
           },
         ]

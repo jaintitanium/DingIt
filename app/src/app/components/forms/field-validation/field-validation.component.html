@@ -1,0 +1,13 @@
+<div class="label">
+    <span class="label-text">
+        <ng-container *ngIf="form.controls[name] as ctl">
+            <div *ngIf="ctl.invalid && (ctl.dirty || ctl.touched)" class="text-error">
+                <ng-container *ngFor="let v of validation">
+                    <div *ngIf="ctl.errors?.[v.name]">
+                        {{ v.message }}
+                    </div>
+                </ng-container>
+            </div>
+        </ng-container>
+    </span>
+</div>

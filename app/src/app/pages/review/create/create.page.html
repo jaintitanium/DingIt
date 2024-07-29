@@ -1,0 +1,135 @@
+<div class="text-center prose mx-auto justify-items-center items-start pt-8 px-10">
+    <app-loading-error-block [data]="sp" [error]="error" />
+    @if(sp) {
+        <h1>{{ sp.display_name }}</h1>
+        <p>Be sure to include only your review of purchased items and/or services.</p>
+        <form [formGroup]="generalForm" class="flex flex-col gap-2 pb-6 my-2 w-full max-w-xs mx-auto">
+            <app-rating 
+                [formGroup]="generalForm"
+                formControlName="rating"
+                size="lg"
+            />
+            <app-field-validation 
+                [form]="generalForm"
+                name="rating"
+                [validation]="[
+                    { name: 'required', message: 'Rating is required'}]" 
+            />
+            <app-text-field
+                name="description"
+                [form]="generalForm"
+                label="Comments"
+                type="textarea"
+                placeholder="The atmosphere was pleasant..."
+                [validation]="[
+                    { name: 'required', message: 'Comments are required'}]" 
+            />
+        </form>
+        @if(type == 'member') {
+            <form [formGroup]="memberForm" class="flex flex-col gap-2 pb-6 my-2 w-full max-w-xs mx-auto">
+                <h2>Employee</h2>
+                <label class="form-control w-full max-w-xs">
+                    <div class="label">
+                        <span class="label-text"><strong>Employee</strong></span>
+                    </div>
+                    <input id="name" type="text" class="input input-block" disabled="disabled"
+                        [value]="sp.service_provider_member[0].service_member_user?.user?.name" />
+                </label>
+                <app-rating 
+                    [formGroup]="memberForm"
+                    formControlName="rating"
+                    size="md"
+                />
+                <app-field-validation 
+                    [form]="memberForm"
+                    name="rating"
+                    [validation]="[
+                        { name: 'required', message: 'Rating is required'}]" 
+                />
+                <app-text-field
+                    name="description"
+                    [form]="memberForm"
+                    label="Employee Comments"
+                    type="textarea"
+                    placeholder="Great care was given..."
+                    [validation]="[
+                        { name: 'required', message: 'Comments are required'}]" 
+                />
+            </form>
+        } @else {
+            <div class="collapse-content flex flex-col">
+                @for (rating of memberRatings; track $index) {
+                    @if(rating.id == editMember) {
+                        <ng-container *ngTemplateOutlet="productInput" />
+                        <div class="flex gap-4 my-2">
+                            <button (click)="cancelEditMember()" class="flex-auto btn">Cancel</button>
+                            <button (click)="saveEditMember()" class="flex-auto btn btn-primary">Save</button>
+                        </div>
+                    } @else {
+                        <div class="flex items-center">
+                            <div class="flex-grow truncate text-left"><b>{{ member(rating.id)?.name }}</b> - {{ rating.rating }}</div>
+                            
+                            @if(!editMember && !newMember) {
+                                <button class="btn btn-square btn-sm btn-outline m-1" (click)="startEditMember(rating.id)">
+                                    <span class="material-symbols-outlined">edit</span>
+                                </button>
+                                <button class="btn btn-square btn-sm btn-outline m-1" (click)="deleteMember(rating.id)">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            }
+                        </div>
+                    }
+                }
+                @if(newMember) {
+                    <ng-container *ngTemplateOutlet="memberInput" />
+                    <div class="flex gap-4 my-2">
+                        <button (click)="cancelNewMember()" class="flex-auto btn">Cancel</button>
+                        <button (click)="saveNewMember()" class="flex-auto btn btn-primary">Save Review</button>
+                    </div>
+                } @else if(editMember == null) {
+                    <div class="flex gap-4 my-2">
+                        <button class="flex-auto btn btn-primary" (click)="startNewMember()">Add Employee Review</button>
+                    </div>
+                }
+            </div>
+
+            <ng-template #memberInput>
+                <form [formGroup]="memberForm" class="flex flex-col gap-2 pb-6 my-2 w-full max-w-xs mx-auto">
+                    <h2>Employees</h2>
+                    <app-select-field 
+                        label="Employee"
+                        name="service_member"
+                        [form]="memberForm"
+                        [options]="membersForSelect()"
+                    />
+                    <app-rating 
+                        [formGroup]="memberForm"
+                        formControlName="rating"
+                        size="md"
+                    />
+                    <app-field-validation 
+                        [form]="memberForm"
+                        name="rating"
+                        [validation]="[
+                            { name: 'required', message: 'Rating is required'}]" 
+                    />
+                    <app-text-field
+                        name="description"
+                        [form]="memberForm"
+                        label="Comments"
+                        type="textarea"
+                        placeholder="Great care was given..."
+                        [validation]="[
+                            { name: 'required', message: 'Comments are required'}]" 
+                    />
+                </form>
+            </ng-template>
+            
+        }
+        <div class="flex-col w-full m-4">
+            <div class="rounded bg-base-200">
+                <h3></h3>
+            </div>
+        </div>
+    }
+</div>

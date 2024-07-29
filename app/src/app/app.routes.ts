@@ -21,6 +21,7 @@ import { EditPage } from './pages/settings/service-provider/edit/edit.page';
 import { CreatePage } from './pages/settings/service-provider/create/create.page';
 import { MenuPage } from './pages/main/service_provider/menu/menu.page';
 import { ImageViewPage } from './pages/image/view/view.page';
+import { CreateReviewPage } from './pages/review/create/create.page';
 
 export const routes: Routes = [
     { path: '', canActivate: [splashGuard], children: [
@@ -45,7 +46,8 @@ export const routes: Routes = [
                 { path: ':id/menu', component: MenuPage }
             ]},
             { path: '', component: HomePage }
-        ]}
+        ]},
+        { path: 'review/create/:type/:id', component: CreateReviewPage, canActivate: [authenticatedGuard, profileCompleteGuard] }
     ]},
     { path: 'loading', component: SplashScreenComponent }
 ];
