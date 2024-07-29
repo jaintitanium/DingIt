@@ -50,7 +50,7 @@
           supabaseAdminClient.auth.getUserIdentities()
           console.log(service_member.error)
         }
-        currentId = service_member.data?.user?.email;
+        currentId = service_member.data?.user?.id;
         userCreated = true;
       }
       if(currentId == null || currentId == undefined) {
