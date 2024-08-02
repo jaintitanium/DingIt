@@ -39,6 +39,7 @@ export type Database = {
           order: number
           service_provider: string
           thumbnail_path: string | null
+          product_rating: number | null
         }
         Insert: {
           created_at?: string
@@ -132,7 +133,7 @@ export type Database = {
             foreignKeyName: "review_owner_fkey"
             columns: ["owner"]
             isOneToOne: false
-            referencedRelation: "customer_user"
+            referencedRelation: "user"
             referencedColumns: ["id"]
           },
           {
@@ -262,6 +263,7 @@ export type Database = {
           sub_title: string | null
           timezone: string | null
           website: string | null
+          provider_rating: number | null
         }
         Insert: {
           address_1?: string | null
@@ -357,6 +359,7 @@ export type Database = {
           id: string
           service_member_id: string
           service_provider_id: string
+          member_rating: number | null
         }
         Insert: {
           id?: string
@@ -439,6 +442,24 @@ export type Database = {
           email_address: string
         }
         Returns: string
+      }
+      member_rating: {
+        Args: {
+          "": unknown
+        }
+        Returns: number
+      }
+      product_rating: {
+        Args: {
+          "": unknown
+        }
+        Returns: number
+      }
+      provider_rating: {
+        Args: {
+          "": unknown
+        }
+        Returns: number
       }
     }
     Enums: {

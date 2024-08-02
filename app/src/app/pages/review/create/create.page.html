@@ -3,12 +3,13 @@
     @if(sp) {
         <h1>{{ sp.display_name }}</h1>
         <p>Be sure to include only your review of purchased items and/or services.</p>
-        <form [formGroup]="generalForm" class="flex flex-col gap-2 pb-6 my-2 w-full max-w-xs mx-auto">
-            <app-rating 
+        <form [formGroup]="generalForm" class="flex flex-col gap-2 pb-2 my-2 w-full max-w-xs mx-auto">
+            <app-rating class="mb-0 pb-0"
                 [formGroup]="generalForm"
                 formControlName="rating"
                 size="lg"
             />
+            <div *ngIf="generalForm" class="text-primary text-sm mt-0 pt-0">{{ ratingText(generalForm.get('rating')?.value ?? 0) }}</div>
             <app-field-validation 
                 [form]="generalForm"
                 name="rating"
@@ -26,8 +27,8 @@
             />
         </form>
         @if(type == 'member') {
-            <form [formGroup]="memberForm" class="flex flex-col gap-2 pb-6 my-2 w-full max-w-xs mx-auto">
-                <h2>Employee</h2>
+            <form [formGroup]="memberForm" class="flex flex-col gap-2 pb-2 my-2 w-full max-w-xs mx-auto">
+                <h3>Employee</h3>
                 <label class="form-control w-full max-w-xs">
                     <div class="label">
                         <span class="label-text"><strong>Employee</strong></span>
@@ -57,17 +58,18 @@
                 />
             </form>
         } @else {
-            <div class="collapse-content flex flex-col">
+            <div class="flex flex-col">
+                <h3>Employees</h3>
                 @for (rating of memberRatings; track $index) {
                     @if(rating.id == editMember) {
-                        <ng-container *ngTemplateOutlet="productInput" />
+                        <ng-container *ngTemplateOutlet="memberInput" />
                         <div class="flex gap-4 my-2">
                             <button (click)="cancelEditMember()" class="flex-auto btn">Cancel</button>
                             <button (click)="saveEditMember()" class="flex-auto btn btn-primary">Save</button>
                         </div>
                     } @else {
                         <div class="flex items-center">
-                            <div class="flex-grow truncate text-left"><b>{{ member(rating.id)?.name }}</b> - {{ rating.rating }}</div>
+                            <div class="flex-grow truncate text-left"><app-avatar size="xs" [path]="member(rating.id)?.user?.profile_path" class="m-2" /><b>{{ member(rating.id)?.user?.name }}</b> ({{ rating.rating }}) - {{ rating.description }}</div>
                             
                             @if(!editMember && !newMember) {
                                 <button class="btn btn-square btn-sm btn-outline m-1" (click)="startEditMember(rating.id)">
@@ -86,16 +88,15 @@
                         <button (click)="cancelNewMember()" class="flex-auto btn">Cancel</button>
                         <button (click)="saveNewMember()" class="flex-auto btn btn-primary">Save Review</button>
                     </div>
-                } @else if(editMember == null) {
-                    <div class="flex gap-4 my-2">
-                        <button class="flex-auto btn btn-primary" (click)="startNewMember()">Add Employee Review</button>
+                } @else if(editMember == null && membersForSelect().length > 0) {
+                    <div class="flex-col gap-4 my-2">
+                        <button class="btn btn-wide btn-primary" (click)="startNewMember()">Add Employee Review</button>
                     </div>
                 }
             </div>
 
             <ng-template #memberInput>
-                <form [formGroup]="memberForm" class="flex flex-col gap-2 pb-6 my-2 w-full max-w-xs mx-auto">
-                    <h2>Employees</h2>
+                <form [formGroup]="memberForm" class="flex flex-col gap-2 pb-2 my-2 w-full max-w-xs mx-auto">
                     <app-select-field 
                         label="Employee"
                         name="service_member"
@@ -126,10 +127,87 @@
             </ng-template>
             
         }
-        <div class="flex-col w-full m-4">
-            <div class="rounded bg-base-200">
-                <h3></h3>
-            </div>
+        <div class="flex flex-col">
+            <h3>Products/Services</h3>
+            @for (rating of productRatings; track $index) {
+                @if(rating.id == editProduct) {
+                    <ng-container *ngTemplateOutlet="productInput" />
+                    <div class="flex gap-4 my-2">
+                        <button (click)="cancelEditProduct()" class="flex-auto btn">Cancel</button>
+                        <button (click)="saveEditProduct()" class="flex-auto btn btn-primary">Save</button>
+                    </div>
+                } @else {
+                    <div class="flex items-center">
+                        <div class="flex-grow truncate text-left">
+                            <!-- <span>
+                                <div class="avatar m-2">
+                                    <div class="w-8 rounded-xl not-prose">
+                                        <app-s3-img bucket="service_providers" [src]="product(rating.id)?.thumbnail_path" />
+                                    </div>
+                                </div>
+                            </span> -->
+                            <b>{{ product(rating.id)?.display_name }}</b> ({{ rating.rating }}) - {{ rating.description }}</div>
+                        
+                        @if(!editProduct && !newProduct) {
+                            <button class="btn btn-square btn-sm btn-outline m-1" (click)="startEditProduct(rating.id)">
+                                <span class="material-symbols-outlined">edit</span>
+                            </button>
+                            <button class="btn btn-square btn-sm btn-outline m-1" (click)="deleteProduct(rating.id)">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
+                        }
+                    </div>
+                }
+            }
+            @if(newProduct) {
+                <ng-container *ngTemplateOutlet="productInput" />
+                <div class="flex gap-4 my-2">
+                    <button (click)="cancelNewProduct()" class="flex-auto btn">Cancel</button>
+                    <button (click)="saveNewProduct()" class="flex-auto btn btn-primary">Save Review</button>
+                </div>
+            } @else if(editProduct == null && productsForSelect().length > 0) {
+                <div class="flex-col gap-4 my-2">
+                    <button class="btn btn-wide btn-primary" (click)="startNewProduct()">Add Product/Service Review</button>
+                </div>
+            }
+        </div>
+
+        <ng-template #productInput>
+            <form [formGroup]="productForm" class="flex flex-col gap-2 pb-2 my-2 w-full max-w-xs mx-auto">
+                <app-select-field 
+                    label="Product/Service"
+                    name="product"
+                    [form]="productForm"
+                    [options]="productsForSelect()"
+                />
+                <app-rating 
+                    [formGroup]="productForm"
+                    formControlName="rating"
+                    size="md"
+                />
+                <app-field-validation 
+                    [form]="productForm"
+                    name="rating"
+                    [validation]="[
+                        { name: 'required', message: 'Rating is required'}]" 
+                />
+                <app-text-field
+                    name="description"
+                    [form]="productForm"
+                    label="Comments"
+                    type="textarea"
+                    placeholder="So tasty..."
+                    [validation]="[
+                        { name: 'required', message: 'Comments are required'}]" 
+                />
+            </form>
+        </ng-template>
+        <div class="flex-col w-full pb-4">
+            <h3>Finalize</h3>
+            <button class="btn btn-block btn-secondary" (click)="saveReview()"
+                [disabled]="!generalForm.valid || editMember != null || newMember || editProduct != null || newProduct"
+            >Post Review</button>
         </div>
     }
 </div>
+<app-toast #errorToast type="error" />

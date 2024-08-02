@@ -14,7 +14,7 @@ import { ApiService } from '@app/services/api.service';
 export class AvatarComponent {
   @Input('path') path: string | null | undefined = null;
   @Input('force') force: boolean = false;
-  @Input('size') size: 'lg' | 'md' | 'sm' = 'lg';
+  @Input('size') size: 'lg' | 'md' | 'sm' | 'xs' = 'lg';
   @Input('shape') shape: 'circle' | 'square' = 'circle';
 
   constructor(

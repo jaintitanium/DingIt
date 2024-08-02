@@ -58,7 +58,11 @@ export class DetailPage {
     this.id = route.snapshot.params['id'];
     this.query = this.api.client()
       .from('service_provider')
-      .select('*,service_provider_hours(*),product:featured_product(*),team:service_provider_member(*,service_member_user(user(*)))')
+      .select('*,\
+        service_provider_hours(*),\
+        product:featured_product(*),\
+        team:service_provider_member(*,member_rating,service_member_user(user(*))),\
+        provider_rating')
       .eq('id', this.id)
       .single();
   }
@@ -131,6 +135,12 @@ export class DetailPage {
   public getScreenWidth(): number {
     return Math.min(window.innerWidth, 637);
   };
+
+  sortedTeam() {
+    return this.sp?.team.sort((a, b) => {
+      return (a.member_rating ?? 0) - (b.member_rating ?? 0);
+    }).slice(0,3);
+  }
 
   navigate(lat: number, lng: number) {
     var mapUrl = '?q=' + lat + ',' + lng;
