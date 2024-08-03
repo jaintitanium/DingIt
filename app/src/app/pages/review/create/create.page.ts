@@ -229,6 +229,14 @@ export class CreateReviewPage {
         return;
       }
 
+      if(this.type == 'member') {
+        this.memberRatings.push({
+          id: this.id,
+          description: this.memberForm.get('description')?.value ?? '',
+          rating: this.memberForm.get('rating')?.value ?? 0
+        });
+      }
+
       if(base.data && this.memberRatings.length > 0) {
         const memberReviews = await this.api.client().from('review_service_member').insert(
           this.memberRatings.map((x) => {
@@ -262,8 +270,11 @@ export class CreateReviewPage {
           return;
         }
       }
-
-      this.router.navigate(['service-provider', this.sp.id]);
+      if(this.type == 'member') {
+        this.router.navigate(['service-member', this.id]);
+      } else {
+        this.router.navigate(['service-provider', this.id]);
+      }
     }
   }
 

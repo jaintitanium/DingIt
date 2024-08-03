@@ -16,7 +16,11 @@ module.exports = {
       },
     },
     borderRadius: {
-      'lg': '4rem',
+      'sm': '0.125rem',
+      'md': '0.375rem',
+      'lg': '0.5rem',
+      'xl': '0.75rem',
+      '4xl': '4rem'
     },
     fontFamily: {
       'sans': ['Raleway', 'Helvetica', 'Arial', 'sans-serif'],

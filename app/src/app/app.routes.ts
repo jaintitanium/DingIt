@@ -12,7 +12,7 @@ import { authenticatedGuard } from './guards/authenticated.guard';
 import { SettingsPage } from './pages/settings/settings.page';
 import { AccountSettingsPage } from './pages/settings/account/account.page';
 import { MainSettingsPage } from './pages/settings/main/main.page';
-import { DetailPage } from './pages/main/service_provider/detail/detail.page';
+import { ServiceProviderDetailPage } from './pages/main/service_provider/detail/detail.page';
 import { HomePage } from './pages/main/home/home.page';
 import { SplashScreenComponent } from './components/splash-screen/splash-screen.component';
 import { splashGuard } from './guards/splash.guard';
@@ -22,6 +22,7 @@ import { CreatePage } from './pages/settings/service-provider/create/create.page
 import { MenuPage } from './pages/main/service_provider/menu/menu.page';
 import { ImageViewPage } from './pages/image/view/view.page';
 import { CreateReviewPage } from './pages/review/create/create.page';
+import { ServiceMemberDetailPage } from './pages/main/service_member/detail/detail.page';
 
 export const routes: Routes = [
     { path: '', canActivate: [splashGuard], children: [
@@ -42,8 +43,11 @@ export const routes: Routes = [
             { path: 'money', component: MoneyPage, canActivate: [authenticatedGuard, profileCompleteGuard] },
             { path: 'profile', component: ProfilePage, canActivate: [authenticatedGuard, profileCompleteGuard] },
             { path: 'service-provider', children: [
-                { path: ':id', component: DetailPage },
+                { path: ':id', component: ServiceProviderDetailPage },
                 { path: ':id/menu', component: MenuPage }
+            ]},
+            { path: 'service-member', children : [
+                { path: ':id', component: ServiceMemberDetailPage }
             ]},
             { path: '', component: HomePage }
         ]},

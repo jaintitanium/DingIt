@@ -1,12 +1,12 @@
-<div class="avatar">
+<div class="avatar not-prose">
     <div class="w-full" [ngClass]="{
-        'max-w-32': size == 'lg', 'max-w-16': size == 'md', 'max-w-8': size == 'sm', 'max-w-4': size == 'xs',
+        'max-w-64': size == 'xl', 'max-w-32': size == 'lg', 'max-w-16': size == 'md', 'max-w-8': size == 'sm', 'max-w-4': size == 'xs',
         'rounded-full': shape == 'circle', 'rounded-xl': shape == 'square'
     }" >
         @if (path == null || path == undefined) {
             <img class="m-0" src="assets/profilebutton.svg" />
         } @else {
-            <img class="m-0 mask mask-circle" src="{{ getPublicUrl(path) }}?{{ forceUpdate(force) }}" />
+            <img class="m-0" src="{{ getPublicUrl(path) }}?{{ forceUpdate(force) }}" />
         }
     </div>
 </div>

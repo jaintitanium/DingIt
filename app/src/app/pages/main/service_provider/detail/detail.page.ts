@@ -11,6 +11,7 @@ import { RatingComponent } from "@components/rating/rating.component";
 import { GoogleMap, MapMarker } from '@angular/google-maps';
 import { DateService } from '@app/services/date.service';
 import { AvatarComponent } from "../../../../components/avatar/avatar.component";
+import { LocationHelperService } from '@app/services/location-helper.service';
 
 @Component({
     selector: 'app-detail',
@@ -28,7 +29,7 @@ import { AvatarComponent } from "../../../../components/avatar/avatar.component"
     AvatarComponent
 ]
 })
-export class DetailPage {
+export class ServiceProviderDetailPage {
   id: string;
   query;
   sp: QueryData<typeof this.query> | null = null;
@@ -54,6 +55,7 @@ export class DetailPage {
     private route: ActivatedRoute,
     private api: ApiService,
     public title: TitleService,
+    private location: LocationHelperService,
   ) {
     this.id = route.snapshot.params['id'];
     this.query = this.api.client()
@@ -90,7 +92,6 @@ export class DetailPage {
     } else {
       this.title.setTitle("");
     }
-    
   }
   reorganizeHours(raw: Tables<'service_provider_hours'>[]) {
     raw.sort((a,b) => {
@@ -111,23 +112,10 @@ export class DetailPage {
         lng: sp.lng
       }
 
-      navigator.geolocation.getCurrentPosition(async (pos) => {
-        const crd = pos.coords;
-      
-        const { data, error } = await this.api.client().rpc('get_service_provider_distance', {
-          input_id: sp.id,
-          input_lat: crd.latitude,
-          input_lng: crd.longitude
-        });
-        if(data) {
-          this.mapDistance = data;
-        }
+      this.location.getDistanceToServiceProvider(sp.id, (d) => {
+        this.mapDistance = d;
       }, (err) => {
-        console.warn(`ERROR(${err.code}): ${err.message}`);
-      }, {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0,
+
       });
     }
   }
@@ -138,7 +126,7 @@ export class DetailPage {
 
   sortedTeam() {
     return this.sp?.team.sort((a, b) => {
-      return (a.member_rating ?? 0) - (b.member_rating ?? 0);
+      return (b.member_rating ?? 0) - (a.member_rating ?? 0);
     }).slice(0,3);
   }
 

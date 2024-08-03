@@ -8,7 +8,7 @@
             <app-rating *ngIf="sp.provider_rating" [value]="sp.provider_rating" size="md" />
         </div>
     </div>
-    <div class="bg-neutral rounded-t-lg">
+    <div class="bg-neutral rounded-t-4xl">
         @if(featured) {
             <div class="p-6 text-base-100">
                 <h2 class="m-0 text-base-100">Most Popular</h2>
@@ -60,10 +60,12 @@
         <h2 class="text-md text-shadow shadow-white my-2 px-2">Top Rated Employees</h2>
         <div class="grid grid-cols-3 gap-4 justify-items-center px-2">
             @for (item of sortedTeam(); track $index) {
-                <div class="flex flex-col items-center">
+                <div class="flex flex-col items-center cursor-pointer" routerLink="/service-member/{{ item.id }}">
                     <app-avatar shape="square" [path]="item.service_member_user?.user?.profile_path" class="" />
                     <button class="btn btn-active btn-link">{{item.service_member_user?.user?.name}}</button>
-                    <app-rating *ngIf="item.member_rating" class="" [value]="item.member_rating" />
+                    @if(item.member_rating) {
+                        <app-rating [value]="item.member_rating" />
+                    }
                 </div>
             }
         </div>
@@ -77,7 +79,7 @@
         <h2 class="text-md text-shadow shadow-white my-2 px-2">Reviews</h2>
     </div>
     <!-- Hours -->
-    <div class="bg-secondary rounded-t-lg">
+    <div class="bg-secondary rounded-t-4xl">
         <div class="p-6 text-base-100">
             <h2 class="mt-0 text-base-100">Hours</h2>
             <table>

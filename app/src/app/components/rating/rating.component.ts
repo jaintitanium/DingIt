@@ -59,6 +59,6 @@ export class RatingComponent implements ControlValueAccessor {
 
   show(input: number): boolean {
     let v = this.value ?? 0;
-    return v > input - (this.gradation / 2) && v < input + (this.gradation / 2);
+    return v > input - (this.gradation / 2) && v <= input + (this.gradation / 2);
   }
 }

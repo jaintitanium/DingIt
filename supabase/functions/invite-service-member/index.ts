@@ -43,7 +43,7 @@
       if(currentId == null) {
         // Create User
         const service_member = await supabaseAdminClient.auth.admin.inviteUserByEmail(input.email, {
-          redirectTo: url?.value
+          redirectTo: url.value
         });
         console.log(service_member)
         if(service_member.error?.code == 'email_exists') {

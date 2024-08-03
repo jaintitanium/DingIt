@@ -1,0 +1,87 @@
+<app-loading-error-block [data]="spm" [error]="error" />
+@if(spm) {
+    <div class="bg-neutral">
+        <app-back-button color="base-100" />
+        <div class="flex flex-row gap-8 p-8">
+            <div class="relative">
+                <app-avatar size="xl" shape="square" [path]="spm.service_member_user?.user?.profile_path" />
+                @if(spm.member_rating) {
+                    <div class="absolute inset-x-0 -bottom-4 text-center">
+                        <div class="badge badge-secondary p-6 text-xl shadow-black shadow-xl">
+                            <img class="mx-2" src="assets/bell-white-outline.svg" />
+                            <b class="mr-2">{{ spm.member_rating | number: '1.1-1'}}</b>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="flex-auto text-center text-justify-middle">
+                <h2 class="text-base-100 mt-2">{{ spm.service_member_user?.user?.name }}</h2>
+                <h3 class="text-base-100 mb-0">{{ spm.service_provider?.display_name }}</h3>
+                <p  class="text-base-100">{{ spm.service_provider?.city }}, {{ spm.service_provider?.state }}</p>
+            </div>
+            
+        </div>
+    </div>
+    <div class="bg-neutral">
+        <div class="bg-secondary rounded-t-4xl pb-8">
+            <div class="flex flex-row">
+                <div class="p-6">
+                    <h2 class="m-0 text-base-100">Reviews</h2>
+                </div>
+                <div class="relative flex-auto text-center">
+                    <div class="mx-auto w-1/2 max-w-36 absolute inset-x-0 -top-4">
+                        <button class="btn btn-primary h-auto py-2" routerLink="/review/create/member/{{ spm.id }}">
+                            <div><b>Leave a Review</b></div>
+                            <div>Help improve my service</div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-row gap-8 px-6">
+                <div>
+                    <div class="rounded-xl bg-primary text-primary-content text-center p-4">
+                        <h3 class="text-primary-content my-4">Overall Rating</h3>
+                        <div class="flex flex-row text-center">
+                            <div class="basis-1/2"><img class="w-full m-0" src="assets/bell-white-outline.svg" /></div>
+                            <div class="basis-1/2 text-xl place-content-center"><b class="my-auto">{{ spm.member_rating ?? 0 | number: '1.1-1' }}</b></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col flex-auto not-prose text-neutral">
+                    <p><b>5 </b><progress class="progress progress-primary w-11/12 bg-base-100" [value]="countReviewsByRating(5)" [max]="reviews.length"></progress></p>
+                    <p><b>4 </b><progress class="progress progress-primary w-11/12 bg-base-100" [value]="countReviewsByRating(4)" [max]="reviews.length"></progress></p>
+                    <p><b>3 </b><progress class="progress progress-primary w-11/12 bg-base-100" [value]="countReviewsByRating(3)" [max]="reviews.length"></progress></p>
+                    <p><b>2 </b><progress class="progress progress-primary w-11/12 bg-base-100" [value]="countReviewsByRating(2)" [max]="reviews.length"></progress></p>
+                    <p><b>1 </b><progress class="progress progress-primary w-11/12 bg-base-100" [value]="countReviewsByRating(1)" [max]="reviews.length"></progress></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bg-secondary">
+        <div class="bg-base-100 rounded-t-4xl cursor-pointer" routerLink="/service-provider/{{ spm.service_provider_id }}">
+            <div class="p-6">
+                <h2 class="m-0 text-secondary">Company</h2>
+            </div>
+            <div class="flex flex-row gap-4 p-6">
+                <div class="avatar">
+                    <div class="w-24 rounded">
+                        <app-s3-img class="not-prose" [src]="spm.service_provider?.header_image_path" />
+                    </div>
+                </div>
+                <div>
+                    <h2 class="my-0">{{ spm.service_provider?.display_name }}</h2>
+                    @if(spm.service_provider?.sub_title) {
+                        <h3 class="my-0">{{ spm.service_provider?.sub_title }}</h3>
+                    }
+                    <h3 class="my-0">{{ spm.service_provider?.service_provider_member?.length }} DINGit Employees</h3>
+                </div>
+                <div class="flex-auto text-end">
+                    <div>{{ spm.service_provider?.city }}, {{ spm.service_provider?.state }}</div>
+                    @if(distance) {
+                        <div>{{ distance | number: '1.1-1' }}mi away</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
