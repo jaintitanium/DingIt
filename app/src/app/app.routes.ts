@@ -26,6 +26,7 @@ import { ServiceMemberDetailPage } from './pages/main/service_member/detail/deta
 import { ReviewDetailPage } from './pages/main/review/detail/detail.page';
 import { ServiceProviderReviewsPage } from './pages/main/service_provider/reviews/reviews.page';
 import { ServiceMemberReviewsPage } from './pages/main/service_member/reviews/reviews.page';
+import { ServiceProviderTeamPage } from './pages/main/service_provider/team/team.page';
 
 export const routes: Routes = [
     { path: '', canActivate: [splashGuard], children: [
@@ -48,7 +49,8 @@ export const routes: Routes = [
             { path: 'service-provider', children: [
                 { path: ':id', component: ServiceProviderDetailPage },
                 { path: ':id/menu', component: MenuPage },
-                { path: ':id/reviews', component: ServiceProviderReviewsPage }
+                { path: ':id/reviews', component: ServiceProviderReviewsPage },
+                { path: ':id/team', component: ServiceProviderTeamPage }
             ]},
             { path: 'service-member', children : [
                 { path: ':id', component: ServiceMemberDetailPage },

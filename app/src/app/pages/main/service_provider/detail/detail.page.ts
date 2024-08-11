@@ -14,6 +14,7 @@ import { AvatarComponent } from "../../../../components/avatar/avatar.component"
 import { LocationHelperService } from '@app/services/location-helper.service';
 import { reviewWithUser } from '@app/interfaces/review-with-parent';
 import { ReviewBadgeComponent } from "../../../../components/review-badge/review-badge.component";
+import { ServiceMemberBadgeComponent } from "../../../../components/service-member-badge/service-member-badge.component";
 
 @Component({
     selector: 'app-detail',
@@ -29,7 +30,8 @@ import { ReviewBadgeComponent } from "../../../../components/review-badge/review
     MapMarker,
     RouterModule,
     AvatarComponent,
-    ReviewBadgeComponent
+    ReviewBadgeComponent,
+    ServiceMemberBadgeComponent
 ]
 })
 export class ServiceProviderDetailPage {
