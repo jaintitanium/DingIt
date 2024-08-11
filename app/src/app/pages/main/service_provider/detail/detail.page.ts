@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ApiService } from '@app/services/api.service';
 import { TitleService } from '@app/services/title.service';
@@ -12,6 +12,8 @@ import { GoogleMap, MapMarker } from '@angular/google-maps';
 import { DateService } from '@app/services/date.service';
 import { AvatarComponent } from "../../../../components/avatar/avatar.component";
 import { LocationHelperService } from '@app/services/location-helper.service';
+import { reviewWithUser } from '@app/interfaces/review-with-parent';
+import { ReviewBadgeComponent } from "../../../../components/review-badge/review-badge.component";
 
 @Component({
     selector: 'app-detail',
@@ -26,7 +28,8 @@ import { LocationHelperService } from '@app/services/location-helper.service';
     GoogleMap,
     MapMarker,
     RouterModule,
-    AvatarComponent
+    AvatarComponent,
+    ReviewBadgeComponent
 ]
 })
 export class ServiceProviderDetailPage {
@@ -49,6 +52,10 @@ export class ServiceProviderDetailPage {
   mapDistance: number | null = null;
   markerOptions: google.maps.MarkerOptions = {draggable: false};
 
+  reviews: reviewWithUser[] = [];
+  highestReview = signal<reviewWithUser | null>(null);
+  lowestReview = signal<reviewWithUser | null>(null);
+
   public DateService = DateService;
 
   constructor(
@@ -64,6 +71,7 @@ export class ServiceProviderDetailPage {
         service_provider_hours(*),\
         product:featured_product(*),\
         team:service_provider_member(*,member_rating,service_member_user(user(*))),\
+        reviews:review(*,user(*)),\
         provider_rating')
       .eq('id', this.id)
       .single();
@@ -87,6 +95,13 @@ export class ServiceProviderDetailPage {
           .getPublicUrl(this.featured.image_path)
           .data
           .publicUrl;
+      }
+      this.reviews = data.reviews;
+      if(data.reviews.length >= 1) {
+        this.highestReview.set(data.reviews.sort((a,b) => b.rating - a.rating)[0]);
+      }
+      if(data.reviews.length >= 2) {
+        this.lowestReview.set(data.reviews.sort((a,b) => a.rating - b.rating)[0]);
       }
       this.refreshMap(data);
     } else {

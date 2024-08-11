@@ -1,5 +1,5 @@
 <app-loading-error-block [data]="sp" [error]="error" />
-<div *ngIf="sp">
+@if(sp) {
     <div id="header" [ngStyle]="{'background-image': headerImageUrl ? 'url('+headerImageUrl+')' : ''}">
         <app-back-button color="base-100" />
         <div class="m-4">
@@ -77,6 +77,22 @@
     </div>
     <div>
         <h2 class="text-md text-shadow shadow-white my-2 px-2">Reviews</h2>
+        @if(reviews.length > 0) {
+            <div class="flex flex-col py-4 px-8 gap-4">
+                @for (review of [highestReview(), lowestReview()]; track $index) {
+                    @if(review) {
+                        <app-review-badge [detailId]="review.id" [owner]="review.user!" [review]="review" />
+                    }
+                }
+            </div>
+            @if(reviews.length > 2) {
+                <div class="flex flex-row-reverse">
+                    <div class="">
+                        <button class="btn btn-active btn-link" routerLink="reviews">See All ({{reviews.length}})</button>
+                    </div>
+                </div>
+            }
+        }
     </div>
     <!-- Hours -->
     <div class="bg-secondary rounded-t-4xl">
@@ -101,4 +117,4 @@
             </table>
         </div>
     </div>
-</div>
+}

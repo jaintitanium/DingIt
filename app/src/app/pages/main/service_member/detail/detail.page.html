@@ -63,7 +63,13 @@
                         }
                     }
                 </div>
-                
+                @if(reviews.length > 2) {
+                    <div class="flex flex-row-reverse">
+                        <div class="">
+                            <button class="btn btn-active btn-link text-base-100" routerLink="reviews">See All ({{reviews.length}})</button>
+                        </div>
+                    </div>
+                }
             }
         </div>
     </div>

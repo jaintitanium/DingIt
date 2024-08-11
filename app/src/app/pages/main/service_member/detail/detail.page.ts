@@ -7,11 +7,11 @@ import { LoadingErrorBlockComponent } from "../../../../components/loading-error
 import { BackButtonComponent } from "../../../../components/back-button/back-button.component";
 import { AvatarComponent } from "../../../../components/avatar/avatar.component";
 import { DecimalPipe } from '@angular/common';
-import { Tables } from '@custom-types/supabase';
 import { S3ImgComponent } from "../../../../components/s3-img/s3-img.component";
 import { LocationHelperService } from '@app/services/location-helper.service';
 import { RatingComponent } from "../../../../components/rating/rating.component";
 import { ReviewBadgeComponent } from "../../../../components/review-badge/review-badge.component";
+import { reviewWithParent } from "@app/interfaces/review-with-parent";
 
 @Component({
   selector: 'app-detail',
@@ -64,11 +64,9 @@ export class ServiceMemberDetailPage {
       this.title.setTitle(data.service_member_user?.user?.name + ' | ' + data.service_provider?.display_name);
       this.reviews = data.reviews;
       if(data.reviews.length >= 1) {
-        console.log(data.reviews.sort((a,b) => b.rating - a.rating)[0])
         this.highestReview.set(data.reviews.sort((a,b) => b.rating - a.rating)[0]);
       }
       if(data.reviews.length >= 2) {
-        console.log(data.reviews.sort((a,b) => a.rating - b.rating)[0])
         this.lowestReview.set(data.reviews.sort((a,b) => a.rating - b.rating)[0]);
       }
       this.location.getDistanceToServiceProvider(data.service_provider_id, (distance: number) => {
@@ -85,11 +83,4 @@ export class ServiceMemberDetailPage {
     return this.reviews.filter((x) => x.rating <= (rating + 0.5) && x.rating > (rating - 0.5)).length;
   }
 
-}
-
-interface reviewWithParent extends Tables<'review_service_member'> {
-  parent: reviewWithUser
-}
-interface reviewWithUser extends Tables<'review'> {
-  user: Tables<'user'> | null
 }

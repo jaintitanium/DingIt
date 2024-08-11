@@ -1,0 +1,10 @@
+<app-back-button />
+<app-loading-error-block [data]="spm" [error]="error" />
+@if(spm) {
+    <div class="flex flex-col items-center p-4 gap-4">
+        <h2 class="my-0">Reviews for {{ spm.service_member_user?.user?.name }}</h2>
+        @for (review of spm.reviews; track $index) {
+            <app-review-badge class="w-full" [detailId]="review.parent.id" [owner]="review.parent.user!" [review]="review" />
+        }
+    </div>
+}

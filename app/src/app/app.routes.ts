@@ -24,6 +24,8 @@ import { ImageViewPage } from './pages/image/view/view.page';
 import { CreateReviewPage } from './pages/review/create/create.page';
 import { ServiceMemberDetailPage } from './pages/main/service_member/detail/detail.page';
 import { ReviewDetailPage } from './pages/main/review/detail/detail.page';
+import { ServiceProviderReviewsPage } from './pages/main/service_provider/reviews/reviews.page';
+import { ServiceMemberReviewsPage } from './pages/main/service_member/reviews/reviews.page';
 
 export const routes: Routes = [
     { path: '', canActivate: [splashGuard], children: [
@@ -45,10 +47,12 @@ export const routes: Routes = [
             { path: 'profile', component: ProfilePage, canActivate: [authenticatedGuard, profileCompleteGuard] },
             { path: 'service-provider', children: [
                 { path: ':id', component: ServiceProviderDetailPage },
-                { path: ':id/menu', component: MenuPage }
+                { path: ':id/menu', component: MenuPage },
+                { path: ':id/reviews', component: ServiceProviderReviewsPage }
             ]},
             { path: 'service-member', children : [
-                { path: ':id', component: ServiceMemberDetailPage }
+                { path: ':id', component: ServiceMemberDetailPage },
+                { path: ':id/reviews', component: ServiceMemberReviewsPage }
             ]},
             { path: 'review', children : [
                 { path: ':id', component: ReviewDetailPage }
