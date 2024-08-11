@@ -1,0 +1,50 @@
+<app-loading-error-block [data]="data" [error]="error" />
+@if(data) {
+    <div class="bg-primary">
+        <app-back-button color="base-100" />
+        <div class="flex flex-col gap-8 p-8 items-center">
+            <h1 class="text-primary-content my-0">{{ data.service_provider.display_name }}</h1>
+            <app-avatar [path]="data.user?.profile_path" />
+            <h2 class="text-primary-content my-0">Reviewed by {{ data.user?.name }}</h2>
+        </div>
+    </div>
+    <div class="bg-primary">
+        <div class="bg-base-100 rounded-t-4xl flex flex-col gap-8 p-8 items-center">
+            <div class="flex flex-col items-center">
+                <h2 class="my-0">Overall Rating</h2>
+                <app-rating [value]="data.rating" size="lg" />
+                <blockquote class="my-0">
+                    <p class="my-0">{{ data.description }}</p>
+                </blockquote>
+            </div>
+            @if(data.review_service_member.length > 0) {
+                @for (review of data.review_service_member; track $index) {
+                    <div class="flex flex-col items-center">
+                        <div class="flex flex-row justify-items-center gap-2">
+                            <app-avatar [path]="review.service_provider_member?.service_member_user?.user?.profile_path" size="sm" />
+                            <h2 class="my-0">{{ review.service_provider_member?.service_member_user?.user?.name }}</h2>
+                        </div>
+                        <app-rating [value]="review.rating" size="md" />
+                        <blockquote class="my-0">
+                            <p class="my-0">{{ review.description }}</p>
+                        </blockquote>
+                    </div>
+                }
+            }
+            @if(data.review_product.length > 0) {
+                @for (review of data.review_product; track $index) {
+                    <div class="flex flex-col items-center">
+                        <h2 class="my-0">{{ review.product.display_name }}</h2>
+                        @if(review.product.thumbnail_path) {
+                            <app-s3-img class="max-w-48 block my-0" [src]="review.product.thumbnail_path"/>
+                        }
+                        <app-rating [value]="review.rating" size="md" />
+                        <blockquote class="my-0">
+                            <p class="my-0">{{ review.description }}</p>
+                        </blockquote>
+                    </div>                    
+                }
+            }
+        </div>
+    </div>
+}

@@ -55,6 +55,16 @@
                     <p><b>1 </b><progress class="progress progress-primary w-11/12 bg-base-100" [value]="countReviewsByRating(1)" [max]="reviews.length"></progress></p>
                 </div>
             </div>
+            @if(reviews.length > 0) {
+                <div class="flex flex-col bg-secondary py-4 px-8 gap-4">
+                    @for (review of [highestReview(), lowestReview()]; track $index) {
+                        @if(review) {
+                            <app-review-badge [detailId]="review.review" [owner]="review.parent.user!" [review]="review" />
+                        }
+                    }
+                </div>
+                
+            }
         </div>
     </div>
     <div class="bg-secondary">

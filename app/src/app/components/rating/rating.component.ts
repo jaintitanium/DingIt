@@ -22,26 +22,38 @@ import { FormValidation } from '@app/interfaces/form-validation';
   styleUrl: './rating.component.scss'
 })
 export class RatingComponent implements ControlValueAccessor {
+  @Input('value')
   get value() {
     return this._value;
   }
   set value(val) {
+    console.log(val)
     this._value = val;
     this.onChange(val);
     this.onTouched();
   }
-  @Input('value') _value: number | null = null;
+  private _value: number | null = null;
   @Input('allowInput') allowInput = false;
   @Input('size') size: 'lg' | 'md' | 'sm' = 'sm';
+  @Input('color') color: 'primary' | 'base-100' = 'primary';
 
-  ngOnInit() {
-    
+  public nameId: string;
+
+  constructor() {
+    this.nameId = 'rating-' + this.randomString(8);
+  }
+  
+  randomString(length: number, chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') {
+    var result = '';
+    for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+    return result;
   }
   
   onChange = (rating: number | null) => {};
   onTouched: any = () => {};  
   
   registerOnChange(fn: (_: number | null) => void) {
+    console.log("registerOnChange", fn)
     this.onChange = fn;
   }
   writeValue(value: number | null) {
@@ -58,7 +70,7 @@ export class RatingComponent implements ControlValueAccessor {
   public ratings = Array.from({length: 5}, (_, i) => i + 1);
 
   show(input: number): boolean {
-    let v = this.value ?? 0;
+    let v = this._value ?? 0;
     return v > input - (this.gradation / 2) && v <= input + (this.gradation / 2);
   }
 }

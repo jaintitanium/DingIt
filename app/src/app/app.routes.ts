@@ -23,6 +23,7 @@ import { MenuPage } from './pages/main/service_provider/menu/menu.page';
 import { ImageViewPage } from './pages/image/view/view.page';
 import { CreateReviewPage } from './pages/review/create/create.page';
 import { ServiceMemberDetailPage } from './pages/main/service_member/detail/detail.page';
+import { ReviewDetailPage } from './pages/main/review/detail/detail.page';
 
 export const routes: Routes = [
     { path: '', canActivate: [splashGuard], children: [
@@ -48,6 +49,9 @@ export const routes: Routes = [
             ]},
             { path: 'service-member', children : [
                 { path: ':id', component: ServiceMemberDetailPage }
+            ]},
+            { path: 'review', children : [
+                { path: ':id', component: ReviewDetailPage }
             ]},
             { path: '', component: HomePage }
         ]},
