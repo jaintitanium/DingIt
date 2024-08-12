@@ -171,7 +171,10 @@
                     <app-avatar [path]="item.service_member_user?.user?.profile_path" size="sm"/>
                     <div class="flex-grow text-left">{{ item.service_member_user?.user?.name }}</div>
                     <div>
-                        <button *ngIf="!newHour" class="btn btn-square btn-sm btn-outline m-2" (click)="deleteServiceMember(item.id)">
+                        <button *ngIf="!newServiceMember" class="btn btn-square btn-sm btn-outline m-2" (click)="openQrModal(item.id)">
+                            <span class="material-symbols-outlined">qr_code</span>
+                        </button>
+                        <button *ngIf="!newServiceMember" class="btn btn-square btn-sm btn-outline m-2" (click)="deleteServiceMember(item.id)">
                             <span class="material-symbols-outlined">delete</span>
                         </button>
                     </div>
@@ -298,4 +301,19 @@
             />
         </form>
     </ng-template>
+
+    <input type="checkbox" id="my_modal_qr" class="modal-toggle" formControlName="qrModal" />
+    <div class="modal" role="dialog">
+        <div class="modal-box">
+            @if(qrState) {
+                <div class="flex flex-col text-center">
+                    <h3 class="font-bold text-lg">QR Code for {{ qrState.name }}</h3>
+                    <qr-code class="mx-auto" [value]="qrState.url" errorCorrectionLevel="H" size="300" centerImageSrc="assets/bell-black-outline.svg" centerImageSize="75" />
+                </div>
+            }
+            <div class="modal-action">
+                <label for="my_modal_qr" class="btn">Close</label>
+            </div>
+        </div>
+    </div>
 </form>

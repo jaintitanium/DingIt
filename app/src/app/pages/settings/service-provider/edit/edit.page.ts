@@ -1,9 +1,9 @@
-import { Component, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '@app/services/api.service';
 import { Tables } from '@custom-types/supabase';
-import { PostgrestError, QueryData, QueryResult } from '@supabase/supabase-js';
+import { PostgrestError, QueryResult } from '@supabase/supabase-js';
 import { LoadingErrorBlockComponent } from "@app/components/loading-error-block/loading-error-block.component";
 import { S3ImgComponent } from "@app/components/s3-img/s3-img.component";
 import { ToastComponent } from "@app/components/toast/toast.component";
@@ -16,13 +16,15 @@ import { SelectFieldComponent } from "@app/components/forms/select-field/select-
 import { CdkDrag, CdkDragDrop, CdkDropList, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { AvatarComponent } from "../../../../components/avatar/avatar.component";
+import { environment } from 'environments/environment';
+import { QrCodeModule } from 'ng-qrcode';
 
 @Component({
-    selector: 'app-edit',
-    standalone: true,
-    templateUrl: './edit.page.html',
-    styleUrl: './edit.page.scss',
-    imports: [
+  selector: 'app-edit',
+  standalone: true,
+  templateUrl: './edit.page.html',
+  styleUrl: './edit.page.scss',
+  imports: [
     LoadingErrorBlockComponent,
     S3ImgComponent,
     ToastComponent,
@@ -35,8 +37,9 @@ import { AvatarComponent } from "../../../../components/avatar/avatar.component"
     CdkDropList,
     CdkDrag,
     CurrencyPipe,
-    AvatarComponent
-]
+    AvatarComponent,
+    QrCodeModule,
+  ]
 })
 export class EditPage {
   @ViewChild('errorToast') errorToast!: ToastComponent;
@@ -93,7 +96,8 @@ export class EditPage {
   // Price Editing State
   editProductPriceId: string | null = null;
   modalForm: FormGroup = new FormGroup({
-    priceModal: new FormControl<boolean>(false)
+    priceModal: new FormControl<boolean>(false),
+    qrModal: new FormControl<boolean>(false)
   });
   editProductPrice: Tables<'product'> | undefined | null = null;
   editPrices: Tables<'product_price'>[] | null = null;
@@ -141,6 +145,7 @@ export class EditPage {
       provider_id: this.id,
     });
   }
+  qrState: null | { url: string, name: string } = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -580,7 +585,13 @@ export class EditPage {
         }
       });
     }
-
+  }
+  openQrModal(id: string) {
+    this.qrState = {
+      name: this.team?.data?.find((x) => x.id == id)?.service_member_user?.user?.name ?? 'Team Member',
+      url: environment.appUrl + 'review/create/member/' + id
+    };
+    this.modalForm.get('qrModal')?.setValue(true);
   }
   
   daysOfWeekSelect(): {value: number | string, label: string}[] {
