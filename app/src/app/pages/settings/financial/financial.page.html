@@ -1,0 +1,31 @@
+<div class="prose text-center flex flex-col gap-2 m-4">
+    <div>
+        <h2 class="my-0">Receive Tips</h2>
+        <app-loading-error-block [data]="serviceUser" [error]="serviceUserError"/>
+        @if(serviceUser) {
+            @if(serviceUser.length == 0) {
+                <div>You are not registered to a Service Provider.</div>
+                <div>Ask your supervisor to Invite you to their Team.</div>
+            } @else {
+                @if(urlError) {
+                    <div>Error retrieving url {{ urlError | json }}</div>
+                } @else if(url) {
+                    @if(serviceUser[0].onboarded) {
+                        <div>
+                            <span class="material-symbols-outlined">
+                                check
+                            </span>
+                            Ready to receive Tips
+                        </div>
+                        <button class="btn btn-primary" (click)="external(url)">Manage Stripe Account</button>
+                    } @else {
+                        <button class="btn btn-primary" (click)="external(url)">Set up Stripe Account</button>
+                    }
+                }
+            }
+        }
+    </div>
+    <div>
+        <h2 class="my-0">Business Subscription</h2>
+    </div>
+</div>

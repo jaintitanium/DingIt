@@ -226,12 +226,18 @@ export type Database = {
       service_member_user: {
         Row: {
           id: string
+          onboarded: boolean
+          stripe_account_id: string | null
         }
         Insert: {
           id: string
+          onboarded?: boolean
+          stripe_account_id?: string | null
         }
         Update: {
           id?: string
+          onboarded?: boolean
+          stripe_account_id?: string | null
         }
         Relationships: [
           {

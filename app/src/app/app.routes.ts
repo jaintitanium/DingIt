@@ -27,6 +27,7 @@ import { ReviewDetailPage } from './pages/main/review/detail/detail.page';
 import { ServiceProviderReviewsPage } from './pages/main/service_provider/reviews/reviews.page';
 import { ServiceMemberReviewsPage } from './pages/main/service_member/reviews/reviews.page';
 import { ServiceProviderTeamPage } from './pages/main/service_provider/team/team.page';
+import { FinancialSettingsPage } from './pages/settings/financial/financial.page';
 
 export const routes: Routes = [
     { path: '', canActivate: [splashGuard], children: [
@@ -35,6 +36,7 @@ export const routes: Routes = [
         { path: 'complete-profile', component: CompleteProfilePage },
         { path: 'settings', component: SettingsPage, canActivate: [authenticatedGuard, profileCompleteGuard], children: [
             { path: 'account', component: AccountSettingsPage },
+            { path: 'financial', component: FinancialSettingsPage },
             { path: 'service-providers', component: ServiceProviderPage },
             { path: 'service-providers/create', component: CreatePage },
             { path: 'service-providers/edit/:id', component: EditPage },

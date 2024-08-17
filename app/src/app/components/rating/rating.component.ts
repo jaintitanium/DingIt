@@ -27,7 +27,6 @@ export class RatingComponent implements ControlValueAccessor {
     return this._value;
   }
   set value(val) {
-    console.log(val)
     this._value = val;
     this.onChange(val);
     this.onTouched();
@@ -53,7 +52,6 @@ export class RatingComponent implements ControlValueAccessor {
   onTouched: any = () => {};  
   
   registerOnChange(fn: (_: number | null) => void) {
-    console.log("registerOnChange", fn)
     this.onChange = fn;
   }
   writeValue(value: number | null) {
