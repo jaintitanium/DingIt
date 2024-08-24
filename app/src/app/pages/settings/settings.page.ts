@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
-import { BackButtonComponent } from "../../components/back-button/back-button.component";
-import { MenuItemComponent } from "../../components/menu-item/menu-item.component";
+import { BackButtonComponent } from "@app/components/back-button/back-button.component";
+import { MenuItemComponent } from "@app/components/menu-item/menu-item.component";
 import { RouterOutlet } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { TitleService } from '../../services/title.service';
+import { TitleService } from '@app/services/title.service';
 
 @Component({
     selector: 'app-settings',

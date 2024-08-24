@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MessagesIndicatorComponent } from "../../../components/messages-indicator/messages-indicator.component";
+import { MessagesIndicatorComponent } from "@app/components/messages-indicator/messages-indicator.component";
 import { RouterModule, RouterOutlet } from '@angular/router';
 
 @Component({

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ApiService } from '@app/services/api.service';
 import { PostgrestError, QueryData } from '@supabase/supabase-js';
-import { LoadingErrorBlockComponent } from "../../../../components/loading-error-block/loading-error-block.component";
-import { ReviewBadgeComponent } from "../../../../components/review-badge/review-badge.component";
-import { BackButtonComponent } from "../../../../components/back-button/back-button.component";
+import { LoadingErrorBlockComponent } from "@app/components/loading-error-block/loading-error-block.component";
+import { ReviewBadgeComponent } from "@app/components/review-badge/review-badge.component";
+import { BackButtonComponent } from "@app/components/back-button/back-button.component";
 
 @Component({
   selector: 'app-reviews',
@@ -12,7 +12,8 @@ import { BackButtonComponent } from "../../../../components/back-button/back-but
   imports: [
     LoadingErrorBlockComponent, 
     ReviewBadgeComponent, 
-    BackButtonComponent
+    BackButtonComponent,
+    RouterModule,
   ],
   templateUrl: './reviews.page.html',
   styleUrl: './reviews.page.scss'
@@ -31,7 +32,7 @@ export class ServiceProviderReviewsPage {
     this.query = this.api.client()
       .from('service_provider')
       .select('*,\
-        reviews:review(*,user(*))')
+        reviews:review(*,user(*),review_tip_total)')
       .eq('id', this.id)
       .order('rating', { referencedTable: 'review', ascending: false })
       .single();

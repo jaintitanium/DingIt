@@ -10,11 +10,11 @@ import { BackButtonComponent } from "@components/back-button/back-button.compone
 import { RatingComponent } from "@components/rating/rating.component";
 import { GoogleMap, MapMarker } from '@angular/google-maps';
 import { DateService } from '@app/services/date.service';
-import { AvatarComponent } from "../../../../components/avatar/avatar.component";
+import { AvatarComponent } from "@app/components/avatar/avatar.component";
 import { LocationHelperService } from '@app/services/location-helper.service';
 import { reviewWithUser } from '@app/interfaces/review-with-parent';
-import { ReviewBadgeComponent } from "../../../../components/review-badge/review-badge.component";
-import { ServiceMemberBadgeComponent } from "../../../../components/service-member-badge/service-member-badge.component";
+import { ReviewBadgeComponent } from "@app/components/review-badge/review-badge.component";
+import { ServiceMemberBadgeComponent } from "@app/components/service-member-badge/service-member-badge.component";
 
 @Component({
     selector: 'app-detail',
@@ -73,7 +73,7 @@ export class ServiceProviderDetailPage {
         service_provider_hours(*),\
         product:featured_product(*),\
         team:service_provider_member(*,member_rating,service_member_user(user(*))),\
-        reviews:review(*,user(*)),\
+        reviews:review(*,user(*),review_tip_total),\
         provider_rating')
       .eq('id', this.id)
       .single();

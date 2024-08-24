@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '@app/services/api.service';
 import { PostgrestError, QueryData } from '@supabase/supabase-js';
-import { BackButtonComponent } from "../../../../components/back-button/back-button.component";
-import { LoadingErrorBlockComponent } from "../../../../components/loading-error-block/loading-error-block.component";
-import { ReviewBadgeComponent } from "../../../../components/review-badge/review-badge.component";
-import { ServiceMemberBadgeComponent } from "../../../../components/service-member-badge/service-member-badge.component";
+import { BackButtonComponent } from "@app/components/back-button/back-button.component";
+import { LoadingErrorBlockComponent } from "@app/components/loading-error-block/loading-error-block.component";
+import { ReviewBadgeComponent } from "@app/components/review-badge/review-badge.component";
+import { ServiceMemberBadgeComponent } from "@app/components/service-member-badge/service-member-badge.component";
 
 @Component({
   selector: 'app-team',

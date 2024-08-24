@@ -1,11 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { ApiService } from '../../services/api.service';
+import { ApiService } from '@app/services/api.service';
 import { CommonModule } from '@angular/common';
-import { ToastComponent } from "../../components/toast/toast.component";
-import { UserService } from '../../services/user.service';
-import { BackButtonComponent } from "../../components/back-button/back-button.component";
+import { ToastComponent } from "@app/components/toast/toast.component";
+import { UserService } from '@app/services/user.service';
+import { BackButtonComponent } from "@app/components/back-button/back-button.component";
+import { environment } from 'environments/environment';
 
 @Component({
     selector: 'app-login',
@@ -26,6 +27,7 @@ export class LoginPage {
     password: new FormControl('', [Validators.required])
   });
   @ViewChild('errorToast') errorToast!: ToastComponent;
+  @ViewChild('infoToast') infoToast!: ToastComponent;
 
   constructor(
     private api: ApiService,
@@ -55,6 +57,23 @@ export class LoginPage {
       }
     } else {
       this.loginForm.markAllAsTouched();
+    }
+  }
+
+  async resetPassword() {
+    let email = this.loginForm.get('username')?.value;
+    if(email) {
+      const {data,error} = await this.api.client().auth.resetPasswordForEmail(email, {
+        redirectTo: environment.appUrl + '/redirect'
+      });
+      if(data) {
+        this.infoToast.message('Password reset email sent to ' + email);
+      }
+      if(error) {
+        this.errorToast.message(error.message);
+      }
+    } else {
+      this.infoToast.message('Enter your username, then press Reset Password');
     }
   }
 }

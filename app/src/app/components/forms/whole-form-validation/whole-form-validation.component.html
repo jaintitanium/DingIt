@@ -1,7 +1,7 @@
 <div class="label">
     <span class="label-text">
         <ng-container *ngFor="let v of validation">
-            <div *ngIf="form.errors?.[v.name]" class="text-error">
+            <div *ngIf="form.touched && form.errors?.[v.name]" class="text-error">
                 {{ v.message }}
             </div>
         </ng-container>

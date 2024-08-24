@@ -21,6 +21,8 @@
                     } @else {
                         <button class="btn btn-primary" (click)="external(url)">Set up Stripe Account</button>
                     }
+                } @else {
+                    <app-loading />
                 }
             }
         }

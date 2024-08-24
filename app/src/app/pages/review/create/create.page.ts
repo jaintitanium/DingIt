@@ -2,16 +2,17 @@ import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '@app/services/api.service';
 import { PostgrestError, QueryData } from '@supabase/supabase-js';
-import { LoadingErrorBlockComponent } from "../../../components/loading-error-block/loading-error-block.component";
+import { LoadingErrorBlockComponent } from "@app/components/loading-error-block/loading-error-block.component";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RatingComponent } from "../../../components/rating/rating.component";
-import { TextFieldComponent } from "../../../components/forms/text-field/text-field.component";
-import { FieldValidationComponent } from "../../../components/forms/field-validation/field-validation.component";
-import { SelectFieldComponent } from "../../../components/forms/select-field/select-field.component";
+import { RatingComponent } from "@app/components/rating/rating.component";
+import { TextFieldComponent } from "@app/components/forms/text-field/text-field.component";
+import { FieldValidationComponent } from "@app/components/forms/field-validation/field-validation.component";
+import { SelectFieldComponent } from "@app/components/forms/select-field/select-field.component";
 import { CommonModule } from '@angular/common';
-import { AvatarComponent } from "../../../components/avatar/avatar.component";
-import { S3ImgComponent } from "../../../components/s3-img/s3-img.component";
-import { ToastComponent } from "../../../components/toast/toast.component";
+import { AvatarComponent } from "@app/components/avatar/avatar.component";
+import { S3ImgComponent } from "@app/components/s3-img/s3-img.component";
+import { ToastComponent } from "@app/components/toast/toast.component";
+import { StripeService } from '@app/services/stripe.service';
 
 @Component({
   selector: 'app-create',
@@ -48,8 +49,9 @@ export class CreateReviewPage {
     description: new FormControl<string>('', { validators: [Validators.required], nonNullable: true }),
     service_member: new FormControl<string>('', { validators: [Validators.required], nonNullable: true }),
     rating: new FormControl<number | null>(null, { validators: [Validators.required], nonNullable: true }),
+    tip: new FormControl<number | null>(null),
   });
-  memberRatings: { id: string, description: string, rating: number }[] = [];
+  memberRatings: { id: string, description: string, rating: number, tip: number | null }[] = [];
   membersInRating(): string[] {
     return this.memberRatings.map((x) => x.id);
   }
@@ -82,7 +84,8 @@ export class CreateReviewPage {
       this.memberRatings.push({
         id: review.service_member,
         description: review.description ?? '',
-        rating: review.rating ?? 5
+        rating: review.rating ?? 5,
+        tip: this.member(review.service_member)?.onboarded ? (review.tip ?? null) : null,
       });
       this.editMember = null;
     }
@@ -99,7 +102,8 @@ export class CreateReviewPage {
       this.memberRatings.push({
         id: review.service_member,
         description: review.description ?? '',
-        rating: review.rating ?? 5
+        rating: review.rating ?? 5,
+        tip: this.member(review.service_member)?.onboarded ? (review.tip ?? null) : null,
       });
       this.newMember = false;
     }
@@ -183,18 +187,20 @@ export class CreateReviewPage {
     private route: ActivatedRoute,
     private api: ApiService,
     private router: Router,
+    private stripe: StripeService,
   ) {
     this.type = route.snapshot.params['type'];
     this.id = route.snapshot.params['id'];
     this.spQuery = this.api.client().from('service_provider')
-      .select('*,service_provider_member!inner(id,service_member_user(id,user(*))),products:product!product_owner_fkey(*)')
+      .select('*,service_provider_member!inner(id,service_member_user!inner(id,stripe_account_id,onboarded,user!inner(*))),products:product!product_owner_fkey(*)')
       .eq(this.type == 'provider' ? 'id' : 'service_provider_member.id', this.id)
       .single();
     if(this.type == 'member') {
       this.memberForm.setValue({
         service_member: this.id,
         description: '',
-        rating: null
+        rating: null,
+        tip: null
       });
     }
   }
@@ -203,15 +209,6 @@ export class CreateReviewPage {
     const {data, error} = await this.spQuery;
     this.sp = data;
     this.error = error;
-
-    // if(data?.service_provider_member && this.type == 'provider') {
-    //   this.membersForSelect = data.service_provider_member.map( (p) => {
-    //     return {
-    //       value: p.service_member_user?.user?.id ?? '',
-    //       label: p.service_member_user?.user?.name ?? ''
-    //     }
-    //   });
-    // }
   }
 
   async saveReview() {
@@ -233,7 +230,8 @@ export class CreateReviewPage {
         this.memberRatings.push({
           id: this.id,
           description: this.memberForm.get('description')?.value ?? '',
-          rating: this.memberForm.get('rating')?.value ?? 0
+          rating: this.memberForm.get('rating')?.value ?? 0,
+          tip: this.memberForm.get('tip')?.value ?? null
         });
       }
 
@@ -245,6 +243,7 @@ export class CreateReviewPage {
               service_member: x.id,
               description: x.description,
               rating: x.rating,
+              tip: x.tip,
             };
           })
         );
@@ -270,10 +269,19 @@ export class CreateReviewPage {
           return;
         }
       }
-      if(this.type == 'member') {
-        this.router.navigate(['service-member', this.id]);
+      if(this.memberRatings.reduce((total, item) => { return total + (item.tip ?? 0) }, 0) > 0) {
+        const checkout = await this.stripe.getCheckoutSessionForReview(base.data.id);
+        if(checkout.data) {
+          window.open(checkout.data, "_self");
+        } else {
+          this.errorToast.message(checkout.error.message);
+        }
       } else {
-        this.router.navigate(['service-provider', this.id]);
+        if(this.type == 'member') {
+          this.router.navigate(['service-member', this.id]);
+        } else {
+          this.router.navigate(['service-provider', this.id]);
+        }
       }
     }
   }

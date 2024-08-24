@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { UserService } from '../../services/user.service';
+import { UserService } from '@app/services/user.service';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ApiService } from '../../services/api.service';
-import { TextFieldComponent } from "../../components/forms/text-field/text-field.component";
+import { ApiService } from '@app/services/api.service';
+import { TextFieldComponent } from "@app/components/forms/text-field/text-field.component";
 
 @Component({
     selector: 'app-complete-profile',

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LoadingErrorBlockComponent } from "../../../components/loading-error-block/loading-error-block.component";
+import { LoadingErrorBlockComponent } from "@app/components/loading-error-block/loading-error-block.component";
 import { ApiService } from '@app/services/api.service';
 import { Tables } from '@custom-types/supabase';
 import { PostgrestError } from '@supabase/supabase-js';

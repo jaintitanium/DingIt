@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { AvatarComponent } from "../avatar/avatar.component";
-import { RatingComponent } from "../rating/rating.component";
+import { AvatarComponent } from "@app/components/avatar/avatar.component";
+import { RatingComponent } from "@app/components/rating/rating.component";
 import { RouterModule } from '@angular/router';
 
 @Component({

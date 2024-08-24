@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormValidation } from '../../../interfaces/form-validation';
+import { FormValidation } from '@app/interfaces/form-validation';
 import { NgxCurrencyDirective } from "ngx-currency";
 
 @Component({

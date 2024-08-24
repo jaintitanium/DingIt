@@ -34,7 +34,7 @@
                         <span class="label-text"><strong>Employee</strong></span>
                     </div>
                     <input id="name" type="text" class="input input-block" disabled="disabled"
-                        [value]="sp.service_provider_member[0].service_member_user?.user?.name" />
+                        [value]="sp.service_provider_member[0].service_member_user.user.name" />
                 </label>
                 <app-rating 
                     [formGroup]="memberForm"
@@ -56,6 +56,15 @@
                     [validation]="[
                         { name: 'required', message: 'Comments are required'}]" 
                 />
+                @if(member(id)?.onboarded) {
+                    <app-text-field
+                        name="tip"
+                        [form]="memberForm"
+                        label="Add a Tip?"
+                        type="number"
+                        placeholder="5.00"
+                    />
+                }
             </form>
         } @else {
             <div class="flex flex-col">
@@ -69,7 +78,10 @@
                         </div>
                     } @else {
                         <div class="flex items-center">
-                            <div class="flex-grow truncate text-left"><app-avatar size="xs" [path]="member(rating.id)?.user?.profile_path" class="m-2" /><b>{{ member(rating.id)?.user?.name }}</b> ({{ rating.rating }}) - {{ rating.description }}</div>
+                            <div class="flex-grow truncate text-left">
+                                <app-avatar size="xs" [path]="member(rating.id)?.user?.profile_path" class="m-2" />
+                                <b>{{ member(rating.id)?.user?.name }}</b> ({{ rating.rating }}) - {{ rating.description }}
+                            </div>
                             
                             @if(!editMember && !newMember) {
                                 <button class="btn btn-square btn-sm btn-outline m-1" (click)="startEditMember(rating.id)">
@@ -123,6 +135,16 @@
                         [validation]="[
                             { name: 'required', message: 'Comments are required'}]" 
                     />
+                    @if((editMember && member(memberForm.get('service_member')?.value ?? '')?.onboarded) || 
+                    (newMember && member(memberForm.get('service_member')?.value ?? '')?.onboarded)) {
+                        <app-text-field
+                            name="tip"
+                            [form]="memberForm"
+                            label="Add a Tip?"
+                            type="number"
+                            placeholder="5.00"
+                        />
+                    }
                 </form>
             </ng-template>
             

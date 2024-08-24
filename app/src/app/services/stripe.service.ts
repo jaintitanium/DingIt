@@ -17,4 +17,12 @@ export class StripeService {
       }
     });
   }
+  getCheckoutSessionForReview(review: string) {
+    return this.api.client().functions.invoke<string>('stripe', {
+      body: {
+        action: 'tip',
+        review: review,
+      }
+    });
+  }
 }

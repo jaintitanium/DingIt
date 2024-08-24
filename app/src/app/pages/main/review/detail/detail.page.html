@@ -24,7 +24,16 @@
                             <app-avatar [path]="review.service_provider_member?.service_member_user?.user?.profile_path" size="sm" />
                             <h2 class="my-0">{{ review.service_provider_member?.service_member_user?.user?.name }}</h2>
                         </div>
-                        <app-rating [value]="review.rating" size="md" />
+                        <div class="flex flex-row items-center">
+                            <app-rating [value]="review.rating" size="md" />
+                            @if(review.tip ?? 0 > 0) {
+                                <div>
+                                    <span class="material-symbols-outlined text-secondary">
+                                        universal_currency_alt
+                                    </span>
+                                </div>
+                            }
+                        </div>
                         <blockquote class="my-0">
                             <p class="my-0">{{ review.description }}</p>
                         </blockquote>

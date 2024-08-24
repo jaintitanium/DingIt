@@ -2,8 +2,8 @@
 <app-loading-error-block [data]="spm" [error]="error" />
 @if(spm) {
     <div class="flex flex-col items-center p-4 gap-4">
-        <h2 class="my-0 text-center">Reviews for {{ spm.service_member_user?.user?.name }} at {{ spm.service_provider?.display_name }}</h2>
-        @for (review of spm.reviews; track $index) {
+        <h2 class="my-0 text-center">Reviews for {{ spm.service_member_user.user.name }} at {{ spm.service_provider.display_name }}</h2>
+        @for (review of remapReviews(); track $index) {
             <app-review-badge class="w-full" [detailId]="review.parent.id" [owner]="review.parent.user!" [review]="review" />
         }
     </div>

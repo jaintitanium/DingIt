@@ -41,7 +41,9 @@
           const acct = await stripe.accounts.create({
             business_type: 'individual',
             email: authUser.email,
-            type: 'express',
+            business_profile: {
+              url: appUrl?.value + '/service-member/' + userObj?.id
+            },
             controller: {
               stripe_dashboard: {
                 type: "express",
@@ -65,8 +67,50 @@
           refresh_url: appUrl?.value + '/settings/financial'
         })
         data = link.url;
+      } else if(input.action == 'tip') {
+        // Inputs Service Members and outputs a Payment Intent
+        const reviewId = <string>input.review;
+        const review = (await supabaseAdminClient.from('review').select('*,review_service_member(*,service_provider_member(*,service_member_user(*,user(*))))').eq('id', reviewId).single()).data;
+        console.log(review)
+        const lineItems = review?.review_service_member
+          .filter((x) => x.tip != null)
+          .map((x) => {
+            return {
+              amount: x.tip ?? 0,
+              name: x.service_provider_member?.service_member_user?.user?.name ?? 'Team Member'
+            };
+          });
+        console.log(lineItems)
+        if(lineItems) {
+          const checkout = await stripe.checkout.sessions.create({
+            line_items: lineItems.map((x) => {
+              return {
+                price_data: {
+                  currency: 'usd',
+                  product_data: {
+                    name: 'Tip for ' + x.name,
+                  },
+                  unit_amount: Math.round(x.amount * 100),
+                },
+                quantity: 1,
+              }
+            }),
+            payment_intent_data: {
+              transfer_group: reviewId
+            },
+            mode: 'payment',
+            success_url: appUrl?.value + '/review/' + reviewId,
+          });
+          console.log(checkout)
+          if(checkout.url) {
+            data = checkout.url;
+          } else {
+            throw('Could not create Checkout link')
+          }
+        } else {
+          throw('Could not find Review');
+        }
       }
-
     
       
       return new Response(JSON.stringify(data), {

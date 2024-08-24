@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { MenuItemComponent } from "../../../components/menu-item/menu-item.component";
+import { MenuItemComponent } from "@app/components/menu-item/menu-item.component";
 import { SettingsPage } from '../settings.page';
-import { TitleService } from '../../../services/title.service';
+import { TitleService } from '@app/services/title.service';
 
 @Component({
     selector: 'app-main',

@@ -3,12 +3,12 @@ import { ApiService } from '@app/services/api.service';
 import { TitleService } from '@app/services/title.service';
 import { UserService } from '@app/services/user.service';
 import { Tables } from '@custom-types/supabase';
-import { LoadingErrorBlockComponent } from "../../../components/loading-error-block/loading-error-block.component";
+import { LoadingErrorBlockComponent } from "@app/components/loading-error-block/loading-error-block.component";
 import { PostgrestError } from '@supabase/supabase-js';
-import { PostgrestResponseFailure } from '@supabase/postgrest-js';
 import { StripeService } from '@app/services/stripe.service';
 import { JsonPipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { LoadingComponent } from "@app/components/loading/loading.component";
 
 @Component({
   selector: 'app-financial',
@@ -17,7 +17,8 @@ import { RouterModule } from '@angular/router';
     LoadingErrorBlockComponent,
     JsonPipe,
     RouterModule,
-  ],
+    LoadingComponent
+],
   templateUrl: './financial.page.html',
   styleUrl: './financial.page.scss'
 })

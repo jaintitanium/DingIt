@@ -6,7 +6,7 @@ import { PostgrestError } from '@supabase/postgrest-js';
 import { ApiService } from '@app/services/api.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { QueryResult } from '@supabase/supabase-js';
-import { S3ImgComponent } from "../../../../components/s3-img/s3-img.component";
+import { S3ImgComponent } from "@app/components/s3-img/s3-img.component";
 
 @Component({
     selector: 'app-menu',

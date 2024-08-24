@@ -1,12 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
-import { ApiService } from '../../services/api.service';
+import { ApiService } from '@app/services/api.service';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
-import { TextFieldComponent } from "../../components/forms/text-field/text-field.component";
-import { environment } from '../../../environments/environment';
-import { ToastComponent } from "../../components/toast/toast.component";
-import { WholeFormValidationComponent } from "../../components/forms/whole-form-validation/whole-form-validation.component";
+import { TextFieldComponent } from "@app/components/forms/text-field/text-field.component";
+import { environment } from '@app/../environments/environment';
+import { ToastComponent } from "@app/components/toast/toast.component";
+import { WholeFormValidationComponent } from "@app/components/forms/whole-form-validation/whole-form-validation.component";
 import { Router } from '@angular/router';
-import { BackButtonComponent } from "../../components/back-button/back-button.component";
+import { BackButtonComponent } from "@app/components/back-button/back-button.component";
 
 @Component({
     selector: 'app-sign-up',

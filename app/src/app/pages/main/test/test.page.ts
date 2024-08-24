@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
-import { ToastComponent } from '../../../components/toast/toast.component';
-import { ApiService } from '../../../services/api.service';
+import { ToastComponent } from '@app/components/toast/toast.component';
+import { ApiService } from '@app/services/api.service';
 
 @Component({
     selector: 'app-test',

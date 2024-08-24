@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { SettingsPage } from '../settings.page';
-import { TitleService } from '../../../services/title.service';
+import { TitleService } from '@app/services/title.service';
 
 @Component({
   selector: 'app-account',

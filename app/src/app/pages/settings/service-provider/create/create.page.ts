@@ -1,14 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
 import { TitleService } from '@app/services/title.service';
-import { TextFieldComponent } from "../../../../components/forms/text-field/text-field.component";
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TextFieldComponent } from "@app/components/forms/text-field/text-field.component";
+import { ReactiveFormsModule } from '@angular/forms';
 import { GoogleMap, GoogleMapsModule } from '@angular/google-maps';
-import { LocationHelperService } from '@app/services/location-helper.service';
 import { ApiService } from '@app/services/api.service';
 import { UserService } from '@app/services/user.service';
 import { ToastComponent } from '@app/components/toast/toast.component';
 import { Router } from '@angular/router';
-import { ServiceProviderEntryComponent } from "../../../../components/forms/service-provider-entry/service-provider-entry.component";
+import { ServiceProviderEntryComponent } from "@app/components/forms/service-provider-entry/service-provider-entry.component";
 
 @Component({
     selector: 'app-create',

@@ -3,7 +3,7 @@ import { TitleService } from '@app/services/title.service';
 import { UserService } from '@app/services/user.service';
 import { Tables } from '@custom-types/supabase';
 import { PostgrestError } from '@supabase/supabase-js';
-import { MenuItemComponent } from "../../../components/menu-item/menu-item.component";
+import { MenuItemComponent } from "@app/components/menu-item/menu-item.component";
 import { RouterModule } from '@angular/router';
 import { ApiService } from '@app/services/api.service';
 

@@ -7,8 +7,17 @@
     <div class="flex-auto">
         <div class="flex flex-row place-content-center">
             <h3 class="my-0">{{ owner.name }}</h3>
-            <div class="flex-auto text-right">
-                <app-rating class="flex-auto" [value]="review.rating" />
+            <div class="flex-auto">
+                <div class="flex flex-row-reverse">
+                    <app-rating [value]="review.rating" />
+                    @if(review.review_tip_total ?? 0 > 0) {
+                        <div>
+                            <span class="material-symbols-outlined text-secondary">
+                                universal_currency_alt
+                            </span>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
         <p class="my-0">{{ review.description }}</p>

@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { LoginPage } from './pages/login/login.page';
+import { LoginPage } from './pages/auth/login/login.page';
 import { RootPage } from './pages/main/root/root.page';
-import { SignUpPage } from './pages/sign-up/sign-up.page';
+import { SignUpPage } from './pages/auth/sign-up/sign-up.page';
 import { TestPage } from './pages/main/test/test.page';
 import { MessagesPage } from './pages/main/messages/messages.page';
 import { MoneyPage } from './pages/main/money/money.page';
@@ -28,8 +28,10 @@ import { ServiceProviderReviewsPage } from './pages/main/service_provider/review
 import { ServiceMemberReviewsPage } from './pages/main/service_member/reviews/reviews.page';
 import { ServiceProviderTeamPage } from './pages/main/service_provider/team/team.page';
 import { FinancialSettingsPage } from './pages/settings/financial/financial.page';
+import { RedirectPage } from './pages/auth/redirect/redirect.page';
 
 export const routes: Routes = [
+    { path: 'redirect', component: RedirectPage },
     { path: '', canActivate: [splashGuard], children: [
         { path: 'login', component: LoginPage },
         { path: 'signup', component: SignUpPage },

@@ -111,6 +111,7 @@ export type Database = {
           owner: string
           rating: number
           service_provider: string
+          review_tip_total: number | null
         }
         Insert: {
           created_at?: string
@@ -191,6 +192,7 @@ export type Database = {
           rating: number
           review: string
           service_member: string
+          tip: number | null
         }
         Insert: {
           description: string
@@ -198,6 +200,7 @@ export type Database = {
           rating: number
           review: string
           service_member: string
+          tip?: number | null
         }
         Update: {
           description?: string
@@ -205,6 +208,7 @@ export type Database = {
           rating?: number
           review?: string
           service_member?: string
+          tip?: number | null
         }
         Relationships: [
           {
@@ -462,6 +466,12 @@ export type Database = {
         Returns: number
       }
       provider_rating: {
+        Args: {
+          "": unknown
+        }
+        Returns: number
+      }
+      review_tip_total: {
         Args: {
           "": unknown
         }

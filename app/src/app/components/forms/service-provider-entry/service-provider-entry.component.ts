@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TextFieldComponent } from "../text-field/text-field.component";
+import { TextFieldComponent } from "@app/components/forms/text-field/text-field.component";
 import { LocationHelperService } from '@app/services/location-helper.service';
 
 @Component({

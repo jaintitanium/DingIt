@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '@app/services/api.service';
-import { LoadingErrorBlockComponent } from "../../../components/loading-error-block/loading-error-block.component";
 import { CommonModule } from '@angular/common';
-import { BackButtonComponent } from "../../../components/back-button/back-button.component";
+import { BackButtonComponent } from "@app/components/back-button/back-button.component";
 
 @Component({
   selector: 'app-view',

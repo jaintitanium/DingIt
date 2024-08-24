@@ -15,7 +15,7 @@ import { TextFieldComponent } from "@app/components/forms/text-field/text-field.
 import { SelectFieldComponent } from "@app/components/forms/select-field/select-field.component";
 import { CdkDrag, CdkDragDrop, CdkDropList, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { NgxImageCompressService } from 'ngx-image-compress';
-import { AvatarComponent } from "../../../../components/avatar/avatar.component";
+import { AvatarComponent } from "@app/components/avatar/avatar.component";
 import { environment } from 'environments/environment';
 import { QrCodeModule } from 'ng-qrcode';
 

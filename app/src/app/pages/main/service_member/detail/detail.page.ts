@@ -3,14 +3,14 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ApiService } from '@app/services/api.service';
 import { TitleService } from '@app/services/title.service';
 import { PostgrestError, QueryData } from '@supabase/supabase-js';
-import { LoadingErrorBlockComponent } from "../../../../components/loading-error-block/loading-error-block.component";
-import { BackButtonComponent } from "../../../../components/back-button/back-button.component";
-import { AvatarComponent } from "../../../../components/avatar/avatar.component";
+import { LoadingErrorBlockComponent } from "@app/components/loading-error-block/loading-error-block.component";
+import { BackButtonComponent } from "@app/components/back-button/back-button.component";
+import { AvatarComponent } from "@app/components/avatar/avatar.component";
 import { DecimalPipe } from '@angular/common';
-import { S3ImgComponent } from "../../../../components/s3-img/s3-img.component";
+import { S3ImgComponent } from "@app/components/s3-img/s3-img.component";
 import { LocationHelperService } from '@app/services/location-helper.service';
-import { RatingComponent } from "../../../../components/rating/rating.component";
-import { ReviewBadgeComponent } from "../../../../components/review-badge/review-badge.component";
+import { RatingComponent } from "@app/components/rating/rating.component";
+import { ReviewBadgeComponent } from "@app/components/review-badge/review-badge.component";
 import { reviewWithParent } from "@app/interfaces/review-with-parent";
 
 @Component({
@@ -52,7 +52,7 @@ export class ServiceMemberDetailPage {
         member_rating,\
         service_member_user(user(*)),\
         service_provider(*,service_provider_member(id)),\
-        reviews:review_service_member(*,parent:review!inner(*,user(*)))')
+        reviews:review_service_member!inner(*,review_tip_total:tip,parent:review!inner(*,user(*)))')
       .eq('id', this.id)
       .single();
   }
@@ -67,7 +67,7 @@ export class ServiceMemberDetailPage {
         this.highestReview.set(data.reviews.sort((a,b) => b.rating - a.rating)[0]);
       }
       if(data.reviews.length >= 2) {
-        this.lowestReview.set(data.reviews.sort((a,b) => a.rating - b.rating)[0]);
+        this.lowestReview.set(data.reviews.filter((x) => x.id != this.highestReview()?.id).sort((a,b) => a.rating - b.rating)[0]);
       }
       this.location.getDistanceToServiceProvider(data.service_provider_id, (distance: number) => {
         this.distance = distance;
