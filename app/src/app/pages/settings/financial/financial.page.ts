@@ -54,6 +54,6 @@ export class FinancialSettingsPage {
   }
 
   external(url: string) {
-    window.open(url)
+    window.open(url, "_self")
   }
 }

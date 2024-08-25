@@ -29,6 +29,7 @@ import { ServiceMemberReviewsPage } from './pages/main/service_member/reviews/re
 import { ServiceProviderTeamPage } from './pages/main/service_provider/team/team.page';
 import { FinancialSettingsPage } from './pages/settings/financial/financial.page';
 import { RedirectPage } from './pages/auth/redirect/redirect.page';
+import { FinancialTransfersPage } from './pages/settings/financial/transfers/transfers.page';
 
 export const routes: Routes = [
     { path: 'redirect', component: RedirectPage },
@@ -39,6 +40,7 @@ export const routes: Routes = [
         { path: 'settings', component: SettingsPage, canActivate: [authenticatedGuard, profileCompleteGuard], children: [
             { path: 'account', component: AccountSettingsPage },
             { path: 'financial', component: FinancialSettingsPage },
+            { path: 'financial/transfers', component: FinancialTransfersPage },
             { path: 'service-providers', component: ServiceProviderPage },
             { path: 'service-providers/create', component: CreatePage },
             { path: 'service-providers/edit/:id', component: EditPage },

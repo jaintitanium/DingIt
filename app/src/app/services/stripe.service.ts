@@ -25,4 +25,13 @@ export class StripeService {
       }
     });
   }
+  getTransfers(starting_after?: string, limit?: number) {
+    return this.api.client().functions.invoke<{ transfers: { id: string, amount: number, created_at: number }[], has_more: boolean }>('stripe', {
+      body: {
+        action: 'getTransfers',
+        starting_after: starting_after,
+        limit: limit,
+      }
+    });
+  }
 }

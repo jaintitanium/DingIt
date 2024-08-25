@@ -37,6 +37,7 @@
       
       const input = await req.json();
       if(input.action == 'onboard') {
+        let newAccount = false;
         if(userObj?.stripe_account_id == null) {
           const acct = await stripe.accounts.create({
             business_type: 'individual',
@@ -59,12 +60,16 @@
           console.log(acct)
           userObj = (await supabaseAdminClient.from('service_member_user').update({ stripe_account_id: acct.id }).eq('id', authUser.id).select().single()).data;
           console.log(userObj)
+          newAccount = true;
         }
         const link = await stripe.accountLinks.create({
           account: userObj?.stripe_account_id ?? '',
           type: 'account_onboarding',
           return_url: appUrl?.value + '/settings/financial',
-          refresh_url: appUrl?.value + '/settings/financial'
+          refresh_url: appUrl?.value + '/settings/financial',
+          collection_options: {
+            fields: newAccount ? 'currently_due' : 'eventually_due'
+          }
         })
         data = link.url;
       } else if(input.action == 'tip') {
@@ -109,6 +114,28 @@
           }
         } else {
           throw('Could not find Review');
+        }
+      } else if(input.action == 'getTransfers') {
+        if(userObj?.onboarded && userObj.stripe_account_id) {
+          console.log(userObj)
+          const transfers = await stripe.transfers.list({
+            destination: userObj.stripe_account_id,
+            starting_after: input.starting_after,
+            limit: input.limit ?? 100
+          });
+          console.log(transfers)
+          data = {
+            transfers: transfers.data.map((x) => {
+              return {
+                id: x.transfer_group,
+                amount: x.amount / 100,
+                created_at: x.created,
+              }
+            }),
+            has_more: transfers.has_more,
+          };
+        } else {
+          data = {};
         }
       }
     
