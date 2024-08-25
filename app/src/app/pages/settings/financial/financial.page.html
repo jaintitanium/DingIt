@@ -8,7 +8,7 @@
                     <div>Ask your supervisor to invite you to their Team.</div>
                 } @else {
                     @if(urlError) {
-                        <div>Error retrieving url {{ urlError | json }}</div>
+                        <div class="alert alert-error">Error retrieving url {{ urlError | json }}</div>
                     } @else if(url) {
                         @if(user.service_member_user.onboarded) {
                             <div>

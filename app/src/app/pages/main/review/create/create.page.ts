@@ -13,6 +13,7 @@ import { AvatarComponent } from "@app/components/avatar/avatar.component";
 import { S3ImgComponent } from "@app/components/s3-img/s3-img.component";
 import { ToastComponent } from "@app/components/toast/toast.component";
 import { StripeService } from '@app/services/stripe.service';
+import { BackButtonComponent } from "../../../../components/back-button/back-button.component";
 
 @Component({
   selector: 'app-create',
@@ -27,7 +28,8 @@ import { StripeService } from '@app/services/stripe.service';
     CommonModule,
     AvatarComponent,
     S3ImgComponent,
-    ToastComponent
+    ToastComponent,
+    BackButtonComponent
 ],
   templateUrl: './create.page.html',
   styleUrl: './create.page.scss'

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100" height="100" viewBox="0 0 100 100">
+    <defs>
+      <filter id="Path_89">
+        <feOffset input="SourceAlpha"/>
+        <feGaussianBlur stdDeviation="1.5" result="blur"/>
+        <feFlood flood-color="#393f59" result="color"/>
+        <feComposite operator="out" in="SourceGraphic" in2="blur"/>
+        <feComposite operator="in" in="color"/>
+        <feComposite operator="in" in2="SourceGraphic"/>
+      </filter>
+    </defs>
+    <g data-type="innerShadowGroup">
+      <path id="Path_89-2" data-name="Path 89" d="M27,0H73a27,27,0,0,1,27,27V73a27,27,0,0,1-27,27H27A27,27,0,0,1,0,73V27A27,27,0,0,1,27,0Z" fill="#192a73"/>
+      <g transform="matrix(1, 0, 0, 1, 0, 0)" filter="url(#Path_89)">
+        <path id="Path_89-3" data-name="Path 89" d="M27,0H73a27,27,0,0,1,27,27V73a27,27,0,0,1-27,27H27A27,27,0,0,1,0,73V27A27,27,0,0,1,27,0Z" fill="#fff"/>
+      </g>
+    </g>
+  </svg>
+  

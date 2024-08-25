@@ -10,7 +10,6 @@ import { profileCompleteGuard } from './guards/profile-complete.guard';
 import { CompleteProfilePage } from './pages/complete-profile/complete-profile.page';
 import { authenticatedGuard } from './guards/authenticated.guard';
 import { SettingsPage } from './pages/settings/settings.page';
-import { AccountSettingsPage } from './pages/settings/account/account.page';
 import { MainSettingsPage } from './pages/settings/main/main.page';
 import { ServiceProviderDetailPage } from './pages/main/service_provider/detail/detail.page';
 import { HomePage } from './pages/main/home/home.page';
@@ -21,7 +20,7 @@ import { EditPage } from './pages/settings/service-provider/edit/edit.page';
 import { CreatePage } from './pages/settings/service-provider/create/create.page';
 import { MenuPage } from './pages/main/service_provider/menu/menu.page';
 import { ImageViewPage } from './pages/image/view/view.page';
-import { CreateReviewPage } from './pages/review/create/create.page';
+import { CreateReviewPage } from './pages/main/review/create/create.page';
 import { ServiceMemberDetailPage } from './pages/main/service_member/detail/detail.page';
 import { ReviewDetailPage } from './pages/main/review/detail/detail.page';
 import { ServiceProviderReviewsPage } from './pages/main/service_provider/reviews/reviews.page';
@@ -38,7 +37,6 @@ export const routes: Routes = [
         { path: 'signup', component: SignUpPage },
         { path: 'complete-profile', component: CompleteProfilePage },
         { path: 'settings', component: SettingsPage, canActivate: [authenticatedGuard, profileCompleteGuard], children: [
-            { path: 'account', component: AccountSettingsPage },
             { path: 'financial', component: FinancialSettingsPage },
             { path: 'financial/transfers', component: FinancialTransfersPage },
             { path: 'service-providers', component: ServiceProviderPage },
@@ -63,11 +61,11 @@ export const routes: Routes = [
                 { path: ':id/reviews', component: ServiceMemberReviewsPage }
             ]},
             { path: 'review', children : [
-                { path: ':id', component: ReviewDetailPage }
+                { path: ':id', component: ReviewDetailPage },
+                { path: 'create/:type/:id', component: CreateReviewPage, canActivate: [authenticatedGuard, profileCompleteGuard] }
             ]},
             { path: '', component: HomePage }
-        ]},
-        { path: 'review/create/:type/:id', component: CreateReviewPage, canActivate: [authenticatedGuard, profileCompleteGuard] }
+        ]}
     ]},
     { path: 'loading', component: SplashScreenComponent }
 ];
