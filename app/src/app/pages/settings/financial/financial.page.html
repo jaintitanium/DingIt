@@ -1,34 +1,53 @@
 <div class="prose text-center flex flex-col gap-2 m-4">
-    <div>
-        <h2 class="my-0">Receive Tips</h2>
-        <app-loading-error-block [data]="serviceUser" [error]="serviceUserError"/>
-        @if(serviceUser) {
-            @if(serviceUser.length == 0) {
-                <div>You are not registered to a Service Provider.</div>
-                <div>Ask your supervisor to Invite you to their Team.</div>
-            } @else {
-                @if(urlError) {
-                    <div>Error retrieving url {{ urlError | json }}</div>
-                } @else if(url) {
-                    @if(serviceUser[0].onboarded) {
-                        <div>
-                            <span class="material-symbols-outlined">
-                                check
-                            </span>
-                            Ready to receive Tips
-                        </div>
-                        <button class="btn btn-primary" (click)="external(url)">Manage Stripe Account</button>
-                        <button class="btn btn-primary ml-4" routerLink="transfers">View Transactions</button>
-                    } @else {
-                        <button class="btn btn-primary" (click)="external(url)">Set up Stripe Account</button>
-                    }
+    <app-loading-error-block [data]="user" [error]="userError"/>
+    @if(user) {
+        <div>
+            <h2 class="my-0">Receive Tips</h2>
+                @if(!user.service_member_user) {
+                    <div>You are not registered to a Service Provider.</div>
+                    <div>Ask your supervisor to invite you to their Team.</div>
                 } @else {
-                    <app-loading />
+                    @if(urlError) {
+                        <div>Error retrieving url {{ urlError | json }}</div>
+                    } @else if(url) {
+                        @if(user.service_member_user.onboarded) {
+                            <div>
+                                <span class="material-symbols-outlined">
+                                    check
+                                </span>
+                                Ready to receive Tips
+                            </div>
+                            <button class="btn btn-primary" (click)="external(url)">Manage Stripe Account</button>
+                            <button class="btn btn-primary ml-4" routerLink="transfers">View Transactions</button>
+                        } @else {
+                            <button class="btn btn-primary" (click)="external(url)">Set up Stripe Account</button>
+                        }
+                    } @else {
+                        <app-loading />
+                    }
                 }
+        </div>
+        <div>
+            <h2 class="my-0">Business Subscription</h2>
+            @if(user.service_provider_user?.active) {
+                @if(sub) {
+                    <div>
+                        <p>Customer since: <b>{{ sub.created * 1000 | date: 'shortDate' }}</b></p>
+                        <p>Monthly cost: <b>{{ (sub.quantity * sub.plan.amount / 100) | currency }}</b></p>
+                        <p>Next Payment: <b>{{ sub.current_period_end * 1000 | date: 'shortDate' }}</b></p>
+                    </div>
+                }
+            } @else {
+                <div>No Active Subscription</div>
             }
-        }
-    </div>
-    <div>
-        <h2 class="my-0">Business Subscription</h2>
-    </div>
+            <button class="btn btn-primary" (click)="subButton()" [disabled]="subLinkLoading">
+                @if(subLinkLoading) {
+                    <app-loading class="mr-4" />
+                }
+                Manage Subscription</button>
+            @if(subLinkError) {
+                <div class="alert alert-error">{{ subLinkError }}</div>
+            }
+        </div>
+    }
 </div>

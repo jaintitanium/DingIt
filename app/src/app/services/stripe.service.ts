@@ -34,4 +34,25 @@ export class StripeService {
       }
     });
   }
+  getSubscription() {
+    return this.api.client().functions.invoke('stripe', {
+      body: {
+        action: 'getSubscription',
+      }
+    });
+  }
+  createOrUpdateSubscription() {
+    return this.api.client().functions.invoke('stripe', {
+      body: {
+        action: 'createOrUpdateSubscription',
+      }
+    });
+  }
+  updateSubscriptionQty() {
+    return this.api.client().functions.invoke('stripe', {
+      body: {
+        action: 'updateSubscriptionQty',
+      }
+    });
+  }
 }

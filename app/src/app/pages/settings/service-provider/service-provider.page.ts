@@ -6,6 +6,7 @@ import { PostgrestError } from '@supabase/supabase-js';
 import { MenuItemComponent } from "@app/components/menu-item/menu-item.component";
 import { RouterModule } from '@angular/router';
 import { ApiService } from '@app/services/api.service';
+import { LoadingComponent } from "../../../components/loading/loading.component";
 
 @Component({
     selector: 'app-service-provider',
@@ -15,6 +16,7 @@ import { ApiService } from '@app/services/api.service';
     imports: [
       MenuItemComponent,
       RouterModule,
+      LoadingComponent,
     ]
 })
 export class ServiceProviderPage {
@@ -22,6 +24,8 @@ export class ServiceProviderPage {
 
   data?: Tables<'service_provider'>[] | null;
   error: PostgrestError | null = null;
+  active: boolean | null = null;
+
   constructor(
     public titleService: TitleService,
     private user: UserService,
@@ -30,7 +34,7 @@ export class ServiceProviderPage {
 
     this.query = this.api.client()
       .from('service_provider')
-      .select('*,service_provider_hours(*)');
+      .select('*');
   }
 
   ngOnInit() {
@@ -40,6 +44,10 @@ export class ServiceProviderPage {
         const {data, error} = await this.query.eq('owner', user.id);
         this.data = data;
         this.error = error;
+
+        this.api.client().from('service_provider_user').select('active').eq('id', user.id).single().then((r) => {
+          this.active = r.data?.active ?? false;
+        })
       }
     });
     

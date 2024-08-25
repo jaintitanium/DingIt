@@ -1,7 +1,18 @@
-@for (provider of data; track $index) {
-    <app-menu-item [text]="provider.display_name" routerLink="/settings/service-providers/edit/{{provider.id}}" />
+@if(active == null) {
+    <app-loading />
+} @else if(active == true) {
+    @for (provider of data; track $index) {
+        <app-menu-item [text]="provider.display_name" routerLink="/settings/service-providers/edit/{{provider.id}}" />
+    }
+    <button class="btn btn-primary mx-4" routerLink="/settings/service-providers/create">
+        <span class="material-symbols-outlined">
+            add_circle
+        </span> Add New Service Provider</button>
+} @else {
+    <div role="alert" class="alert alert-warning">
+        <span class="material-symbols-outlined">
+            money_off
+        </span>
+        <span>You do not have an active subscription to DingIt. In order to create or manage Service Providers, please visit your <button class="btn btn-link" routerLink="/settings/financial">Financial Settings</button></span>
+    </div>
 }
-<button class="btn btn-primary mx-4" routerLink="/settings/service-providers/create">
-    <span class="material-symbols-outlined">
-        add_circle
-    </span> Add New Service Provider</button>

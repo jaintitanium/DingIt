@@ -21,6 +21,7 @@
       const settings = await supabaseAdminClient.from('settings').select();
       const key = settings.data?.find((x) => x.key == 'STRIPE_KEY');
       const appUrl = settings.data?.find((x) => x.key == 'APP_URL');
+      const subscriptionPrice = settings.data?.find((x) => x.key == 'STRIPE_SUBSCRIPTION_PRICE_ID');
       const stripe = new Stripe(key!.value, {
         apiVersion: "2024-06-20",
       })
@@ -33,17 +34,18 @@
       if(authUser == null) {
         throw('Could not find user')
       }
-      let userObj = (await userClient.from('service_member_user').select('*').eq('id', authUser.id ?? '').single()).data;
+      let userObj = (await userClient.from('user').select('*,service_member_user(*),service_provider_user(*)').eq('id', authUser.id ?? '').single()).data;
       
       const input = await req.json();
       if(input.action == 'onboard') {
         let newAccount = false;
-        if(userObj?.stripe_account_id == null) {
+        let serviceMemberUser = userObj?.service_member_user;
+        if(serviceMemberUser?.stripe_account_id == null) {
           const acct = await stripe.accounts.create({
             business_type: 'individual',
             email: authUser.email,
             business_profile: {
-              url: appUrl?.value + '/service-member/' + userObj?.id
+              url: appUrl?.value + '/service-member/' + serviceMemberUser?.id
             },
             controller: {
               stripe_dashboard: {
@@ -58,12 +60,12 @@
             },
           })
           console.log(acct)
-          userObj = (await supabaseAdminClient.from('service_member_user').update({ stripe_account_id: acct.id }).eq('id', authUser.id).select().single()).data;
-          console.log(userObj)
+          serviceMemberUser = (await supabaseAdminClient.from('service_member_user').update({ stripe_account_id: acct.id }).eq('id', authUser.id).select().single()).data;
+          console.log(serviceMemberUser)
           newAccount = true;
         }
         const link = await stripe.accountLinks.create({
-          account: userObj?.stripe_account_id ?? '',
+          account: serviceMemberUser?.stripe_account_id ?? '',
           type: 'account_onboarding',
           return_url: appUrl?.value + '/settings/financial',
           refresh_url: appUrl?.value + '/settings/financial',
@@ -116,10 +118,11 @@
           throw('Could not find Review');
         }
       } else if(input.action == 'getTransfers') {
-        if(userObj?.onboarded && userObj.stripe_account_id) {
-          console.log(userObj)
+        let serviceMemberUser = userObj?.service_member_user;
+        if(serviceMemberUser?.onboarded && serviceMemberUser.stripe_account_id) {
+          console.log(serviceMemberUser)
           const transfers = await stripe.transfers.list({
-            destination: userObj.stripe_account_id,
+            destination: serviceMemberUser.stripe_account_id,
             starting_after: input.starting_after,
             limit: input.limit ?? 100
           });
@@ -134,6 +137,61 @@
             }),
             has_more: transfers.has_more,
           };
+        } else {
+          data = {};
+        }
+      } else if(input.action == 'getSubscription') {
+        let serviceProviderUser = userObj?.service_provider_user;
+        if(serviceProviderUser?.active && serviceProviderUser.stripe_customer_id && serviceProviderUser.stripe_subscription_id) {
+          console.log(serviceProviderUser)
+          const sub = await stripe.subscriptions.retrieve(serviceProviderUser.stripe_subscription_id)
+          console.log(sub)
+          data = sub;
+        } else {
+          throw('Could not find Subscription');
+        }
+      } else if(input.action == 'createOrUpdateSubscription') {
+        let serviceProviderUser = userObj?.service_provider_user;
+        if(!serviceProviderUser) {
+          serviceProviderUser = (await supabaseAdminClient.from('service_provider_user').insert({id: authUser.id, active: false}).select().single()).data;
+        }
+        if(serviceProviderUser?.stripe_customer_id == null || serviceProviderUser?.stripe_customer_id == undefined) {
+          const stripeCustomer = await stripe.customers.create({
+            email: authUser.email,
+            name: userObj?.name,
+          });
+          serviceProviderUser = (await supabaseAdminClient.from('service_provider_user').update({stripe_customer_id: stripeCustomer.id}).eq('id', authUser.id).select().single()).data;
+        }
+        if(serviceProviderUser?.stripe_subscription_id) {
+          data = await stripe.billingPortal.sessions.create({
+            customer: serviceProviderUser.stripe_customer_id ?? '',
+            return_url: `${appUrl?.value}/settings/financial?delay=5000`,
+          });
+        } else {
+          const spCount = (await supabaseAdminClient.from('service_provider').select('count').eq('owner', authUser.id).single()).data;
+          const checkout = await stripe.checkout.sessions.create({
+            billing_address_collection: 'auto',
+            line_items: [
+              {
+                price: subscriptionPrice!.value,
+                // For metered billing, do not pass quantity
+                quantity: Math.max(1, spCount?.count ?? 0),
+        
+              },
+            ],
+            customer: serviceProviderUser?.stripe_customer_id ?? undefined,
+            mode: 'subscription',
+            success_url: `${appUrl?.value}/settings/financial?delay=5000`,
+            cancel_url: `${appUrl?.value}/settings/financial`,
+          });
+          serviceProviderUser = (await supabaseAdminClient.from('service_provider_user').update({stripe_subscription_id: checkout.subscription?.toString()}).eq('id', authUser.id).select().single()).data;
+          data = checkout;
+        }
+      } else if(input.action == 'updateSubscriptionQty') {
+        let serviceProviderUser = userObj?.service_provider_user;
+        if(serviceProviderUser?.active && serviceProviderUser.stripe_customer_id && serviceProviderUser.stripe_subscription_id) {
+          console.log(serviceProviderUser)
+          // Count Service Providers and update Subscription if needed
         } else {
           data = {};
         }
