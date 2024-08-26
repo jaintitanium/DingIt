@@ -64,6 +64,12 @@
           console.log(serviceMemberUser)
           newAccount = true;
         }
+        const acct = await stripe.accounts.retrieve({
+          stripeAccount: serviceMemberUser?.stripe_account_id ?? ''
+        })
+        if(serviceMemberUser?.onboarded == false && acct.payouts_enabled) {
+          serviceMemberUser = (await supabaseAdminClient.from('service_member_user').update({ onboarded: true }).eq('id', authUser.id).select().single()).data;
+        }
         const link = await stripe.accountLinks.create({
           account: serviceMemberUser?.stripe_account_id ?? '',
           type: 'account_onboarding',
