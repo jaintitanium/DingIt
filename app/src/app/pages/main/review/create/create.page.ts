@@ -14,6 +14,7 @@ import { S3ImgComponent } from "@app/components/s3-img/s3-img.component";
 import { ToastComponent } from "@app/components/toast/toast.component";
 import { StripeService } from '@app/services/stripe.service';
 import { BackButtonComponent } from "../../../../components/back-button/back-button.component";
+import { LoadingComponent } from "../../../../components/loading/loading.component";
 
 @Component({
   selector: 'app-create',
@@ -29,7 +30,8 @@ import { BackButtonComponent } from "../../../../components/back-button/back-but
     AvatarComponent,
     S3ImgComponent,
     ToastComponent,
-    BackButtonComponent
+    BackButtonComponent,
+    LoadingComponent
 ],
   templateUrl: './create.page.html',
   styleUrl: './create.page.scss'
@@ -41,6 +43,8 @@ export class CreateReviewPage {
   spQuery;
   sp: QueryData<typeof this.spQuery> | null = null;
   error: PostgrestError | null = null;
+
+  createButtonLoading = false;
 
   generalForm = new FormGroup({
     description: new FormControl<string>('', [Validators.required]),
@@ -217,6 +221,7 @@ export class CreateReviewPage {
     const general = this.generalForm.value;
     const user = await (await this.api.client().auth.getUser()).data.user;
     if(general && user && this.sp) {
+      this.createButtonLoading = true;
       const base = await this.api.client().from('review').insert({
         description: general.description ?? 'Error',
         rating: general.rating ?? 0,
@@ -225,6 +230,7 @@ export class CreateReviewPage {
       }).select().single();
       if(base.error) {
         this.errorToast.message(base.error.message);
+        this.createButtonLoading = false;
         return;
       }
 
@@ -251,6 +257,7 @@ export class CreateReviewPage {
         );
         if(memberReviews.error) {
           this.errorToast.message(memberReviews.error.message);
+          this.createButtonLoading = false;
           return;
         }
       }
@@ -268,6 +275,7 @@ export class CreateReviewPage {
         );
         if(productReviews.error) {
           this.errorToast.message(productReviews.error.message);
+          this.createButtonLoading = false;
           return;
         }
       }
@@ -277,6 +285,7 @@ export class CreateReviewPage {
           window.open(checkout.data, "_self");
         } else {
           this.errorToast.message(checkout.error.message);
+          this.createButtonLoading = false;
         }
       } else {
         if(this.type == 'member') {

@@ -103,7 +103,7 @@ export class ServiceProviderDetailPage {
         this.highestReview.set(data.reviews.sort((a,b) => b.rating - a.rating)[0]);
       }
       if(data.reviews.length >= 2) {
-        this.lowestReview.set(data.reviews.sort((a,b) => a.rating - b.rating)[0]);
+        this.lowestReview.set(data.reviews.filter((x) => x.id != this.highestReview()?.id).sort((a,b) => a.rating - b.rating)[0]);
       }
       this.refreshMap(data);
     } else {

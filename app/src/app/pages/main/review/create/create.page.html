@@ -228,8 +228,11 @@
         <div class="flex-col w-full pb-4">
             <h3>Finalize</h3>
             <button class="btn btn-block btn-secondary" (click)="saveReview()"
-                [disabled]="!generalForm.valid || editMember != null || newMember || editProduct != null || newProduct"
-            >Post Review</button>
+                [disabled]="createButtonLoading || !generalForm.valid || editMember != null || newMember || editProduct != null || newProduct"
+            >
+            @if(createButtonLoading) {
+                <app-loading />
+            } Post Review</button>
         </div>
     }
 </div>
