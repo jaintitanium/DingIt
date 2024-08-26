@@ -67,6 +67,8 @@ export class FinancialSettingsPage {
           let subResp = await this.stripe.getSubscription();
           this.sub = subResp.data;
           this.subError = subResp.error;
+
+          this.user = (await this.api.client().from('user').select('*,service_member_user(*),service_provider_user(*)').eq('id', this.id).single()).data;
         }
       }
     }, this.timeoutDelay);
