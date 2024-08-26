@@ -1,0 +1,64 @@
+<app-loading-error-block [data]="user" [error]="userError" />
+@if(user) {
+    <div class="bg-neutral">
+        <app-back-button color="base-100" />
+        <div class="flex flex-col gap-8 p-8 items-center">
+            <h1 class="text-neutral-content my-0">{{ user.name }}'s reviews</h1>
+            <app-avatar [path]="user.profile_path" />
+        </div>
+    </div>
+    <div class="bg-neutral">
+        <div class="bg-secondary rounded-t-4xl flex flex-col gap-8 p-8 items-center">
+            <div class="flex flex-row gap-8 px-6">
+                <div>
+                    <div class="rounded-xl bg-primary text-primary-content text-center p-4">
+                        <h3 class="text-primary-content my-4">Average Rating</h3>
+                        <div class="flex flex-row text-center">
+                            <div class="basis-1/2"><img class="w-full m-0" src="assets/bell-white-outline.svg" /></div>
+                            <div class="basis-1/2 text-xl place-content-center"><b class="my-auto">{{ averageRatings(user.review) | number: '1.1-1' }}</b></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col flex-auto not-prose text-neutral">
+                    <p><b>5 </b><progress class="progress progress-primary w-11/12 bg-base-100" [value]="countReviewsByRating(5)" [max]="user.review.length"></progress></p>
+                    <p><b>4 </b><progress class="progress progress-primary w-11/12 bg-base-100" [value]="countReviewsByRating(4)" [max]="user.review.length"></progress></p>
+                    <p><b>3 </b><progress class="progress progress-primary w-11/12 bg-base-100" [value]="countReviewsByRating(3)" [max]="user.review.length"></progress></p>
+                    <p><b>2 </b><progress class="progress progress-primary w-11/12 bg-base-100" [value]="countReviewsByRating(2)" [max]="user.review.length"></progress></p>
+                    <p><b>1 </b><progress class="progress progress-primary w-11/12 bg-base-100" [value]="countReviewsByRating(1)" [max]="user.review.length"></progress></p>
+                </div>
+            </div>
+            @if(user.review.length > 0) {
+                @for (review of user.review; track $index) {
+                    <div class="flex flex-row gap-4 rounded rounded-xl bg-base-200 p-4 shadow-inner shadow-gray-500 cursor-pointer"
+                        routerLink="/review/{{ review.id }}"
+                    >
+                        <div class="avatar not-prose">
+                            <div class="w-full max-w-16 rounded-full">
+                                <app-s3-img class="m-0" [src]="review.service_provider.header_image_path" />
+                            </div>
+                        </div>
+                        <div class="flex-auto">
+                            <div class="flex flex-col place-content-center">
+                                <h3 class="my-0">{{ review.service_provider.display_name }}</h3>
+                                <div class="flex flex-row">
+                                    <span class="material-symbols-outlined text-primary">
+                                        domain
+                                    </span>
+                                    <app-rating [value]="review.rating" />
+                                </div>
+                                <div class="flex flex-row">
+                                    <span class="material-symbols-outlined text-secondary">
+                                        person
+                                    </span>
+                                    <app-rating [value]="averageRatings(review.review_service_member)" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            } @else {
+                <p>User has no reviews</p>
+            }
+        </div>
+    </div>
+}

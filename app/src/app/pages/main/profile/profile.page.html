@@ -10,6 +10,8 @@
         </p>
         <h3>Full Name</h3>
         <p>{{ data.name }}</p>
+        <h3>Your Reviews</h3>
+        <p><button class="btn btn-primary" routerLink="/user/{{ data.id }}">See your reviews</button></p>
         <h3>Reset Password</h3>
         <form [formGroup]="passwordForm" class="flex flex-col items-center">
             <app-text-field 

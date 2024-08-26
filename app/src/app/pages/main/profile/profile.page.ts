@@ -5,7 +5,7 @@ import { UserService } from '@app/services/user.service';
 import { ToastComponent } from '@app/components/toast/toast.component';
 import { Tables } from '@app/../types/supabase';
 import { LoadingComponent } from "@app/components/loading/loading.component";
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { LoadingErrorBlockComponent } from "@app/components/loading-error-block/loading-error-block.component";
 import { PostgrestError } from '@supabase/supabase-js';
 import { AvatarComponent } from "@app/components/avatar/avatar.component";
@@ -27,6 +27,7 @@ import { WholeFormValidationComponent } from "@app/components/forms/whole-form-v
       TextFieldComponent,
       WholeFormValidationComponent,
       ToastComponent,
+      RouterModule,
     ]
 })
 export class ProfilePage {
