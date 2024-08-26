@@ -45,7 +45,7 @@
             business_type: 'individual',
             email: authUser.email,
             business_profile: {
-              url: appUrl?.value + '/service-member/' + serviceMemberUser?.id
+              url: appUrl?.value + '/user/' + serviceMemberUser?.id
             },
             controller: {
               stripe_dashboard: {
@@ -67,7 +67,7 @@
         const link = await stripe.accountLinks.create({
           account: serviceMemberUser?.stripe_account_id ?? '',
           type: 'account_onboarding',
-          return_url: appUrl?.value + '/settings/financial',
+          return_url: appUrl?.value + '/settings/financial?delay=5000',
           refresh_url: appUrl?.value + '/settings/financial',
           collection_options: {
             fields: newAccount ? 'currently_due' : 'eventually_due'
