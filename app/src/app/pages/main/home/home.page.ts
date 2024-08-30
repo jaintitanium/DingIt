@@ -43,7 +43,7 @@ export class HomePage {
   }
   async ngOnInit() {
     const {data, error} = await this.api.client().from('service_provider')
-      .select('*,service_provider_hours(*),provider_rating')
+      .select('*,provider_rating')
       .gt('provider_rating', 0)
       .order('provider_rating', { ascending: false })
       .limit(12);

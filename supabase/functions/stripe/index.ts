@@ -168,21 +168,29 @@
           });
           serviceProviderUser = (await supabaseAdminClient.from('service_provider_user').update({stripe_customer_id: stripeCustomer.id}).eq('id', authUser.id).select().single()).data;
         }
+        const spCount = (await supabaseAdminClient.from('service_provider').select('count').eq('owner', authUser.id).single()).data;
         if(serviceProviderUser?.stripe_subscription_id) {
+          const subItems = await stripe.subscriptionItems.list({
+            subscription: serviceProviderUser.stripe_subscription_id
+          });
+          subItems.data.forEach(async (si) => {
+            console.log("Updating", si);
+            await stripe.subscriptionItems.update(si.id, {
+              quantity: spCount?.count ?? 1
+            });
+          })
           data = await stripe.billingPortal.sessions.create({
             customer: serviceProviderUser.stripe_customer_id ?? '',
             return_url: `${appUrl?.value}/settings/financial?delay=5000`,
           });
         } else {
-          const spCount = (await supabaseAdminClient.from('service_provider').select('count').eq('owner', authUser.id).single()).data;
           const checkout = await stripe.checkout.sessions.create({
             billing_address_collection: 'auto',
             line_items: [
               {
                 price: subscriptionPrice!.value,
                 // For metered billing, do not pass quantity
-                quantity: Math.max(1, spCount?.count ?? 0),
-        
+                quantity: Math.max(1, spCount?.count ?? 1),
               },
             ],
             customer: serviceProviderUser?.stripe_customer_id ?? undefined,
