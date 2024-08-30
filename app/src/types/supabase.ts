@@ -271,6 +271,7 @@ export type Database = {
           postal_code: string | null
           state: string | null
           sub_title: string | null
+          textsearchable_index_col: unknown | null
           timezone: string | null
           website: string | null
           provider_rating: number | null
@@ -292,6 +293,7 @@ export type Database = {
           postal_code?: string | null
           state?: string | null
           sub_title?: string | null
+          textsearchable_index_col?: unknown | null
           timezone?: string | null
           website?: string | null
         }
@@ -312,6 +314,7 @@ export type Database = {
           postal_code?: string | null
           state?: string | null
           sub_title?: string | null
+          textsearchable_index_col?: unknown | null
           timezone?: string | null
           website?: string | null
         }
@@ -468,6 +471,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_hotspots: {
+        Args: {
+          input_lat: number
+          input_lng: number
+        }
+        Returns: {
+          id: string
+          display_name: string
+          sub_title: string
+          distance: number
+          header_image_path: string
+          rating: number
+        }[]
+      }
       get_service_provider_distance: {
         Args: {
           input_id: string
@@ -505,6 +522,23 @@ export type Database = {
           "": unknown
         }
         Returns: number
+      }
+      search_service_provider: {
+        Args: {
+          search_text: string
+          input_lat: number
+          input_lng: number
+        }
+        Returns: {
+          id: string
+          display_name: string
+          sub_title: string
+          distance: number
+          header_image_path: string
+          rating: number
+          city: string
+          state: string
+        }[]
       }
     }
     Enums: {

@@ -35,7 +35,7 @@ export class ServiceMemberDetailPage {
   spm: QueryData<typeof this.query> | null = null;
   error: PostgrestError | null = null;
   reviews: reviewWithParent[] = [];
-  distance?: number;
+  distance: number | null = null;
   highestReview = signal<reviewWithParent | null>(null);
   lowestReview = signal<reviewWithParent | null>(null);
 
@@ -69,11 +69,7 @@ export class ServiceMemberDetailPage {
       if(data.reviews.length >= 2) {
         this.lowestReview.set(data.reviews.filter((x) => x.id != this.highestReview()?.id).sort((a,b) => a.rating - b.rating)[0]);
       }
-      this.location.getDistanceToServiceProvider(data.service_provider_id, (distance: number) => {
-        this.distance = distance;
-      }, (err) => {
-        
-      });
+      this.distance = await this.location.getDistanceToServiceProvider(data.service_provider_id);
     } else {
       this.title.setTitle("");
     }

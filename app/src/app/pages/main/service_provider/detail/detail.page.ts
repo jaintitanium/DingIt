@@ -129,11 +129,7 @@ export class ServiceProviderDetailPage {
         lng: sp.lng
       }
 
-      this.location.getDistanceToServiceProvider(sp.id, (d) => {
-        this.mapDistance = d;
-      }, (err) => {
-
-      });
+      this.mapDistance = await this.location.getDistanceToServiceProvider(sp.id);
     }
   }
 

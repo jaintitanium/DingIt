@@ -30,6 +30,7 @@ import { FinancialSettingsPage } from './pages/settings/financial/financial.page
 import { RedirectPage } from './pages/auth/redirect/redirect.page';
 import { FinancialTransfersPage } from './pages/settings/financial/transfers/transfers.page';
 import { UserDetailPage } from './pages/main/user/detail/detail.page';
+import { SearchPage } from './pages/main/search/search.page';
 
 export const routes: Routes = [
     { path: 'redirect', component: RedirectPage },
@@ -68,6 +69,7 @@ export const routes: Routes = [
             { path: 'user', children : [
                 { path: ':id', component: UserDetailPage },
             ]},
+            { path: 'search', component: SearchPage },
             { path: '', component: HomePage }
         ]}
     ]},

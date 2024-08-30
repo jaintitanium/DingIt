@@ -14,5 +14,6 @@ import { PostgrestError } from '@supabase/supabase-js';
 export class LoadingErrorBlockComponent {
   @Input('data') data: any;
   @Input('error') error?: PostgrestError | null;
+  @Input('color') color: 'primary' | 'secondary' | 'base-100' | 'neutral' = 'neutral';
 
 }

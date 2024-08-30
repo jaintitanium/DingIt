@@ -5,6 +5,11 @@ import { ApiService } from './api.service';
   providedIn: 'root'
 })
 export class LocationHelperService {
+  options: PositionOptions = {
+    enableHighAccuracy: true,
+    timeout: 5000,
+    maximumAge: 0,
+  };
 
   constructor(
     private api: ApiService,
@@ -14,25 +19,67 @@ export class LocationHelperService {
     return 'POINT('+loc.lng()+' '+loc.lat()+')';
   }
 
-  getDistanceToServiceProvider(id: string, success: (distance: number) => void, failure: (err: {code: number, message: string}) => void) {
-    navigator.geolocation.getCurrentPosition(async (pos) => {
-      const crd = pos.coords;
-    
-      const { data, error } = await this.api.client().rpc('get_service_provider_distance', {
-        input_id: id,
-        input_lat: crd.latitude,
-        input_lng: crd.longitude
-      });
-      if(data) {
-        success(data)
-      }
-    }, (err) => {
-      console.warn(`ERROR(${err.code}): ${err.message}`);
-      failure(err);
-    }, {
-      enableHighAccuracy: true,
-      timeout: 5000,
-      maximumAge: 0,
+  async getDistanceToServiceProvider(id: string) {
+    const coords = await this.getPosition(this.options);
+  
+    const { data, error } = await this.api.client().rpc('get_service_provider_distance', {
+      input_id: id,
+      input_lat: coords.latitude,
+      input_lng: coords.longitude
     });
+    if(error) {
+      return null;
+    }
+    return data;
+  }
+
+  async getLocalHotspots() {
+    const coords = await this.getPosition(this.options);
+  
+    const { data, error } = await this.api.client().rpc('get_hotspots', {
+      input_lat: coords.latitude,
+      input_lng: coords.longitude
+    });
+    if(error) {
+      return [];
+    }
+    return data;
+  }
+
+  async searchProviders(search_text: string) {
+    const coords = await this.getPosition(this.options);
+  
+    const { data, error } = await this.api.client().rpc('search_service_provider', {
+      search_text: search_text,
+      input_lat: coords.latitude,
+      input_lng: coords.longitude
+    });
+    if(error) {
+      return [];
+    }
+    return data;
+  }
+
+  async getPosition(options: PositionOptions) {
+    let promise = new Promise<GeolocationPosition>(function (resolve, reject) {
+      navigator.geolocation.getCurrentPosition(resolve, reject, options);
+    });
+    let coords: GeolocationCoordinates;
+    try {
+      const pos = await promise;
+      coords = pos.coords;
+    } catch(err: any) {
+      console.warn(`ERROR(${err.code}): ${err.message}`);
+      coords = {
+        accuracy: 0,
+        altitude: 0,
+        altitudeAccuracy: 0,
+        heading: 0,
+        speed: 0,
+        latitude: 49.263266,
+        longitude: -123.11747,
+      }
+    }
+    return coords;
   }
 }
