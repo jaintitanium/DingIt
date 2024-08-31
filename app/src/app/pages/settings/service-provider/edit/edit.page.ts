@@ -198,6 +198,37 @@ export class EditPage {
       })
     }
   }
+  uploadPromoPhoto(event: Event) {
+    const element = event.currentTarget as HTMLInputElement;
+    let fileList: FileList | null = element.files;
+    if (fileList) {
+      this.api.client().storage.from('service_providers').upload(this.sp?.data?.id + '/promo.png', fileList[0], {
+        upsert: true
+      }).then((data) => {
+        if(data.error) {
+          this.errorToast.message(data.error.message);
+        } else {
+          this.successToast.message("Updated Promo Photo");
+        }
+        if(this.id && this.sp?.data) {
+          let id = this.id;
+          this.api.client().from('service_provider')
+            .update({promo_image_path: data.data?.path})
+            .eq('id', id)
+            .then(() => this.loadBase(id));
+        }
+      })
+    }
+  }
+  clearPromoPhoto() {
+    if(this.id && this.sp?.data) {
+      let id = this.id;
+      this.api.client().from('service_provider')
+        .update({promo_image_path: null})
+        .eq('id', id)
+        .then(() => this.loadBase(id));
+    }
+  }
   async updateBase(input: Promise<any>) {
     let values = await input;
     if(this.id) {

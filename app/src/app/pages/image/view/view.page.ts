@@ -39,6 +39,17 @@ export class ImageViewPage {
             .publicUrl;
         }
       })
+    } else if(this.type == 'promo') {
+      this.api.client().from('service_provider').select().eq('id', this.id).single().then((product) => {
+        if(product.data) {
+          this.title = product.data.display_name;
+          this.subtitle = null;
+          this.imageUrl = this.api.client().storage.from('service_providers')
+            .getPublicUrl(product.data.promo_image_path ?? '')
+            .data
+            .publicUrl;
+        }
+      })
     }
   }
 }

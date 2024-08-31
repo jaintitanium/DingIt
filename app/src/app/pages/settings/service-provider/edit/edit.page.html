@@ -13,6 +13,16 @@
             <input hidden type="file" #headerUploader accept="image/*" (change)="uploadHeaderPhoto($event)"/>
             <button (click)="headerUploader.click()" class="btn btn-primary m-4">Replace Header Image</button>
             <app-service-provider-form #spForm [data]="sp?.data" />
+            @if(sp?.data?.promo_image_path) {
+                <app-s3-img [src]="sp?.data?.promo_image_path" [bustCache]="true" bucket="service_providers" (click)="promoUploader.click()"/>
+            } @else {
+                <div class="skeleton w-64 h-32 mx-auto" (click)="promoUploader.click()"></div>
+            }
+            <input hidden type="file" #promoUploader accept="image/*" (change)="uploadPromoPhoto($event)"/>
+            <div class="flex-row">
+                <button (click)="clearPromoPhoto()" class="btn btn-warning m-4">Clear Promo Image</button>
+                <button (click)="promoUploader.click()" class="btn btn-primary m-4">Replace Promo Image</button>
+            </div>
             <button (click)="updateBase(spForm.value())" [disabled]="!spForm.valid()" class="btn btn-primary m-4">Update</button>
         </div>
     </details>

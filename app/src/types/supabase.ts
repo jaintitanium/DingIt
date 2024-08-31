@@ -269,6 +269,7 @@ export type Database = {
           owner: string
           phone_number: string | null
           postal_code: string | null
+          promo_image_path: string | null
           state: string | null
           sub_title: string | null
           textsearchable_index_col: unknown | null
@@ -291,6 +292,7 @@ export type Database = {
           owner: string
           phone_number?: string | null
           postal_code?: string | null
+          promo_image_path?: string | null
           state?: string | null
           sub_title?: string | null
           textsearchable_index_col?: unknown | null
@@ -312,6 +314,7 @@ export type Database = {
           owner?: string
           phone_number?: string | null
           postal_code?: string | null
+          promo_image_path?: string | null
           state?: string | null
           sub_title?: string | null
           textsearchable_index_col?: unknown | null

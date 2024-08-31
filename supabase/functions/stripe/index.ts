@@ -174,10 +174,11 @@
             subscription: serviceProviderUser.stripe_subscription_id
           });
           subItems.data.forEach(async (si) => {
-            console.log("Updating", si);
-            await stripe.subscriptionItems.update(si.id, {
-              quantity: spCount?.count ?? 1
-            });
+            if(spCount?.count != si.quantity) {
+              await stripe.subscriptionItems.update(si.id, {
+                quantity: spCount?.count ?? 1
+              });
+            }
           })
           data = await stripe.billingPortal.sessions.create({
             customer: serviceProviderUser.stripe_customer_id ?? '',

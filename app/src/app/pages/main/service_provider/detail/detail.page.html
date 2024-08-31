@@ -36,6 +36,14 @@
                     </span> See Full Menu</button>
             </div>
         }
+        @if(sp.promo_image_path) {
+            <div class="p-6 text-base-100 flex flex-row gap-2 place-items-center cursor-pointer" routerLink="/image/promo/{{this.id}}">
+                <h2 class="m-0 text-base-100">Active Promotion!</h2>
+                <span class="material-symbols-outlined">
+                    arrow_forward_ios
+                </span>
+            </div>
+        }
     </div>
     <div>
         <h2 class="text-md text-shadow shadow-white my-2 px-2">Location</h2>
