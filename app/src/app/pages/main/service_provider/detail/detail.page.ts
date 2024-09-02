@@ -16,6 +16,7 @@ import { reviewWithUser } from '@app/interfaces/review-with-parent';
 import { ReviewBadgeComponent } from "@app/components/review-badge/review-badge.component";
 import { ServiceMemberBadgeComponent } from "@app/components/service-member-badge/service-member-badge.component";
 import { GoogleMap } from '@capacitor/google-maps';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
     selector: 'app-detail',
@@ -133,7 +134,7 @@ export class ServiceProviderDetailPage {
       const newMap = await GoogleMap.create({
         id: 'map', // Unique identifier for this map instance
         element: mapRef, // reference to the capacitor-google-map element
-        apiKey: 'AIzaSyATfNk0xrd9c-S8Orw6_mS_fecupe8zr2s', // Your Google Maps API Key
+        apiKey: Capacitor.getPlatform() == 'ios' ? 'AIzaSyDkIXFdZlvCNksXLK2h4A0vE7zCCPA4yt0' : 'AIzaSyATfNk0xrd9c-S8Orw6_mS_fecupe8zr2s', // Your Google Maps API Key
         config: {
           center: {
             lat: this.sp.lat,
@@ -169,13 +170,17 @@ export class ServiceProviderDetailPage {
   }
 
   navigate(lat: number, lng: number) {
-    var mapUrl = '?q=' + lat + ',' + lng;
+    var mapUrl = lat + ',' + lng;
     // Check if a mobile device exists, or is web browser
+    if(Capacitor.getPlatform() == 'ios') {
+      window.open("maps://?q=" + mapUrl, '_blank');
+    } else {
+      window.open("https://maps.google.com/?q=" + mapUrl, '_blank');
+    }
     // if ( typeof(device) !== 'undefined') {
     // var mapUrlFullPath = (this.platform.is("ios")) ? "maps://" + mapUrl : "geo:" + mapUrl;
     // } else {
     // var mapUrlType = "geo:" + mapUrl;
     // }
-    window.open("maps://" + mapUrl, '_blank');
   }
 }
