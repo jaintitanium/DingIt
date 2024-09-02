@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, QueryList, signal, ViewChildren } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ApiService } from '@app/services/api.service';
 import { TitleService } from '@app/services/title.service';
@@ -8,13 +8,14 @@ import { LoadingErrorBlockComponent } from '@components/loading-error-block/load
 import { Tables } from '@custom-types/supabase';
 import { BackButtonComponent } from "@components/back-button/back-button.component";
 import { RatingComponent } from "@components/rating/rating.component";
-import { GoogleMap, MapMarker } from '@angular/google-maps';
+import { MapMarker } from '@angular/google-maps';
 import { DateService } from '@app/services/date.service';
 import { AvatarComponent } from "@app/components/avatar/avatar.component";
 import { LocationHelperService } from '@app/services/location-helper.service';
 import { reviewWithUser } from '@app/interfaces/review-with-parent';
 import { ReviewBadgeComponent } from "@app/components/review-badge/review-badge.component";
 import { ServiceMemberBadgeComponent } from "@app/components/service-member-badge/service-member-badge.component";
+import { GoogleMap } from '@capacitor/google-maps';
 
 @Component({
     selector: 'app-detail',
@@ -22,19 +23,22 @@ import { ServiceMemberBadgeComponent } from "@app/components/service-member-badg
     templateUrl: './detail.page.html',
     styleUrl: './detail.page.scss',
     imports: [
-    CommonModule,
-    LoadingErrorBlockComponent,
-    BackButtonComponent,
-    RatingComponent,
-    GoogleMap,
-    MapMarker,
-    RouterModule,
-    AvatarComponent,
-    ReviewBadgeComponent,
-    ServiceMemberBadgeComponent
-]
+      CommonModule,
+      LoadingErrorBlockComponent,
+      BackButtonComponent,
+      RatingComponent,
+      MapMarker,
+      RouterModule,
+      AvatarComponent,
+      ReviewBadgeComponent,
+      ServiceMemberBadgeComponent
+    ],
+    schemas: [
+      CUSTOM_ELEMENTS_SCHEMA
+    ]
 })
 export class ServiceProviderDetailPage {
+  @ViewChildren("map") map!: QueryList<ElementRef>;
   id: string;
   query;
   sp: QueryData<typeof this.query> | null = null;
@@ -43,16 +47,8 @@ export class ServiceProviderDetailPage {
   error: PostgrestError | null = null;
   headerImageUrl: string | null = null;
 
-  mapOptions: google.maps.MapOptions = {
-    disableDefaultUI: true,
-    // center: {lat: 40, lng: -20},
-    zoom: 14,
-    draggable: false
-  };
-  center: google.maps.LatLngLiteral = {lat: 24, lng: 12};
   mapShow = false;
   mapDistance: number | null = null;
-  markerOptions: google.maps.MarkerOptions = {draggable: false};
 
   reviews: reviewWithUser[] = [];
   highestReview = signal<reviewWithUser | null>(null);
@@ -65,6 +61,7 @@ export class ServiceProviderDetailPage {
     private api: ApiService,
     public title: TitleService,
     private location: LocationHelperService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     this.id = route.snapshot.params['id'];
     this.query = this.api.client()
@@ -105,10 +102,18 @@ export class ServiceProviderDetailPage {
       if(data.reviews.length >= 2) {
         this.lowestReview.set(data.reviews.filter((x) => x.id != this.highestReview()?.id).sort((a,b) => a.rating - b.rating)[0]);
       }
-      this.refreshMap(data);
     } else {
       this.title.setTitle("");
     }
+  }
+  ngAfterViewInit() {
+    this.map?.changes.subscribe({
+      next: () => {
+        if (this.sp && this.map && this.map.length > 0) {
+          this.map.forEach((map) => this.refreshMap(map));
+        }
+      }
+    });
   }
   reorganizeHours(raw: Tables<'service_provider_hours'>[]) {
     raw.sort((a,b) => {
@@ -121,15 +126,35 @@ export class ServiceProviderDetailPage {
     }
     return org;
   }
-  async refreshMap(sp: Tables<'service_provider'>) {
-    if(sp.lat && sp.lng) {
+  async refreshMap(map: ElementRef<any>) {
+    const mapRef = map.nativeElement;
+    console.log(mapRef)
+    if(mapRef && this.sp?.lat && this.sp.lng) {
+      const newMap = await GoogleMap.create({
+        id: 'map', // Unique identifier for this map instance
+        element: mapRef, // reference to the capacitor-google-map element
+        apiKey: 'AIzaSyATfNk0xrd9c-S8Orw6_mS_fecupe8zr2s', // Your Google Maps API Key
+        config: {
+          center: {
+            lat: this.sp.lat,
+            lng: this.sp.lng,
+          },
+          zoom: 14, 
+          draggable: false,
+          disableDefaultUI: true,
+        },
+      });
+      await newMap.addMarker({
+        coordinate: {
+          lat: this.sp.lat,
+          lng: this.sp.lng
+        },
+        draggable: false,
+      });
       this.mapShow = true;
-      this.mapOptions.center = {
-        lat: sp.lat,
-        lng: sp.lng
-      }
-
-      this.mapDistance = await this.location.getDistanceToServiceProvider(sp.id);
+    }
+    if(this.sp) {
+      this.mapDistance = await this.location.getDistanceToServiceProvider(this.sp.id);
     }
   }
 
