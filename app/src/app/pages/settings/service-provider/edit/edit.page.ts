@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '@app/services/api.service';
@@ -17,7 +17,7 @@ import { CdkDrag, CdkDragDrop, CdkDropList, DragDropModule, moveItemInArray } fr
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { AvatarComponent } from "@app/components/avatar/avatar.component";
 import { environment } from 'environments/environment';
-import { QrCodeModule } from 'ng-qrcode';
+import { QrCodeComponent, QrCodeModule } from 'ng-qrcode';
 
 @Component({
   selector: 'app-edit',
@@ -146,6 +146,7 @@ export class EditPage {
     });
   }
   qrState: null | { url: string, name: string } = null;
+  @ViewChild('qrComponent', { read: ElementRef }) qrComponent?: ElementRef;
 
   constructor(
     private route: ActivatedRoute,
@@ -624,7 +625,40 @@ export class EditPage {
     };
     this.modalForm.get('qrModal')?.setValue(true);
   }
-  
+  downloadQR() {
+    let qr = this.qrComponent;
+    console.log(qr)
+    if(qr) {
+      let b64 = qr.nativeElement.children[0].toDataURL("image/png");
+      console.log(b64)
+      let blobData = this.convertBase64ToBlob(b64)
+      // saves as image
+      const blob = new Blob([blobData], { type: "image/png" })
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = url
+      // name of the file
+      link.download = (this.qrState?.name ?? 'team') + '-qrcode'
+      link.click()
+    }
+  }
+  private convertBase64ToBlob(Base64Image: string) {
+    // split into two parts
+    const parts = Base64Image.split(";base64,")
+    // hold the content type
+    const imageType = parts[0].split(":")[1]
+    // decode base64 string
+    const decodedData = window.atob(parts[1])
+    // create unit8array of size same as row data length
+    const uInt8Array = new Uint8Array(decodedData.length)
+    // insert all character code into uint8array
+    for (let i = 0; i < decodedData.length; ++i) {
+      uInt8Array[i] = decodedData.charCodeAt(i)
+    }
+    // return blob image after conversion
+    return new Blob([uInt8Array], { type: imageType })
+  }
+
   daysOfWeekSelect(): {value: number | string, label: string}[] {
     return DateService.daysOfWeek.map((v, i) => { return { value: i, label: v}});
   }

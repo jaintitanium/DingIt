@@ -318,10 +318,11 @@
             @if(qrState) {
                 <div class="flex flex-col text-center">
                     <h3 class="font-bold text-lg">QR Code for {{ qrState.name }}</h3>
-                    <qr-code class="mx-auto" [value]="qrState.url" errorCorrectionLevel="H" size="300" centerImageSrc="assets/bell-black-outline.svg" centerImageSize="75" />
+                    <qr-code #qrComponent class="mx-auto" [value]="qrState.url" errorCorrectionLevel="H" size="300" centerImageSrc="assets/bell-black-outline.svg" centerImageSize="75" />
                 </div>
             }
             <div class="modal-action">
+                <button class="btn btn-primary mr-4" (click)="downloadQR()">Download</button>
                 <label for="my_modal_qr" class="btn">Close</label>
             </div>
         </div>
