@@ -46,8 +46,9 @@ export class AppComponent {
         // Example url: https://*.2dingit.com/tabs/tab2
         // slug = /tabs/tab2
         const slug = event.url.split("2dingit.com").pop();
+        console.log("Navigate to " + slug)
         if (slug) {
-          this.router.navigateByUrl(slug);
+          this.router.navigateByUrl(slug, {onSameUrlNavigation: 'reload'});
         }
         // If no match, do nothing - let regular routing
         // logic take over
