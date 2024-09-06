@@ -62,7 +62,6 @@ export class ServiceProviderDetailPage {
     private api: ApiService,
     public title: TitleService,
     private location: LocationHelperService,
-    private changeDetectorRef: ChangeDetectorRef,
   ) {
     this.id = route.snapshot.params['id'];
     this.query = this.api.client()
@@ -103,19 +102,18 @@ export class ServiceProviderDetailPage {
       if(data.reviews.length >= 2) {
         this.lowestReview.set(data.reviews.filter((x) => x.id != this.highestReview()?.id).sort((a,b) => a.rating - b.rating)[0]);
       }
+      this.map?.changes.subscribe({
+        next: () => {
+          if (this.sp && this.map && this.map.length > 0) {
+            this.map.forEach((map) => this.refreshMap(map));
+          }
+        }
+      });
     } else {
       this.title.setTitle("");
     }
   }
-  ngAfterViewInit() {
-    this.map?.changes.subscribe({
-      next: () => {
-        if (this.sp && this.map && this.map.length > 0) {
-          this.map.forEach((map) => this.refreshMap(map));
-        }
-      }
-    });
-  }
+  
   reorganizeHours(raw: Tables<'service_provider_hours'>[]) {
     raw.sort((a,b) => {
       return Date.parse('01 Jan 1970 ' + a.open_time) - Date.parse('01 Jan 1970 ' + b.open_time);
@@ -129,12 +127,11 @@ export class ServiceProviderDetailPage {
   }
   async refreshMap(map: ElementRef<any>) {
     const mapRef = map.nativeElement;
-    console.log(mapRef)
     if(mapRef && this.sp?.lat && this.sp.lng) {
       const newMap = await GoogleMap.create({
-        id: 'map', // Unique identifier for this map instance
+        id: 'map'+this.id, // Unique identifier for this map instance
         element: mapRef, // reference to the capacitor-google-map element
-        apiKey: Capacitor.getPlatform() == 'ios' ? 'AIzaSyDkIXFdZlvCNksXLK2h4A0vE7zCCPA4yt0' : 'AIzaSyATfNk0xrd9c-S8Orw6_mS_fecupe8zr2s', // Your Google Maps API Key
+        apiKey: LocationHelperService.getMapsApiKey(), // Your Google Maps API Key
         config: {
           center: {
             lat: this.sp.lat,
@@ -142,6 +139,7 @@ export class ServiceProviderDetailPage {
           },
           zoom: 14, 
           draggable: false,
+          clickableIcons: false,
           disableDefaultUI: true,
         },
       });
@@ -152,6 +150,8 @@ export class ServiceProviderDetailPage {
         },
         draggable: false,
       });
+      await newMap.disableTouch();
+      await newMap.enableCurrentLocation(true);
       this.mapShow = true;
     }
     if(this.sp) {

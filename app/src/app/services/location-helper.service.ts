@@ -93,4 +93,15 @@ export class LocationHelperService {
       return coords;
     }
   }
+
+  public static getMapsApiKey(): string {
+    const platform = Capacitor.getPlatform();
+    if(platform == 'android') {
+      return 'AIzaSyAvtxOsQrLMaSUiP7pz10wn9ZaXuvZrgD8';
+    } else if (platform == 'ios') {
+      return 'AIzaSyDkIXFdZlvCNksXLK2h4A0vE7zCCPA4yt0';
+    } else {
+      return 'AIzaSyATfNk0xrd9c-S8Orw6_mS_fecupe8zr2s';
+    }
+  }
 }
