@@ -1,17 +1,25 @@
 import { Component, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavigationEnd, Router, RouterOutlet, Event } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet, Event, ChildrenOutletContexts } from '@angular/router';
 import { environment } from '../environments/environment.development';
 import { MessagesIndicatorComponent } from './components/messages-indicator/messages-indicator.component';
 import { filter } from 'rxjs';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
 import { Location } from '@angular/common';
 import { Capacitor } from '@capacitor/core';
+import { slideInAnimation } from './animations';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, MessagesIndicatorComponent],
+  imports: [
+    CommonModule, 
+    RouterOutlet,
+    MessagesIndicatorComponent,
+  ],
+  animations: [
+    slideInAnimation,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
@@ -23,6 +31,7 @@ export class AppComponent {
     private router: Router,
     private zone: NgZone,
     private _location: Location,
+    private contexts: ChildrenOutletContexts,
   ) {
     this.initializeApp();
   }
@@ -66,5 +75,9 @@ export class AppComponent {
     if(Capacitor.getPlatform() == 'android') {
       document.documentElement.style.setProperty('background', 'transparent');
     }
+  }
+  getRouteAnimationData() {
+    console.log(this.contexts.getContext('primary')?.route?.snapshot?.data?.['animation'])
+    return this.contexts.getContext('primary')?.route?.snapshot?.data?.['animation'] ?? 'slide';
   }
 }

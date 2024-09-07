@@ -34,7 +34,7 @@ import { SearchPage } from './pages/main/search/search.page';
 
 export const routes: Routes = [
     { path: 'redirect', component: RedirectPage },
-    { path: '', canActivate: [splashGuard], children: [
+    { path: '', canActivate: [splashGuard], data: {animation: 'slide'}, children: [
         { path: 'login', component: LoginPage },
         { path: 'signup', component: SignUpPage },
         { path: 'complete-profile', component: CompleteProfilePage },
