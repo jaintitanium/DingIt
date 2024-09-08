@@ -1,5 +1,7 @@
 <div class="prose mx-auto">
-  <router-outlet></router-outlet>
+  <div [@routeAnimations]="getRouteAnimationData()">
+    <router-outlet></router-outlet>
+  </div>
   <div class="h-20"></div>
 </div>
 

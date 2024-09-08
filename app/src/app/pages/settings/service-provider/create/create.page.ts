@@ -17,14 +17,14 @@ import { LoadingComponent } from "../../../../components/loading/loading.compone
     templateUrl: './create.page.html',
     styleUrl: './create.page.scss',
     imports: [
-    TextFieldComponent,
-    ReactiveFormsModule,
-    GoogleMapsModule,
-    GoogleMap,
-    ToastComponent,
-    ServiceProviderEntryComponent,
-    LoadingComponent
-]
+      TextFieldComponent,
+      ReactiveFormsModule,
+      GoogleMapsModule,
+      GoogleMap,
+      ToastComponent,
+      ServiceProviderEntryComponent,
+      LoadingComponent
+    ],
 })
 export class CreatePage {
   @ViewChild('errorToast') errorToast!: ToastComponent;

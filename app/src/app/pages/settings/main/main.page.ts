@@ -8,7 +8,7 @@ import { TitleService } from '@app/services/title.service';
     standalone: true,
     templateUrl: './main.page.html',
     styleUrl: './main.page.scss',
-    imports: [MenuItemComponent]
+    imports: [MenuItemComponent],
 })
 export class MainSettingsPage {
 

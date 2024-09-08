@@ -38,7 +38,7 @@
                 </div>
             </div>
             <div class="flex flex-row gap-8 px-6">
-                <div>
+                <div class="basis-1/2">
                     <div class="rounded-xl bg-primary text-primary-content text-center p-4">
                         <h3 class="text-primary-content my-4">Overall Rating</h3>
                         <div class="flex flex-row text-center">
@@ -47,12 +47,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex flex-col flex-auto not-prose text-neutral">
-                    <p><b>5 </b><progress class="progress progress-primary w-11/12 bg-base-100" [value]="countReviewsByRating(5)" [max]="reviews.length"></progress></p>
-                    <p><b>4 </b><progress class="progress progress-primary w-11/12 bg-base-100" [value]="countReviewsByRating(4)" [max]="reviews.length"></progress></p>
-                    <p><b>3 </b><progress class="progress progress-primary w-11/12 bg-base-100" [value]="countReviewsByRating(3)" [max]="reviews.length"></progress></p>
-                    <p><b>2 </b><progress class="progress progress-primary w-11/12 bg-base-100" [value]="countReviewsByRating(2)" [max]="reviews.length"></progress></p>
-                    <p><b>1 </b><progress class="progress progress-primary w-11/12 bg-base-100" [value]="countReviewsByRating(1)" [max]="reviews.length"></progress></p>
+                <div class="basis-1/2 flex flex-col flex-auto not-prose text-neutral">
+                    <p><b>5 </b><progress class="progress progress-primary w-10/12 bg-base-100" [value]="countReviewsByRating(5)" [max]="reviews.length"></progress></p>
+                    <p><b>4 </b><progress class="progress progress-primary w-10/12 bg-base-100" [value]="countReviewsByRating(4)" [max]="reviews.length"></progress></p>
+                    <p><b>3 </b><progress class="progress progress-primary w-10/12 bg-base-100" [value]="countReviewsByRating(3)" [max]="reviews.length"></progress></p>
+                    <p><b>2 </b><progress class="progress progress-primary w-10/12 bg-base-100" [value]="countReviewsByRating(2)" [max]="reviews.length"></progress></p>
+                    <p><b>1 </b><progress class="progress progress-primary w-10/12 bg-base-100" [value]="countReviewsByRating(1)" [max]="reviews.length"></progress></p>
                 </div>
             </div>
             @if(reviews.length > 0) {

@@ -17,7 +17,7 @@ import { LoadingErrorBlockComponent } from "../../../../components/loading-error
     AvatarComponent,
     CurrencyPipe,
     LoadingErrorBlockComponent
-],
+  ],
   templateUrl: './transfers.page.html',
   styleUrl: './transfers.page.scss'
 })

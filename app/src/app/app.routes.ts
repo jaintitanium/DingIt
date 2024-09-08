@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { LoginPage } from './pages/auth/login/login.page';
 import { RootPage } from './pages/main/root/root.page';
 import { SignUpPage } from './pages/auth/sign-up/sign-up.page';
-import { TestPage } from './pages/main/test/test.page';
 import { MessagesPage } from './pages/main/messages/messages.page';
 import { MoneyPage } from './pages/main/money/money.page';
 import { ProfilePage } from './pages/main/profile/profile.page';
@@ -34,43 +33,42 @@ import { SearchPage } from './pages/main/search/search.page';
 
 export const routes: Routes = [
     { path: 'redirect', component: RedirectPage },
-    { path: '', canActivate: [splashGuard], data: {animation: 'slide'}, children: [
-        { path: 'login', component: LoginPage },
-        { path: 'signup', component: SignUpPage },
-        { path: 'complete-profile', component: CompleteProfilePage },
-        { path: 'settings', component: SettingsPage, canActivate: [authenticatedGuard, profileCompleteGuard], children: [
-            { path: 'financial', component: FinancialSettingsPage },
-            { path: 'financial/transfers', component: FinancialTransfersPage },
-            { path: 'service-providers', component: ServiceProviderPage },
-            { path: 'service-providers/create', component: CreatePage },
-            { path: 'service-providers/edit/:id', component: EditPage },
-            { path: '', component: MainSettingsPage, data: { title: "Settings" } },
+    { path: '', canActivate: [splashGuard], data: {animation: 'b'}, children: [
+        { path: 'login', data: {animation: 'login'}, component: LoginPage },
+        { path: 'signup', data: {animation: 'signup'}, component: SignUpPage },
+        { path: 'complete-profile', data: {animation: 'slide'}, component: CompleteProfilePage },
+        { path: 'settings', component: SettingsPage, data: {animation: 'settings'}, canActivate: [authenticatedGuard, profileCompleteGuard], children: [
+            { path: 'financial', data: {animation: 'sf'}, component: FinancialSettingsPage },
+            { path: 'financial/transfers', data: {animation: 'sft'}, component: FinancialTransfersPage },
+            { path: 'service-providers', data: {animation: 'sp'}, component: ServiceProviderPage },
+            { path: 'service-providers/create', data: {animation: 'spc'}, component: CreatePage },
+            { path: 'service-providers/edit/:id', data: {animation: 'spe'}, component: EditPage },
+            { path: '', component: MainSettingsPage, data: { title: "Settings", animation: 's' } },
         ] },
-        { path: 'image/:type/:id', component: ImageViewPage },
-        { path: '', component: RootPage, children: [
-            { path: 'test', component: TestPage },
-            { path: 'messages', component: MessagesPage, canActivate: [authenticatedGuard, profileCompleteGuard] },
-            { path: 'money', component: MoneyPage, canActivate: [authenticatedGuard, profileCompleteGuard] },
-            { path: 'profile', component: ProfilePage, canActivate: [authenticatedGuard, profileCompleteGuard] },
-            { path: 'service-provider', children: [
-                { path: ':id', component: ServiceProviderDetailPage },
-                { path: ':id/menu', component: MenuPage },
-                { path: ':id/reviews', component: ServiceProviderReviewsPage },
-                { path: ':id/team', component: ServiceProviderTeamPage }
+        { path: 'image/:type/:id', data: {animation: 'image'}, component: ImageViewPage },
+        { path: '', data: {animation: 'bb'}, component: RootPage, children: [
+            { path: 'messages', component: MessagesPage, data: {animation: 'messages'}, canActivate: [authenticatedGuard, profileCompleteGuard] },
+            { path: 'money', component: MoneyPage, data: {animation: 'money'}, canActivate: [authenticatedGuard, profileCompleteGuard] },
+            { path: 'profile', component: ProfilePage, data: {animation: 'profile'}, canActivate: [authenticatedGuard, profileCompleteGuard] },
+            { path: 'service-provider', data: {animation: 'sp'}, children: [
+                { path: ':id', data: {animation: 'spid'}, component: ServiceProviderDetailPage },
+                { path: ':id/menu', data: {animation: 'spm'}, component: MenuPage },
+                { path: ':id/reviews', data: {animation: 'spr'}, component: ServiceProviderReviewsPage },
+                { path: ':id/team', data: {animation: 'spt'}, component: ServiceProviderTeamPage }
             ]},
-            { path: 'service-member', children : [
-                { path: ':id', component: ServiceMemberDetailPage },
-                { path: ':id/reviews', component: ServiceMemberReviewsPage }
+            { path: 'service-member', data: {animation: 'service-member'}, children : [
+                { path: ':id', data: {animation: 'sm'}, component: ServiceMemberDetailPage },
+                { path: ':id/reviews', data: {animation: 'smr'}, component: ServiceMemberReviewsPage }
             ]},
             { path: 'review', children : [
-                { path: ':id', component: ReviewDetailPage },
-                { path: 'create/:type/:id', component: CreateReviewPage, canActivate: [authenticatedGuard, profileCompleteGuard] }
+                { path: ':id', data: {animation: 'r'}, component: ReviewDetailPage },
+                { path: 'create/:type/:id', data: {animation: 'rc'}, component: CreateReviewPage, canActivate: [authenticatedGuard, profileCompleteGuard] }
             ]},
             { path: 'user', children : [
-                { path: ':id', component: UserDetailPage },
+                { path: ':id', data: {animation: 'user'}, component: UserDetailPage },
             ]},
-            { path: 'search', component: SearchPage },
-            { path: '', component: HomePage }
+            { path: 'search', data: {animation: 'search'}, component: SearchPage },
+            { path: '', data: {animation: 'root'}, component: HomePage }
         ]}
     ]},
     { path: 'loading', component: SplashScreenComponent }

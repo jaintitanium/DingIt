@@ -17,7 +17,7 @@ import { LoadingComponent } from "../../../components/loading/loading.component"
       MenuItemComponent,
       RouterModule,
       LoadingComponent,
-    ]
+    ],
 })
 export class ServiceProviderPage {
   query;

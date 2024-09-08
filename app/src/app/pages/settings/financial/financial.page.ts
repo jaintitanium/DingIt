@@ -20,7 +20,7 @@ import { LoadingComponent } from "@app/components/loading/loading.component";
     LoadingComponent,
     DatePipe,
     CurrencyPipe,
-],
+  ],
   templateUrl: './financial.page.html',
   styleUrl: './financial.page.scss'
 })

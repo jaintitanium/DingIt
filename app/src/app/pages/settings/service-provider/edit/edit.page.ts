@@ -39,7 +39,7 @@ import { QrCodeComponent, QrCodeModule } from 'ng-qrcode';
     CurrencyPipe,
     AvatarComponent,
     QrCodeModule,
-  ]
+  ],
 })
 export class EditPage {
   @ViewChild('errorToast') errorToast!: ToastComponent;

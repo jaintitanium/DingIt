@@ -6,6 +6,8 @@ import { filter } from 'rxjs';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
 import { Location } from '@angular/common';
 import { Capacitor } from '@capacitor/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { slideInAnimation } from './animations';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +16,9 @@ import { Capacitor } from '@capacitor/core';
     CommonModule, 
     RouterOutlet,
     MessagesIndicatorComponent,
+  ],
+  animations: [
+    slideInAnimation
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -70,5 +75,9 @@ export class AppComponent {
     if(Capacitor.getPlatform() == 'android') {
       document.documentElement.style.setProperty('background', 'transparent');
     }
+  }
+  
+  getRouteAnimationData() {
+    return this.contexts.getContext('primary')?.route?.snapshot?.data?.['animation'] ?? 'slide';
   }
 }
