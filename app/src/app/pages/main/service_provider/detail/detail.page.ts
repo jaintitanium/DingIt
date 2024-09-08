@@ -151,7 +151,7 @@ export class ServiceProviderDetailPage {
         draggable: false,
       });
       await newMap.disableTouch();
-      await newMap.enableCurrentLocation(true);
+      // await newMap.enableCurrentLocation(true);
       this.mapShow = true;
     }
     if(this.sp) {
