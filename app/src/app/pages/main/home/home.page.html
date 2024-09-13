@@ -37,7 +37,7 @@
               <h2 class="card-title text-base-100 my-0">{{ hs.display_name }}</h2>
               <p class="my-0">{{ hs.sub_title }}</p>
               <p class="my-0 text-sm">{{ hs.distance | number: '1.0-0' }}mi. away</p>
-              <app-rating class="text-shadow shadow-white" size="sm" [value]="hs.rating" />
+              <app-rating class="text-shadow shadow-white" size="md" [value]="hs.rating" />
             </div>
           }
         </div>
@@ -54,7 +54,7 @@
             <div class="flex flex-row items-center">
               <h2 class="card-title my-0">{{sp.display_name}}</h2>
               <div class="flex-auto flex flex-row-reverse">
-                <app-rating class="" size="sm" [value]="sp.provider_rating" />
+                <app-rating class="" size="md" [value]="sp.provider_rating" />
               </div>
             </div>
             <div class="flex flex-row">

@@ -262,6 +262,7 @@ export type Database = {
           display_name: string
           featured_product: string | null
           header_image_path: string | null
+          header_thumbnail_path: string | null
           id: string
           lat: number | null
           lng: number | null
@@ -285,6 +286,7 @@ export type Database = {
           display_name: string
           featured_product?: string | null
           header_image_path?: string | null
+          header_thumbnail_path?: string | null
           id?: string
           lat?: number | null
           lng?: number | null
@@ -307,6 +309,7 @@ export type Database = {
           display_name?: string
           featured_product?: string | null
           header_image_path?: string | null
+          header_thumbnail_path?: string | null
           id?: string
           lat?: number | null
           lng?: number | null
@@ -454,18 +457,21 @@ export type Database = {
           id: string
           name: string
           profile_path: string | null
+          thumbnail_path: string | null
         }
         Insert: {
           created_at?: string
           id?: string
           name: string
           profile_path?: string | null
+          thumbnail_path?: string | null
         }
         Update: {
           created_at?: string
           id?: string
           name?: string
           profile_path?: string | null
+          thumbnail_path?: string | null
         }
         Relationships: []
       }

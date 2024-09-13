@@ -25,7 +25,7 @@ import { slideInAnimation } from './animations';
 })
 export class AppComponent {
   UrlHistory: string[] = [];
-  title = 'DingIt!';
+  title = 'DINGit';
   
   constructor(
     private router: Router,

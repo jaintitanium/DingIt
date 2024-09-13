@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">DingIt!</string>
-    <string name="title_activity_main">DingIt!</string>
+    <string name="app_name">DINGit</string>
+    <string name="title_activity_main">DINGit</string>
     <string name="package_name">technology.swiftlet.dingit</string>
     <string name="custom_url_scheme">com.2dingit.app</string>
 </resources>

@@ -37,7 +37,7 @@ export class RootPage {
     if(id) {
       const {data,error} = await this.api.client().from('user').select().eq('id', id).single();
       if(data) {
-        this.avatarUrl = data.profile_path
+        this.avatarUrl = data.thumbnail_path ?? data.profile_path
       }
     }
   }

@@ -5,7 +5,7 @@ import { Title } from '@angular/platform-browser';
   providedIn: 'root'
 })
 export class TitleService {
-  public readonly prefix: string = 'DingIt!'; 
+  public readonly prefix: string = 'DINGit'; 
   public short = signal('');
   public long = signal(this.prefix);
   constructor(

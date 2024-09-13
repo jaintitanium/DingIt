@@ -4,7 +4,7 @@
         <app-back-button color="base-100" />
         <div class="flex flex-col gap-8 p-8 items-center">
             <h1 class="text-primary-content my-0">{{ data.service_provider.display_name }}</h1>
-            <app-avatar [path]="data.user?.profile_path" />
+            <app-avatar class="cursor-pointer" [path]="data.user?.profile_path" routerLink="/user/{{ data.user?.id }}" />
             <h2 class="text-primary-content my-0">Reviewed by {{ data.user?.name }}</h2>
         </div>
     </div>

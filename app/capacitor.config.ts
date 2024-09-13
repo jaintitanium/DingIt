@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'technology.swiftlet.dingit',
-  appName: 'DingIt!',
+  appName: 'DINGit',
   webDir: 'dist/app/browser'
 };
 

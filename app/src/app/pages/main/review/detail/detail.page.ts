@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ApiService } from '@app/services/api.service';
 import { PostgrestError, QueryData } from '@supabase/supabase-js';
 import { LoadingErrorBlockComponent } from "@app/components/loading-error-block/loading-error-block.component";
@@ -16,7 +16,8 @@ import { S3ImgComponent } from "@app/components/s3-img/s3-img.component";
     BackButtonComponent,
     AvatarComponent,
     RatingComponent,
-    S3ImgComponent
+    S3ImgComponent,
+    RouterModule,
 ],
   templateUrl: './detail.page.html',
   styleUrl: './detail.page.scss'
