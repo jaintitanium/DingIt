@@ -3,10 +3,9 @@
     <app-loading-error-block [data]="data" [error]="error" />
     <ng-container *ngIf="data">
         <h3>Profile Photo</h3>
-        <app-avatar (click)="uploader.click()" [path]="data.profile_path" [force]="true" />
+        <app-avatar (click)="uploadProfilePhoto()" [path]="data.profile_path" [force]="true" />
         <p>
-            <input hidden type="file" #uploader accept="image/*" (change)="uploadProfilePhoto($event)"/>
-            <button (click)="uploader.click()" class="btn btn-primary">Replace Photo</button>
+            <button (click)="uploadProfilePhoto()" class="btn btn-primary">Replace Photo</button>
         </p>
         <h3>Full Name</h3>
         <p>{{ data.name }}</p>
@@ -46,4 +45,5 @@
     </ng-container>
 </div>
 <app-toast #infoToast type="info" />
+<app-toast #successToast type="success" />
 <app-toast #errorToast type="error" />

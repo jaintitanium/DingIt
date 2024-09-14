@@ -18,6 +18,7 @@ import { NgxImageCompressService } from 'ngx-image-compress';
 import { AvatarComponent } from "@app/components/avatar/avatar.component";
 import { environment } from 'environments/environment';
 import { QrCodeComponent, QrCodeModule } from 'ng-qrcode';
+import { FileService } from '@app/services/file.service';
 
 @Component({
   selector: 'app-edit',
@@ -44,6 +45,7 @@ import { QrCodeComponent, QrCodeModule } from 'ng-qrcode';
 export class EditPage {
   @ViewChild('errorToast') errorToast!: ToastComponent;
   @ViewChild('successToast') successToast!: ToastComponent;
+  @ViewChild('infoToast') infoToast!: ToastComponent;
 
   public DateService = DateService;
 
@@ -177,26 +179,46 @@ export class EditPage {
     this.sp = await this.api.client().from('service_provider').select('*').eq('id', id).single();
     this.titleService.setTitle('Edit: ' + this.sp.data?.display_name);
   }
-  uploadHeaderPhoto(event: Event) {
-    const element = event.currentTarget as HTMLInputElement;
-    let fileList: FileList | null = element.files;
-    if (fileList) {
-      this.api.client().storage.from('service_providers').upload(this.sp?.data?.id + '/header.png', fileList[0], {
-        upsert: true
-      }).then((data) => {
-        if(data.error) {
-          this.errorToast.message(data.error.message);
-        } else {
-          this.successToast.message("Updated Header Photo");
+  async uploadHeaderPhoto() {
+    if(this.id) {
+      const id = this.id;
+      const path = this.id + '/header_' + self.crypto.randomUUID().substring(24);
+
+      this.imageCompress.uploadFile().then(async ({image, orientation}) => {
+        this.infoToast.message("Uploading...");
+        const fullUpload = await this.api.client().storage.from('service_providers').upload(path, FileService.dataURLtoBlob(image), {
+          upsert: true
+        });
+        if(fullUpload.error) {
+          this.errorToast.message(fullUpload.error.message);
+          return;
         }
-        if(this.id && this.sp?.data) {
-          let id = this.id;
-          this.api.client().from('service_provider')
-            .update({header_image_path: data.data?.path})
-            .eq('id', id)
-            .then(() => this.loadBase(id));
-        }
-      })
+        await this.api.client().from('service_provider')
+          .update({header_image_path: fullUpload.data?.path})
+          .eq('id', id);
+        console.log(fullUpload)
+
+        this.imageCompress
+          .compressFile(image, orientation, 50, 50, 240, 240) // 50% ratio, 50% quality
+          .then(async compressedImage => {
+            const thumbUpload = await this.api.client().storage.from('service_providers').upload(path+'_thumb', FileService.dataURLtoBlob(compressedImage), {
+              upsert: true
+            });
+            if(thumbUpload.error) {
+              this.errorToast.message(thumbUpload.error.message);
+              return;
+            } else {
+              await this.api.client().from('service_provider')
+                .update({header_thumbnail_path: thumbUpload.data?.path})
+                .eq('id', id);
+              if(this.sp?.data?.header_image_path) {
+                this.sp.data.header_image_path = null;
+              }
+              await this.loadBase(id);
+              this.successToast.message("Uploaded header photo");
+            }
+          });
+      });
     }
   }
   uploadPromoPhoto(event: Event) {
@@ -366,7 +388,8 @@ export class EditPage {
       const path = this.editProduct ? (this.id + '/menu/' + this.editProduct) : (this.id + '/menu/' + self.crypto.randomUUID().substring(24));
 
       this.imageCompress.uploadFile().then(async ({image, orientation}) => {
-        const fullUpload = await this.api.client().storage.from('service_providers').upload(path, this.dataURLtoBlob(image), {
+        this.infoToast.message("Uploading...");
+        const fullUpload = await this.api.client().storage.from('service_providers').upload(path, FileService.dataURLtoBlob(image), {
           upsert: true
         });
         if(fullUpload.error) {
@@ -378,9 +401,9 @@ export class EditPage {
         this.editProductImagePath = fullUpload.data.path;
 
         this.imageCompress
-            .compressFile(image, orientation, 50, 50) // 50% ratio, 50% quality
+            .compressFile(image, orientation, 50, 50, 250, 250) // 50% ratio, 50% quality
             .then(async compressedImage => {
-                const thumbUpload = await this.api.client().storage.from('service_providers').upload(path+'_thumb', this.dataURLtoBlob(compressedImage), {
+                const thumbUpload = await this.api.client().storage.from('service_providers').upload(path+'_thumb', FileService.dataURLtoBlob(compressedImage), {
                   upsert: true
                 });
                 if(thumbUpload.error) {
@@ -393,15 +416,6 @@ export class EditPage {
             });
       });
   }
-  dataURLtoBlob(dataurl: string) {
-    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/),
-        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-    while(n--){
-        u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new Blob([u8arr], {type: mime ? mime[1] : ''});
-  }
-
 
   // Prices
   async startEditPricesForProduct(productId: string) {

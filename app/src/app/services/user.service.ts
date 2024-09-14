@@ -8,6 +8,7 @@ export class UserService {
   profileCompleted = signal(false);
   private _redirectUrl: string | null = null;
   isLoggedIn = signal(false);
+  profilePhoto = signal<string | null>(null);
 
   constructor(private api: ApiService) {
     this.userId();
@@ -31,9 +32,11 @@ export class UserService {
         const { data, error } = await this.api.client()
           .from('user')
           .select('*')
-          .eq('id', id);
-        if(data && data[0] && data[0].name) {
+          .eq('id', id)
+          .single();
+        if(data && data.name) {
           this.profileCompleted.set(true);
+          this.profilePhoto.set(data.thumbnail_path ?? data.profile_path);
         }
       }
     }

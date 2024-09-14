@@ -6,12 +6,12 @@
         <div class="collapse-content flex flex-col">
             <app-loading-error-block [data]="sp?.data" [error]="sp?.error" />
             @if(sp?.data?.header_image_path) {
-                <app-s3-img [src]="sp?.data?.header_image_path" [bustCache]="true" bucket="service_providers" (click)="headerUploader.click()"/>
+                <app-s3-img [src]="sp?.data?.header_image_path" [bustCache]="true" bucket="service_providers" (click)="uploadHeaderPhoto()"/>
             } @else {
-                <div class="skeleton w-64 h-32 mx-auto" (click)="headerUploader.click()"></div>
+                <div class="skeleton w-64 h-32 mx-auto" (click)="uploadHeaderPhoto()"></div>
             }
-            <input hidden type="file" #headerUploader accept="image/*" (change)="uploadHeaderPhoto($event)"/>
-            <button (click)="headerUploader.click()" class="btn btn-primary m-4">Replace Header Image</button>
+            <!-- <input hidden type="file" #headerUploader accept="image/*" (change)="uploadHeaderPhoto($event)"/> -->
+            <button (click)="uploadHeaderPhoto()" class="btn btn-primary m-4">Replace Header Image</button>
             <app-service-provider-form #spForm [data]="sp?.data" />
             @if(sp?.data?.promo_image_path) {
                 <app-s3-img [src]="sp?.data?.promo_image_path" [bustCache]="true" bucket="service_providers" (click)="promoUploader.click()"/>
@@ -86,7 +86,7 @@
         <ng-template #productInput>
             <form [formGroup]="productForm">
                 @if(editProductImagePath) {
-                    <app-s3-img [src]="editProductImagePath" [bustCache]="true" bucket="service_providers" (click)="uploadMenuPhoto()"/>
+                    <app-s3-img [src]="editProductImagePath" [bustCache]="true" bucket="service_providers" (click)="uploadMenuPhoto()" />
                     <div class="flex-row">
                         <button (click)="editProductImagePath = null; productForm.get('thumbnail_path')?.setValue(null)" class="btn btn-warning m-4">Clear Menu Image</button>
                         <button (click)="uploadMenuPhoto()" class="btn btn-primary m-4">Replace Menu Image</button>
@@ -219,6 +219,7 @@
     </details>
 </div>
 
+<app-toast #infoToast type="info" />
 <app-toast #successToast type="success" />
 <app-toast #errorToast type="error" />
 

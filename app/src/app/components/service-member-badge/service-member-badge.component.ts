@@ -15,6 +15,6 @@ import { RouterModule } from '@angular/router';
   styleUrl: './service-member-badge.component.scss'
 })
 export class ServiceMemberBadgeComponent {
-  @Input('member') member!: { id: string, member_rating: number | null, service_member_user: null | { user: null | { name: string, profile_path: null | string }}};
+  @Input('member') member!: { id: string, member_rating: number | null, service_member_user: null | { user: null | { name: string, profile_path: null | string, thumbnail_path: null | string }}};
 
 }

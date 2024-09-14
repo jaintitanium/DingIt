@@ -16,8 +16,8 @@
     <img class="max-h-3/4 h-3/4" src="assets/gears.svg" />
   </button>
   <button class="max-h-full" routerLink="profile">
-    @if(avatarUrl) {
-      <app-avatar size="md" [path]="avatarUrl" />
+    @if(userService.profilePhoto()) {
+      <app-avatar size="md" [path]="userService.profilePhoto()" />
     } @else {
       <img class="max-w-16" src="assets/profilebutton.svg" />
     }

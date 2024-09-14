@@ -12,6 +12,8 @@ import { AvatarComponent } from "@app/components/avatar/avatar.component";
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { TextFieldComponent } from "@app/components/forms/text-field/text-field.component";
 import { WholeFormValidationComponent } from "@app/components/forms/whole-form-validation/whole-form-validation.component";
+import { NgxImageCompressService } from 'ngx-image-compress';
+import { FileService } from '@app/services/file.service';
 
 @Component({
     selector: 'app-profile',
@@ -31,8 +33,9 @@ import { WholeFormValidationComponent } from "@app/components/forms/whole-form-v
     ]
 })
 export class ProfilePage {
-  @ViewChild('errorToast') errorToast!: ToastComponent;
   @ViewChild('infoToast') infoToast!: ToastComponent;
+  @ViewChild('successToast') successToast!: ToastComponent;
+  @ViewChild('errorToast') errorToast!: ToastComponent;
   data?: Tables<'user'>;
   error: PostgrestError | null = null;
 
@@ -45,6 +48,8 @@ export class ProfilePage {
     public usr: UserService,
     private api: ApiService,
     private router: Router,
+    private imageCompress: NgxImageCompressService,
+    private userService: UserService,
   ) {
     this.loadUser();
   }
@@ -69,20 +74,60 @@ export class ProfilePage {
     this.router.navigate(['']);
   }
 
-  uploadProfilePhoto(event: Event) {
-    const element = event.currentTarget as HTMLInputElement;
-    let fileList: FileList | null = element.files;
-    if (fileList) {
-      this.api.client().storage.from('users').upload(this.data?.id + '/profile.png', fileList[0], {
-        upsert: true
-      }).then((data) => {
-        if(this.data) {
-          this.api.client().from('user')
-            .update({profile_path: data.data?.path})
-            .eq('id', this.data.id)
-            .then(() => this.loadUser());
+  // uploadProfilePhoto(event: Event) {
+  //   const element = event.currentTarget as HTMLInputElement;
+  //   let fileList: FileList | null = element.files;
+  //   if (fileList) {
+  //     this.api.client().storage.from('users').upload(this.data?.id + '/profile.png', fileList[0], {
+  //       upsert: true
+  //     }).then((data) => {
+  //       if(this.data) {
+  //         this.api.client().from('user')
+  //           .update({profile_path: data.data?.path})
+  //           .eq('id', this.data.id)
+  //           .then(() => this.loadUser());
+  //       }
+  //     })
+  //   }
+  // }
+  async uploadProfilePhoto() {
+    if(this.data?.id) {
+      const id = this.data.id;
+      const path = id + '/profile_' + self.crypto.randomUUID().substring(24);
+
+      this.imageCompress.uploadFile().then(async ({image, orientation}) => {
+        this.infoToast.message("Uploading...");
+        const fullUpload = await this.api.client().storage.from('users').upload(path, FileService.dataURLtoBlob(image), {
+          upsert: true
+        });
+        if(fullUpload.error) {
+          this.errorToast.message(fullUpload.error.message);
+          return;
         }
-      })
+        await this.api.client().from('user')
+          .update({profile_path: fullUpload.data?.path})
+          .eq('id', id);
+        console.log(fullUpload)
+
+        this.imageCompress
+          .compressFile(image, orientation, 50, 50, 240, 240) // 50% ratio, 50% quality
+          .then(async compressedImage => {
+            const thumbUpload = await this.api.client().storage.from('users').upload(path+'_thumb', FileService.dataURLtoBlob(compressedImage), {
+              upsert: true
+            });
+            if(thumbUpload.error) {
+              this.errorToast.message(thumbUpload.error.message);
+              return;
+            } else {
+              await this.api.client().from('user')
+                .update({thumbnail_path: thumbUpload.data?.path})
+                .eq('id', id);
+              await this.loadUser();
+              this.userService.profilePhoto.set(thumbUpload.data?.path)
+              this.successToast.message("Uploaded profile photo");
+            }
+          });
+      });
     }
   }
 

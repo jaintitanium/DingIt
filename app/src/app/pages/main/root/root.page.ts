@@ -22,25 +22,24 @@ import { slideInAnimation } from '@app/animations';
   ],
 })
 export class RootPage {
-  avatarUrl: string | null = null;
 
   constructor(
     private api: ApiService,
-    private userService: UserService,
+    public userService: UserService,
     private contexts: ChildrenOutletContexts,
   ) {
 
   }
 
-  async ngOnInit() {
-    const id = await this.userService.userId();
-    if(id) {
-      const {data,error} = await this.api.client().from('user').select().eq('id', id).single();
-      if(data) {
-        this.avatarUrl = data.thumbnail_path ?? data.profile_path
-      }
-    }
-  }
+  // async ngOnInit() {
+  //   const id = await this.userService.userId();
+  //   if(id) {
+  //     const {data,error} = await this.api.client().from('user').select().eq('id', id).single();
+  //     if(data) {
+  //       this.avatarUrl = data.thumbnail_path ?? data.profile_path
+  //     }
+  //   }
+  // }
   getRouteAnimationData() {
     return this.contexts.getContext('primary')?.route?.snapshot?.data?.['animation'] ?? 'slide';
   }
