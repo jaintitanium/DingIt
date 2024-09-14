@@ -632,11 +632,18 @@ export class EditPage {
       });
     }
   }
-  openQrModal(id: string) {
-    this.qrState = {
-      name: this.team?.data?.find((x) => x.id == id)?.service_member_user?.user?.name ?? 'Team Member',
-      url: environment.appUrl + 'review/create/member/' + id
-    };
+  openQrModal(type: string, id: string) {
+    if(type == 'member') {
+      this.qrState = {
+        name: this.team?.data?.find((x) => x.id == id)?.service_member_user?.user?.name ?? 'Team Member',
+        url: environment.appUrl + 'review/create/member/' + id
+      };
+    } else if (type == 'provider') {
+      this.qrState = {
+        name: this.sp?.data?.display_name ?? 'Service Provider',
+        url: environment.appUrl + 'review/create/provider/' + id
+      };
+    }
     this.modalForm.get('qrModal')?.setValue(true);
   }
   downloadQR() {

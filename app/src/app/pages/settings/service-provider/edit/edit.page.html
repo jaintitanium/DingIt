@@ -10,9 +10,11 @@
             } @else {
                 <div class="skeleton w-64 h-32 mx-auto" (click)="uploadHeaderPhoto()"></div>
             }
-            <!-- <input hidden type="file" #headerUploader accept="image/*" (change)="uploadHeaderPhoto($event)"/> -->
             <button (click)="uploadHeaderPhoto()" class="btn btn-primary m-4">Replace Header Image</button>
             <app-service-provider-form #spForm [data]="sp?.data" />
+            <button class="btn btn-primary m-4" (click)="openQrModal('provider', sp?.data?.id ?? '')">
+                <span class="material-symbols-outlined">qr_code</span> Generate Review QR Code
+            </button>
             @if(sp?.data?.promo_image_path) {
                 <app-s3-img [src]="sp?.data?.promo_image_path" [bustCache]="true" bucket="service_providers" (click)="promoUploader.click()"/>
             } @else {
@@ -23,7 +25,7 @@
                 <button (click)="clearPromoPhoto()" class="btn btn-warning m-4">Clear Promo Image</button>
                 <button (click)="promoUploader.click()" class="btn btn-primary m-4">Replace Promo Image</button>
             </div>
-            <button (click)="updateBase(spForm.value())" [disabled]="!spForm.valid()" class="btn btn-primary m-4">Update</button>
+            <button (click)="updateBase(spForm.value())" [disabled]="!spForm.valid()" class="btn btn-primary m-4">Update General Info</button>
         </div>
     </details>
     <details class="collapse collapse-arrow border border-base-300">
@@ -181,7 +183,7 @@
                     <app-avatar [path]="item.service_member_user?.user?.profile_path" size="sm"/>
                     <div class="flex-grow text-left">{{ item.service_member_user?.user?.name }}</div>
                     <div>
-                        <button *ngIf="!newServiceMember" class="btn btn-square btn-sm btn-outline m-2" (click)="openQrModal(item.id)">
+                        <button *ngIf="!newServiceMember" class="btn btn-square btn-sm btn-outline m-2" (click)="openQrModal('member', item.id)">
                             <span class="material-symbols-outlined">qr_code</span>
                         </button>
                         <button *ngIf="!newServiceMember" class="btn btn-square btn-sm btn-outline m-2" (click)="deleteServiceMember(item.id)">

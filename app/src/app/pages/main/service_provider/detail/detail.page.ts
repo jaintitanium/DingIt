@@ -151,6 +151,9 @@ export class ServiceProviderDetailPage {
         draggable: false,
       });
       await newMap.disableTouch();
+      if(Capacitor.getPlatform() == 'ios') {
+        await newMap.enableIndoorMaps(false);
+      }
       // await newMap.enableCurrentLocation(true);
       this.mapShow = true;
     }
