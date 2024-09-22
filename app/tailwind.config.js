@@ -20,7 +20,7 @@ module.exports = {
       'md': '0.375rem',
       'lg': '0.5rem',
       'xl': '0.75rem',
-      '4xl': '4rem',
+      '4xl': '2rem',
       'full': '999px'
     },
     fontFamily: {

@@ -37,17 +37,23 @@ export class SearchPage {
     private location: LocationHelperService,
     private router: Router,
   ) {
-    let search_text = route.snapshot.queryParams['search_text'];
-    if(search_text) {
-      this.searchForm.get('input')?.setValue(search_text);
-      this.executeSearch();
-    }
   }
 
-  async executeSearch() {
+  ngOnInit() {
+    let search_text = this.route.snapshot.queryParams['search_text'];
+    if(search_text) {
+      this.searchForm.get('input')?.setValue(search_text);
+      this.executeSearch(true);
+    }
+    
+  }
+
+  async executeSearch(initial: boolean = false) {
     this.searchActive = true;
     this.results = null;
-    this.router.navigate(['search'], {queryParams: { search_text: this.searchForm.value.input }})
+    if(!initial) {
+      this.router.navigate(['search'], {queryParams: { search_text: this.searchForm.value.input, skipLocationChange: true }})
+    }
     this.results = await this.location.searchProviders(this.searchForm.value.input ?? '');
   }
 }

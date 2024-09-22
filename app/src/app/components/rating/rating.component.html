@@ -1,12 +1,12 @@
-<div class="rating rating-half" 
+<div class="rating rating-half backdrop-blur-sm rounded-md" 
     [ngClass]="{ 'rating-sm': size == 'sm', 'rating-md': size == 'md', 'rating-lg': size == 'lg' }"
 >
-    <input type="radio" [name]="nameId" class="rating-hidden" [checked]="value == null" (click)="value = null" [disabled]="!allowInput"/>
+    <input type="radio" [ngClass]="{ 'hidden': !allowInput }" [name]="nameId" class="rating-hidden" [checked]="value == null" (click)="value = null" [disabled]="!allowInput"/>
     @for(val of ratings; track val) {
         <input type="radio" [name]="nameId" class="mask mask-bell mask-half-1" [ngClass]="{ 'bg-primary' : color == 'primary', 'bg-base-100': color == 'base-100'}"
             [checked]="this.show(val - 0.5)" (click)="value = (val - 0.5)" [disabled]="!allowInput"/>
         <input type="radio" [name]="nameId" class="mask mask-bell mask-half-2" [ngClass]="{ 'bg-primary' : color == 'primary', 'bg-base-100': color == 'base-100'}"
             [checked]="this.show(val)" (click)="value = val" [disabled]="!allowInput"/>
     }
-    <input type="radio" [name]="nameId" class="rating-hidden" [disabled]="true" />
+    <input type="radio" [ngClass]="{ 'hidden': !allowInput }" [name]="nameId" class="rating-hidden" [disabled]="true" />
 </div>

@@ -5,8 +5,8 @@
 </div>
 <div class="bg-secondary">
   <div class="rounded-t-4xl bg-neutral relative">
-    <div class="absolute inset-x-0 -top-12 mb-12">
-      <form [formGroup]="searchForm">
+    <div class="absolute inset-x-0 -top-10 mb-12">
+      <form [formGroup]="searchForm" (ngSubmit)="search()">
         <label class="input input-bordered flex items-center gap-2 mt-4 mx-12">
           <input type="text" class="grow" placeholder="Search" formControlName="input" />
           <button class="btn btn-ghost" (click)="search()">
@@ -35,9 +35,9 @@
               routerLink="/service-provider/{{ hs.id }}"
               >
               <h2 class="card-title text-base-100 my-0">{{ hs.display_name }}</h2>
-              <p class="my-0">{{ hs.sub_title }}</p>
-              <p class="my-0 text-sm">{{ hs.distance | number: '1.0-0' }}mi. away</p>
-              <app-rating class="text-shadow shadow-white" size="md" [value]="hs.rating" />
+              <p class="my-0"><b>{{ hs.sub_title }}</b></p>
+              <p class="my-0 text-sm"><b>{{ hs.distance | number: '1.0-0' }}mi. away</b></p>
+              <app-rating size="md" [value]="hs.rating" />
             </div>
           }
         </div>
