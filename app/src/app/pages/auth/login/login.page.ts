@@ -47,6 +47,12 @@ export class LoginPage {
         this.errorToast.message(error.message);
       } else {
         this.usr.isLoggedIn.set(true);
+        this.usr.getUser().then((user) => {
+          if(user)
+          this.api.client().from('user').select('*').eq('id', user?.id).single().then((user) => {
+            this.usr.profilePhoto.set(user.data?.thumbnail_path ?? user.data?.profile_path ?? null)
+          })
+        })
         let url = this.usr.getRedirectUrl();
         if(url) {
           this.usr.clearRedirectUrl();

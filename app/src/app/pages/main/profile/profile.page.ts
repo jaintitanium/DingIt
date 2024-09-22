@@ -71,6 +71,7 @@ export class ProfilePage {
   signOut() {
     this.usr.isLoggedIn.set(false);
     this.api.supabase.auth.signOut();
+    this.userService.profilePhoto.set(null);
     this.router.navigate(['']);
   }
 
