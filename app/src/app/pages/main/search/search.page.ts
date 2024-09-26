@@ -39,13 +39,12 @@ export class SearchPage {
   ) {
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     let search_text = this.route.snapshot.queryParams['search_text'];
     if(search_text) {
       this.searchForm.get('input')?.setValue(search_text);
-      this.executeSearch(true);
+      await this.executeSearch(true);
     }
-    
   }
 
   async executeSearch(initial: boolean = false) {

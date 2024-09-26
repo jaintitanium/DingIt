@@ -54,22 +54,22 @@ export const routes: Routes = [
                 { path: ':id', data: {animation: 'spid'}, component: ServiceProviderDetailPage },
                 { path: ':id/menu', data: {animation: 'spm'}, component: MenuPage },
                 { path: ':id/reviews', data: {animation: 'spr'}, component: ServiceProviderReviewsPage },
-                { path: ':id/team', data: {animation: 'spt'}, component: ServiceProviderTeamPage }
+                { path: ':id/team', data: {animation: 'spt'}, component: ServiceProviderTeamPage },
             ]},
             { path: 'service-member', data: {animation: 'service-member'}, children : [
                 { path: ':id', data: {animation: 'sm'}, component: ServiceMemberDetailPage },
-                { path: ':id/reviews', data: {animation: 'smr'}, component: ServiceMemberReviewsPage }
+                { path: ':id/reviews', data: {animation: 'smr'}, component: ServiceMemberReviewsPage },
             ]},
             { path: 'review', children : [
                 { path: ':id', data: {animation: 'r'}, component: ReviewDetailPage },
-                { path: 'create/:type/:id', data: {animation: 'rc'}, component: CreateReviewPage, canActivate: [authenticatedGuard, profileCompleteGuard] }
+                { path: 'create/:type/:id', data: {animation: 'rc'}, component: CreateReviewPage, canActivate: [authenticatedGuard, profileCompleteGuard] },
             ]},
             { path: 'user', children : [
                 { path: ':id', data: {animation: 'user'}, component: UserDetailPage },
             ]},
             { path: 'search', data: {animation: 'search'}, component: SearchPage },
-            { path: '', data: {animation: 'root'}, component: HomePage }
-        ]}
+            { path: '', data: {animation: 'root'}, component: HomePage },
+        ]},
     ]},
-    { path: 'loading', component: SplashScreenComponent }
+    { path: 'loading', component: SplashScreenComponent },
 ];

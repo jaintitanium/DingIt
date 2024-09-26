@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TextFieldComponent } from "@app/components/forms/text-field/text-field.component";
 import { LocationHelperService } from '@app/services/location-helper.service';
+import { Loader } from '@googlemaps/js-api-loader';
 
 @Component({
     selector: 'app-service-provider-form',
@@ -10,7 +11,7 @@ import { LocationHelperService } from '@app/services/location-helper.service';
     styleUrl: './service-provider-entry.component.scss',
     imports: [
         ReactiveFormsModule,
-        TextFieldComponent
+        TextFieldComponent,
     ]
 })
 export class ServiceProviderEntryComponent {
@@ -45,22 +46,31 @@ export class ServiceProviderEntryComponent {
       fields: ["address_components", "geometry", "name"],
       strictBounds: false,
     };
+    const loader = new Loader({
+      apiKey: LocationHelperService.getMapsApiKey(),
+      version: "weekly",
+      libraries: [
+        'places'
+      ]
+    });
 
-    const places = await google.maps.importLibrary("places") as google.maps.PlacesLibrary;
-    const autocomplete = new places.Autocomplete(input, options);
-    autocomplete.addListener('place_changed', () => {
-      const place = autocomplete.getPlace();
-      if(place.address_components) {
-        this.form.get('address_1')?.setValue(
-          this.getAddressCompByType(place.address_components, 'street_number') + ' ' + 
-          this.getAddressCompByType(place.address_components, 'route'));
-        this.form.get('address_2')?.setValue(this.getAddressCompByType(place.address_components, 'subpremise'));
-        this.form.get('city')?.setValue(this.getAddressCompByType(place.address_components, 'locality'));
-        this.form.get('state')?.setValue(this.getAddressCompByType(place.address_components, 'administrative_area_level_1', true));
-        this.form.get('postal_code')?.setValue(this.getAddressCompByType(place.address_components, 'postal_code'));
-        this.location = place.geometry?.location;
-      }
-    })
+    loader.load().then(async (google) => {
+      const places = await google.maps.importLibrary("places") as google.maps.PlacesLibrary;
+      const autocomplete = new places.Autocomplete(input, options);
+      autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        if(place.address_components) {
+          this.form.get('address_1')?.setValue(
+            this.getAddressCompByType(place.address_components, 'street_number') + ' ' + 
+            this.getAddressCompByType(place.address_components, 'route'));
+          this.form.get('address_2')?.setValue(this.getAddressCompByType(place.address_components, 'subpremise'));
+          this.form.get('city')?.setValue(this.getAddressCompByType(place.address_components, 'locality'));
+          this.form.get('state')?.setValue(this.getAddressCompByType(place.address_components, 'administrative_area_level_1', true));
+          this.form.get('postal_code')?.setValue(this.getAddressCompByType(place.address_components, 'postal_code'));
+          this.location = place.geometry?.location;
+        }
+      })
+    });
   }
   valid() {
     return this.form.valid;
