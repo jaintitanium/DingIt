@@ -4,7 +4,7 @@ import { UserService } from '@app/services/user.service';
 import { Tables } from '@custom-types/supabase';
 import { PostgrestError } from '@supabase/supabase-js';
 import { MenuItemComponent } from "@app/components/menu-item/menu-item.component";
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ApiService } from '@app/services/api.service';
 import { LoadingComponent } from "../../../components/loading/loading.component";
 
@@ -29,7 +29,8 @@ export class ServiceProviderPage {
   constructor(
     public titleService: TitleService,
     private user: UserService,
-    private api: ApiService
+    private api: ApiService,
+    public router: Router,
   ) {
 
     this.query = this.api.client()
@@ -50,6 +51,9 @@ export class ServiceProviderPage {
         })
       }
     });
-    
+  }
+
+  create() {
+    this.router.navigate(['settings','service-providers','create'], { skipLocationChange: true })
   }
 }

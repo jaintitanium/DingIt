@@ -51,7 +51,7 @@ export class SearchPage {
     this.searchActive = true;
     this.results = null;
     if(!initial) {
-      this.router.navigate(['search'], {queryParams: { search_text: this.searchForm.value.input, skipLocationChange: true }})
+      this.router.navigate(['search'], {queryParams: { search_text: this.searchForm.value.input, replaceUrl: true }})
     }
     this.results = await this.location.searchProviders(this.searchForm.value.input ?? '');
   }

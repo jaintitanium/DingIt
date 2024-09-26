@@ -68,6 +68,7 @@ export class ServiceProviderEntryComponent {
           this.form.get('state')?.setValue(this.getAddressCompByType(place.address_components, 'administrative_area_level_1', true));
           this.form.get('postal_code')?.setValue(this.getAddressCompByType(place.address_components, 'postal_code'));
           this.location = place.geometry?.location;
+          this.form.markAsTouched();
         }
       })
     });
