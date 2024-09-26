@@ -1,8 +1,8 @@
 <app-back-button [size]="36" />
 <div class="text-center prose mx-auto justify-items-center items-start pt-8 px-10">
     <app-loading-error-block [data]="sp" [error]="error" />
-    @if(sp) {
-        <h1>{{ sp.display_name }}</h1>
+    @if(sp()) {
+        <h1>{{ sp()?.display_name }}</h1>
         <p>Be sure to include only your review of purchased items and/or services.</p>
         <form [formGroup]="generalForm" class="flex flex-col gap-2 pb-2 my-2 w-full max-w-xs mx-auto">
             <app-rating class="mb-0 pb-0"
@@ -27,7 +27,7 @@
                     { name: 'required', message: 'Comments are required'}]" 
             />
         </form>
-        @if(type == 'member') {
+        @if(type == 'member' && spMember) {
             <form [formGroup]="memberForm" class="flex flex-col gap-2 pb-2 my-2 w-full max-w-xs mx-auto">
                 <h3>Employee</h3>
                 <label class="form-control w-full max-w-xs">
@@ -35,7 +35,7 @@
                         <span class="label-text"><strong>Employee</strong></span>
                     </div>
                     <input id="name" type="text" class="input input-block" disabled="disabled"
-                        [value]="sp.service_provider_member[0].service_member_user.user.name" />
+                        [value]="spMember.service_provider_member[0].service_member_user.user.name" />
                 </label>
                 <app-rating 
                     [formGroup]="memberForm"

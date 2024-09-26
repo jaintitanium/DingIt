@@ -40,9 +40,19 @@ export class CreateReviewPage {
   @ViewChild('errorToast') errorToast!: ToastComponent;
   type: string;
   id: string;
-  spQuery;
-  sp: QueryData<typeof this.spQuery> | null = null;
+  providerQuery;
+  spProvider: QueryData<typeof this.providerQuery> | null = null;
+  memberQuery;
+  spMember: QueryData<typeof this.memberQuery> | null = null;
   error: PostgrestError | null = null;
+
+  sp() {
+    if(this.type == 'provider') {
+      return this.spProvider;
+    } else {
+      return this.spMember;
+    }
+  }
 
   createButtonLoading = false;
 
@@ -62,13 +72,14 @@ export class CreateReviewPage {
     return this.memberRatings.map((x) => x.id);
   }
   member(id: string) {
-    return this.sp?.service_provider_member.find((x) => {
+    return this.sp()?.service_provider_member.find((x) => {
       return x.id == id;
     })?.service_member_user;
   }
   membersForSelect(): {value: string, label: string}[] {
-    if(this.sp && this.sp.service_provider_member) {
-      return this.sp?.service_provider_member.filter((x) => {
+    const sp = this.sp();
+    if(sp && sp.service_provider_member) {
+      return sp.service_provider_member.filter((x) => {
         return x.id == this.editMember || !this.membersInRating().includes(x.id);
       }).map((x) => {
         return { value: x.id, label: x.service_member_user!.user!.name }
@@ -132,13 +143,14 @@ export class CreateReviewPage {
     return this.productRatings.map((x) => x.id);
   }
   product(id: string) {
-    return this.sp?.products.find((x) => {
+    return this.sp()?.products.find((x) => {
       return x.id == id;
     });
   }
   productsForSelect(): {value: string, label: string}[] {
-    if(this.sp && this.sp.products) {
-      return this.sp?.products.filter((x) => {
+    const sp = this.sp();
+    if(sp && sp.products) {
+      return sp.products.filter((x) => {
         return x.id == this.editProduct || !this.productsInRating().includes(x.id);
       }).map((x) => {
         return { value: x.id, label: x.display_name }
@@ -197,9 +209,13 @@ export class CreateReviewPage {
   ) {
     this.type = route.snapshot.params['type'];
     this.id = route.snapshot.params['id'];
-    this.spQuery = this.api.client().from('service_provider')
+    this.providerQuery = this.api.client().from('service_provider')
+      .select('*,service_provider_member!left(id,service_member_user!inner(id,stripe_account_id,onboarded,user!inner(*))),products:product!product_owner_fkey(*)')
+      .eq('id', this.id)
+      .single();
+    this.memberQuery = this.api.client().from('service_provider')
       .select('*,service_provider_member!inner(id,service_member_user!inner(id,stripe_account_id,onboarded,user!inner(*))),products:product!product_owner_fkey(*)')
-      .eq(this.type == 'provider' ? 'id' : 'service_provider_member.id', this.id)
+      .eq('service_provider_member.id', this.id)
       .single();
     if(this.type == 'member') {
       this.memberForm.setValue({
@@ -212,20 +228,28 @@ export class CreateReviewPage {
   }
 
   async ngOnInit() {
-    const {data, error} = await this.spQuery;
-    this.sp = data;
-    this.error = error;
+    if(this.type == 'provider') {
+      const {data, error} = await this.providerQuery;
+      this.spProvider = data;
+      this.error = error;
+    }
+    if (this.type == 'member') {
+      const {data, error} = await this.memberQuery;
+      this.spMember = data;
+      this.error = error;
+    }
   }
 
   async saveReview() {
     const general = this.generalForm.value;
     const user = await (await this.api.client().auth.getUser()).data.user;
-    if(general && user && this.sp) {
+    const sp = this.sp();
+    if(general && user && sp) {
       this.createButtonLoading = true;
       const base = await this.api.client().from('review').insert({
         description: general.description ?? 'Error',
         rating: general.rating ?? 0,
-        service_provider: this.sp.id,
+        service_provider: sp.id,
         owner: user.id
       }).select().single();
       if(base.error) {
