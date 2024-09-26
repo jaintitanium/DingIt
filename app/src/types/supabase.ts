@@ -491,6 +491,7 @@ export type Database = {
           sub_title: string
           distance: number
           header_image_path: string
+          header_thumbnail_path: string
           rating: number
         }[]
       }
