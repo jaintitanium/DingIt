@@ -30,7 +30,7 @@
         <h2 class="my-0 text-base-100 shadow-xl">Local Hotspots</h2>
         <div class="flex flex-row gap-4 overflow-x-scroll mt-4">
           @for(hs of hotspots; track $index) {
-            <div class="min-w-40 min-h-52 bg-base-100 rounded-xl hotspot p-2 text-base-100 text-shadow shadow-black cursor-pointer" 
+            <div class="min-w-40 min-h-52 max-w-160 bg-base-100 rounded-xl hotspot p-2 text-base-100 text-shadow shadow-black cursor-pointer" 
               [ngStyle]="{'background-image': hs.header_image_path ? 'url('+getImageUrl(hs.header_image_path)+')' : ''}"
               routerLink="/service-provider/{{ hs.id }}"
               >
