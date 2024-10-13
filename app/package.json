@@ -6,6 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "build-dev": "ng build --output-hashing=all --configuration=development",
+    "build-prod": "ng build --output-hashing=all --configuration=production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "update-types": "npx supabase gen types --lang=typescript --local --schema public,storage | tee src/types/supabase.ts | tee ../supabase/functions/_shared/types.ts > /dev/null"
