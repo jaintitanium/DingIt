@@ -1,0 +1,12 @@
+<app-back-button />
+<app-loading-error-block [data]="sp" [error]="error" />
+@if(sp) {
+    <div class="flex flex-col text-center">
+        <h2 class="my-0">{{ sp.display_name }} Team</h2>
+        <div class="grid grid-cols-3 gap-4 justify-items-center p-4">
+            @for (member of sp.team; track $index) {
+                <app-service-member-badge [member]="member" />
+            }
+        </div>
+    </div>
+}

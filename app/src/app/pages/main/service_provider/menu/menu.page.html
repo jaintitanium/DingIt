@@ -1,0 +1,40 @@
+<app-back-button /> <span class="text-md"><strong>{{ sp ? sp.display_name + ' Menu' : 'Menu' }}</strong></span>
+<app-loading-error-block [data]="sp" [error]="error" />
+
+<app-loading-error-block [data]="menuItems?.data" [error]="menuItems?.error" />
+
+<div class="px-4">
+    <table class="table table-zebra">
+        <thead>
+            <tr>
+                @if(showPhotoColumn()) {
+                    <th>Photo</th>
+                }
+                <th>Product</th>
+                <th>Price(s)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (item of menuItems?.data; track $index) {
+                <tr>
+                    @if(showPhotoColumn()) {
+                        @if(item.thumbnail_path != null || item.image_path != null) {
+                            <td routerLink="/image/product/{{item.id}}"><app-s3-img class="max-w-32 block cursor-pointer" [src]="item.thumbnail_path ?? item.image_path" /></td>
+                        } @else {
+                            <td></td>
+                        }
+                    }
+                    <td class="flex-col">
+                        <div><strong>{{item.display_name}}</strong></div>
+                        <div>{{item.description}}</div>
+                    </td>
+                    <td class="flex-col">
+                        @for (price of sortPrices(item.prices); track price.id) {
+                            <div><b>{{price.name}}:</b> {{price.price}}</div>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

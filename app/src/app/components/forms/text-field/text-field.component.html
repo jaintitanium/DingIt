@@ -1,0 +1,30 @@
+<div [formGroup]="form" class="w-full max-w-xs">
+    <label class="form-control w-full">
+        <div *ngIf="label" class="label">
+            <span class="label-text"><strong>{{label}}</strong></span>
+        </div>
+        @if(type == 'textarea') {
+            <textarea [id]="name" [formControlName]="name" [placeholder]="placeholder ?? ''"
+             class="textarea textarea-bordered"></textarea>
+        } @else if (type == 'money') {
+            <input currencyMask type="text" [id]="name" [formControlName]="name" [placeholder]="placeholder ?? ''"
+                class="input input-block {{classes}}" />
+        } @else {
+            <input [id]="name" [type]="type" [formControlName]="name" [placeholder]="placeholder ?? ''"
+                class="input input-block {{classes}}" />
+        }
+        <div class="label">
+            <span class="label-text">
+                <ng-container *ngIf="form.controls[name] as ctl">
+                    <div *ngIf="ctl.invalid && (ctl.dirty || ctl.touched)" class="text-error">
+                        <ng-container *ngFor="let v of validation">
+                            <div *ngIf="ctl.errors?.[v.name]">
+                                {{ v.message }}
+                            </div>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </span>
+        </div>
+    </label>
+</div>

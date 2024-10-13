@@ -1,0 +1,17 @@
+<div class="prose text-center">
+    <app-loading-error-block [data]="loaded" [error]="loadedError" />
+    @if (transfers) {
+        <div class="flex flex-col p-8">
+            @for (date of groupTransfersByDate(); track $index) {
+                <h3 class="my-0">{{ date[0] }}</h3>
+                @for (item of date[1]; track $index) {
+                    <div class="flex flex-row shadow-xl rounded-full px-4 my-4 gap-4">
+                        <app-avatar size="sm" [path]="review(item.id)?.user?.profile_path" />
+                        <div class="flex-auto text-left"><b>{{ review(item.id)?.user?.name }}</b></div>
+                        <div><b>{{ item.amount | currency }}</b></div>
+                    </div>
+                }
+            }
+        </div>
+    }
+</div>

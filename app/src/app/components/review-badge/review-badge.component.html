@@ -1,0 +1,25 @@
+<div class="flex flex-row gap-4 rounded rounded-xl bg-base-200 p-4 shadow-inner shadow-gray-500 cursor-pointer"
+    routerLink="/review/{{ detailId }}"
+>
+    <div class="min-w-8">
+        <app-avatar [path]="owner.thumbnail_path ?? owner.profile_path" size="sm" />
+    </div>
+    <div class="flex-auto">
+        <div class="flex flex-row place-content-center">
+            <h3 class="my-0">{{ owner.name }}</h3>
+            <div class="flex-auto">
+                <div class="flex flex-row-reverse">
+                    <app-rating [value]="review.rating" />
+                    @if(review.review_tip_total ?? 0 > 0) {
+                        <div>
+                            <span class="material-symbols-outlined text-secondary">
+                                universal_currency_alt
+                            </span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <p class="my-0">{{ review.description }}</p>
+    </div>
+</div>

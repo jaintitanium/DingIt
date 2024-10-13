@@ -1,0 +1,44 @@
+<app-back-button />
+<form [formGroup]="searchForm">
+    <label class="input input-bordered flex items-center gap-2 mt-4 mx-12">
+        <input type="text" class="grow" placeholder="Search" formControlName="input" (submit)="executeSearch()"/>
+        <button class="btn btn-ghost" (click)="executeSearch()">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                class="h-4 w-4 opacity-70">
+                <path
+                fill-rule="evenodd"
+                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                clip-rule="evenodd" />
+            </svg>
+        </button>
+    </label>
+</form>
+<div class="flex flex-col text-center p-4">
+    @if(searchActive) {
+        @if(results) {
+            @if(results.length > 0) {
+                @for (sp of results; track $index) {
+                    <div class="flex flex-row place-items-center cursor-pointer" routerLink="/service-provider/{{ sp.id }}">
+                        <app-s3-img [src]="sp.header_image_path" class="max-w-16 max-h-16 mr-2" />
+                        <div class="flex flex-col text-left">
+                            <div><b>{{ sp.display_name }}</b></div>
+                            <div>{{ sp.sub_title }}</div>
+                        </div>
+                        <div class="flex flex-col flex-auto text-right">
+                            <div class="flex-auto text-right">{{ sp.distance | number: '1.1-1' }}mi. away</div>
+                            <div class="flex-auto text-right">{{ sp.city }}, {{ sp.state }}</div>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                }
+            } @else {
+                <h3>0 results for "{{ searchForm.value.input }}"</h3>
+            }
+        } @else {
+            <app-loading color="primary" />
+        }
+    }
+</div>

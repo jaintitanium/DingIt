@@ -1,0 +1,122 @@
+<app-loading-error-block [data]="sp" [error]="error" />
+@if(sp) {
+    <div id="header" [ngStyle]="{'background-image': headerImageUrl ? 'url('+headerImageUrl+')' : ''}">
+        <app-back-button color="base-100" />
+        <div class="m-4">
+            <h1 class="text-base-100 text-4xl font-extra-bold text-shadow shadow-black my-4">{{sp.display_name}}</h1>
+            <h3 class="text-base-100 text-md text-shadow shadow-black my-2">{{sp.sub_title}}</h3>
+            <app-rating *ngIf="sp.provider_rating" [value]="sp.provider_rating" size="md" />
+        </div>
+    </div>
+    <div class="bg-neutral rounded-t-4xl">
+        @if(featured) {
+            <div class="p-6 text-base-100">
+                <h2 class="m-0 text-base-100">Most Popular</h2>
+                <div class="card bg-base-100 w-96 max-w-fit shadow-xl m-2 cursor-pointer" routerLink="menu">
+                    <figure class="m-0">
+                    <img
+                        [src]="this.featuredHeader"
+                        alt="Shoes" />
+                    </figure>
+                    <div class="card-body">
+                        <h2 class="card-title not-prose text-neutral">
+                            {{ featured.display_name }}
+                        </h2>
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-sm m-2" routerLink="menu"><span class="material-symbols-outlined">
+                    menu_book
+                    </span> See Full Menu</button>
+            </div>
+        } @else {
+            <div class="p-6 text-base-100">
+                <h2 class="mt-0 text-base-100">Menu</h2>
+                <button class="btn btn-primary btn-sm" routerLink="menu"><span class="material-symbols-outlined">
+                    menu_book
+                    </span> See Full Menu</button>
+            </div>
+        }
+        @if(sp.promo_image_path) {
+            <div class="p-6 text-base-100 flex flex-row gap-2 place-items-center cursor-pointer" routerLink="/image/promo/{{this.id}}">
+                <h2 class="m-0 text-base-100">Active Promotion!</h2>
+                <span class="material-symbols-outlined">
+                    arrow_forward_ios
+                </span>
+            </div>
+        }
+    </div>
+    <div *ngIf="sp.lat && sp.lng">
+        <h2 class="text-md text-shadow shadow-white my-2 px-2">Location</h2>
+        <div class="max-w-full">
+            <capacitor-google-map #map id="map" [width]="getScreenWidth()" />
+            <div class="flex flex-row mx-2 mt-2 items-center">
+                <button class="items-center btn btn-primary" (click)="navigate(sp.lat, sp.lng)">
+                    <span class="material-symbols-outlined text-primary-content">
+                    directions_car
+                    </span> Navigate
+                </button>
+                <div *ngIf="mapDistance" class="flex-grow mx-8">{{ mapDistance | number: '1.0-1' }} mi away</div>
+            </div>
+            <div class="mx-2 text-start">{{ sp.address_1 }}, {{ sp.address_2 ? sp.address_2+', ' : '' }}{{ sp.city }}, {{ sp.state }} {{ sp.postal_code }}</div>
+        </div>
+        <!-- x:120, y:240 for pin point -->
+    </div>
+    <!-- Employees -->
+    @if(sp.team.length > 0) {
+        <div>
+            <h2 class="text-md text-shadow shadow-white my-2 px-2">Top Rated Employees</h2>
+            <div class="grid grid-cols-3 gap-4 justify-items-center px-2">
+                @for (item of sortedTeam(); track $index) {
+                    <app-service-member-badge [member]="item" />
+                }
+            </div>
+            @if(sp.team.length > 3) {
+                <div class="flex flex-row-reverse">
+                    <div class=""><button class="btn btn-active btn-link">See All ({{sp.team.length}})</button></div>
+                </div>
+            }
+        </div>
+    }
+    @if(reviews.length > 0) {
+        <div>
+            <h2 class="text-md text-shadow shadow-white my-2 px-2">Reviews</h2>
+            <div class="flex flex-col py-4 px-8 gap-4">
+                @for (review of [highestReview(), lowestReview()]; track $index) {
+                    @if(review) {
+                        <app-review-badge [detailId]="review.id" [owner]="review.user!" [review]="review" />
+                    }
+                }
+            </div>
+            @if(reviews.length > 2) {
+                <div class="flex flex-row-reverse">
+                    <div class="">
+                        <button class="btn btn-active btn-link" routerLink="reviews">See All ({{reviews.length}})</button>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    <!-- Hours -->
+    <div class="bg-secondary rounded-t-4xl">
+        <div class="p-6 text-base-100">
+            <h2 class="mt-0 text-base-100">Hours</h2>
+            <table>
+            @for (item of reorganizeHours(sp.service_provider_hours); track $index) {
+                <tr><td>{{DateService.daysOfWeek[$index]}}</td>
+                    <td>
+                    @if(item.length > 0) {
+                        @for (hour of item; track $index) {
+                            {{ DateService.formatTime(hour.open_time) }}-{{ DateService.formatTime(hour.close_time) }}{{ ($index + 1) == item.length ? '' : ', '}}
+                            
+                        }
+                    }
+                    @if(item.length == 0) {
+                        Closed
+                    }
+                    </td>
+                </tr>
+            }
+            </table>
+        </div>
+    </div>
+}

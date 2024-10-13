@@ -1,0 +1,239 @@
+<app-back-button [size]="36" />
+<div class="text-center prose mx-auto justify-items-center items-start pt-8 px-10">
+    <app-loading-error-block [data]="sp" [error]="error" />
+    @if(sp()) {
+        <h1>{{ sp()?.display_name }}</h1>
+        <p>Be sure to include only your review of purchased items and/or services.</p>
+        <form [formGroup]="generalForm" class="flex flex-col gap-2 pb-2 my-2 w-full max-w-xs mx-auto">
+            <app-rating class="mb-0 pb-0"
+                [formGroup]="generalForm"
+                formControlName="rating"
+                size="lg"
+            />
+            <div *ngIf="generalForm" class="text-primary text-sm mt-0 pt-0">{{ ratingText(generalForm.get('rating')?.value ?? 0) }}</div>
+            <app-field-validation 
+                [form]="generalForm"
+                name="rating"
+                [validation]="[
+                    { name: 'required', message: 'Rating is required'}]" 
+            />
+            <app-text-field
+                name="description"
+                [form]="generalForm"
+                label="Comments"
+                type="textarea"
+                placeholder="The atmosphere was pleasant..."
+                [validation]="[
+                    { name: 'required', message: 'Comments are required'}]" 
+            />
+        </form>
+        @if(type == 'member' && spMember) {
+            <form [formGroup]="memberForm" class="flex flex-col gap-2 pb-2 my-2 w-full max-w-xs mx-auto">
+                <h3>Employee</h3>
+                <label class="form-control w-full max-w-xs">
+                    <div class="label">
+                        <span class="label-text"><strong>Employee</strong></span>
+                    </div>
+                    <input id="name" type="text" class="input input-block" disabled="disabled"
+                        [value]="spMember.service_provider_member[0].service_member_user.user.name" />
+                </label>
+                <app-rating 
+                    [formGroup]="memberForm"
+                    formControlName="rating"
+                    size="md"
+                />
+                <app-field-validation 
+                    [form]="memberForm"
+                    name="rating"
+                    [validation]="[
+                        { name: 'required', message: 'Rating is required'}]" 
+                />
+                <app-text-field
+                    name="description"
+                    [form]="memberForm"
+                    label="Employee Comments"
+                    type="textarea"
+                    placeholder="Great care was given..."
+                    [validation]="[
+                        { name: 'required', message: 'Comments are required'}]" 
+                />
+                @if(member(id)?.onboarded) {
+                    <app-text-field
+                        name="tip"
+                        [form]="memberForm"
+                        label="Add a Tip?"
+                        type="number"
+                        placeholder="5.00"
+                    />
+                }
+            </form>
+        } @else {
+            <div class="flex flex-col">
+                <h3>Employees</h3>
+                @for (rating of memberRatings; track $index) {
+                    @if(rating.id == editMember) {
+                        <ng-container *ngTemplateOutlet="memberInput" />
+                        <div class="flex gap-4 my-2">
+                            <button (click)="cancelEditMember()" class="flex-auto btn">Cancel</button>
+                            <button (click)="saveEditMember()" class="flex-auto btn btn-primary">Save</button>
+                        </div>
+                    } @else {
+                        <div class="flex items-center">
+                            <div class="flex-grow truncate text-left">
+                                <app-avatar size="xs" [path]="member(rating.id)?.user?.profile_path" class="m-2" />
+                                <b>{{ member(rating.id)?.user?.name }}</b> ({{ rating.rating }}) - {{ rating.description }}
+                            </div>
+                            
+                            @if(!editMember && !newMember) {
+                                <button class="btn btn-square btn-sm btn-outline m-1" (click)="startEditMember(rating.id)">
+                                    <span class="material-symbols-outlined">edit</span>
+                                </button>
+                                <button class="btn btn-square btn-sm btn-outline m-1" (click)="deleteMember(rating.id)">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            }
+                        </div>
+                    }
+                }
+                @if(newMember) {
+                    <ng-container *ngTemplateOutlet="memberInput" />
+                    <div class="flex gap-4 my-2">
+                        <button (click)="cancelNewMember()" class="flex-auto btn">Cancel</button>
+                        <button (click)="saveNewMember()" class="flex-auto btn btn-primary">Save Review</button>
+                    </div>
+                } @else if(editMember == null && membersForSelect().length > 0) {
+                    <div class="flex-col gap-4 my-2">
+                        <button class="btn btn-wide btn-primary" (click)="startNewMember()">Add Employee Review</button>
+                    </div>
+                }
+            </div>
+
+            <ng-template #memberInput>
+                <form [formGroup]="memberForm" class="flex flex-col gap-2 pb-2 my-2 w-full max-w-xs mx-auto">
+                    <app-select-field 
+                        label="Employee"
+                        name="service_member"
+                        [form]="memberForm"
+                        [options]="membersForSelect()"
+                    />
+                    <app-rating 
+                        [formGroup]="memberForm"
+                        formControlName="rating"
+                        size="md"
+                    />
+                    <app-field-validation 
+                        [form]="memberForm"
+                        name="rating"
+                        [validation]="[
+                            { name: 'required', message: 'Rating is required'}]" 
+                    />
+                    <app-text-field
+                        name="description"
+                        [form]="memberForm"
+                        label="Comments"
+                        type="textarea"
+                        placeholder="Great care was given..."
+                        [validation]="[
+                            { name: 'required', message: 'Comments are required'}]" 
+                    />
+                    @if((editMember && member(memberForm.get('service_member')?.value ?? '')?.onboarded) || 
+                    (newMember && member(memberForm.get('service_member')?.value ?? '')?.onboarded)) {
+                        <app-text-field
+                            name="tip"
+                            [form]="memberForm"
+                            label="Add a Tip?"
+                            type="number"
+                            placeholder="5.00"
+                        />
+                    }
+                </form>
+            </ng-template>
+            
+        }
+        <div class="flex flex-col">
+            <h3>Products/Services</h3>
+            @for (rating of productRatings; track $index) {
+                @if(rating.id == editProduct) {
+                    <ng-container *ngTemplateOutlet="productInput" />
+                    <div class="flex gap-4 my-2">
+                        <button (click)="cancelEditProduct()" class="flex-auto btn">Cancel</button>
+                        <button (click)="saveEditProduct()" class="flex-auto btn btn-primary">Save</button>
+                    </div>
+                } @else {
+                    <div class="flex items-center">
+                        <div class="flex-grow truncate text-left">
+                            <!-- <span>
+                                <div class="avatar m-2">
+                                    <div class="w-8 rounded-xl not-prose">
+                                        <app-s3-img bucket="service_providers" [src]="product(rating.id)?.thumbnail_path" />
+                                    </div>
+                                </div>
+                            </span> -->
+                            <b>{{ product(rating.id)?.display_name }}</b> ({{ rating.rating }}) - {{ rating.description }}</div>
+                        
+                        @if(!editProduct && !newProduct) {
+                            <button class="btn btn-square btn-sm btn-outline m-1" (click)="startEditProduct(rating.id)">
+                                <span class="material-symbols-outlined">edit</span>
+                            </button>
+                            <button class="btn btn-square btn-sm btn-outline m-1" (click)="deleteProduct(rating.id)">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
+                        }
+                    </div>
+                }
+            }
+            @if(newProduct) {
+                <ng-container *ngTemplateOutlet="productInput" />
+                <div class="flex gap-4 my-2">
+                    <button (click)="cancelNewProduct()" class="flex-auto btn">Cancel</button>
+                    <button (click)="saveNewProduct()" class="flex-auto btn btn-primary">Save Review</button>
+                </div>
+            } @else if(editProduct == null && productsForSelect().length > 0) {
+                <div class="flex-col gap-4 my-2">
+                    <button class="btn btn-wide btn-primary" (click)="startNewProduct()">Add Product/Service Review</button>
+                </div>
+            }
+        </div>
+
+        <ng-template #productInput>
+            <form [formGroup]="productForm" class="flex flex-col gap-2 pb-2 my-2 w-full max-w-xs mx-auto">
+                <app-select-field 
+                    label="Product/Service"
+                    name="product"
+                    [form]="productForm"
+                    [options]="productsForSelect()"
+                />
+                <app-rating 
+                    [formGroup]="productForm"
+                    formControlName="rating"
+                    size="md"
+                />
+                <app-field-validation 
+                    [form]="productForm"
+                    name="rating"
+                    [validation]="[
+                        { name: 'required', message: 'Rating is required'}]" 
+                />
+                <app-text-field
+                    name="description"
+                    [form]="productForm"
+                    label="Comments"
+                    type="textarea"
+                    placeholder="So tasty..."
+                    [validation]="[
+                        { name: 'required', message: 'Comments are required'}]" 
+                />
+            </form>
+        </ng-template>
+        <div class="flex-col w-full pb-4">
+            <h3>Finalize</h3>
+            <button class="btn btn-block btn-secondary" (click)="saveReview()"
+                [disabled]="createButtonLoading || !generalForm.valid || editMember != null || newMember || editProduct != null || newProduct"
+            >
+            @if(createButtonLoading) {
+                <app-loading />
+            } Post Review</button>
+        </div>
+    }
+</div>
+<app-toast #errorToast type="error" />

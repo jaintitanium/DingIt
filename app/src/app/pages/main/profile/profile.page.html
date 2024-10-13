@@ -1,0 +1,49 @@
+<div class="prose text-center">
+    <h2>Manage your Profile</h2>
+    <app-loading-error-block [data]="data" [error]="error" />
+    <ng-container *ngIf="data">
+        <h3>Profile Photo</h3>
+        <app-avatar (click)="uploadProfilePhoto()" [path]="data.profile_path" [force]="true" />
+        <p>
+            <button (click)="uploadProfilePhoto()" class="btn btn-primary">Replace Photo</button>
+        </p>
+        <h3>Full Name</h3>
+        <p>{{ data.name }}</p>
+        <h3>Your Reviews</h3>
+        <p><button class="btn btn-primary" routerLink="/user/{{ data.id }}">See your reviews</button></p>
+        <h3>Reset Password</h3>
+        <form [formGroup]="passwordForm" class="flex flex-col items-center">
+            <app-text-field 
+                [form]="passwordForm"
+                name="password"
+                type="password"
+                label="Password"
+                [validation]="[
+                    { name: 'required', message: 'Password is required'},
+                    { name: 'minlength', message: 'Must be at least 6 characters long'}]"
+            />
+            <app-text-field 
+                [form]="passwordForm"
+                name="confirmPassword"
+                type="password"
+                label="Confirm Password"
+                [validation]="[
+                    { name: 'required', message: 'Confirmation is required'}]"
+            />
+            <app-whole-form-validation 
+                [form]="passwordForm"
+                [validation]="[
+                    { name: 'notSame', message: 'Passwords must match' }]"
+            />
+            <div>
+                <button class="btn btn-primary" (click)="updatePassword()" [disabled]="!passwordForm.valid">Update Password</button>
+            </div>
+        </form>
+        <div class="py-4">
+            <button (click)="signOut()" class="btn btn-warning">Sign Out</button>
+        </div>
+    </ng-container>
+</div>
+<app-toast #infoToast type="info" />
+<app-toast #successToast type="success" />
+<app-toast #errorToast type="error" />

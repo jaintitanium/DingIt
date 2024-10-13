@@ -1,0 +1,75 @@
+<div class="bg-secondary pb-12 pt-8">
+  <div class="max-w-96 w-3/4 rounded-xl bg-base-100 shadow-inner-xl p-4 mx-auto">
+    <img class="m-0" src="assets/wordlogo.svg" />
+  </div>
+</div>
+<div class="bg-secondary">
+  <div class="rounded-t-4xl bg-neutral relative">
+    <div class="absolute inset-x-0 -top-10 mb-12">
+      <form [formGroup]="searchForm" (ngSubmit)="search()">
+        <label class="input input-bordered flex items-center gap-2 mt-4 mx-12">
+          <input type="text" class="grow" placeholder="Search" formControlName="input" />
+          <button class="btn btn-ghost" (click)="search()">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              class="h-4 w-4 opacity-70">
+              <path
+                fill-rule="evenodd"
+                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                clip-rule="evenodd" />
+            </svg>
+          </button>
+        </label>
+      </form>
+    </div>
+    <!-- Local Hotspots -->
+    @if(hotspots) {
+      <div class="flex flex-col px-8 pt-8">
+        <h2 class="my-0 text-base-100 shadow-xl">Local Hotspots</h2>
+        <div class="flex flex-row gap-4 overflow-x-scroll mt-4">
+          @for(hs of hotspots; track $index) {
+            <div class="min-w-40 min-h-52 max-w-160 bg-base-100 rounded-xl hotspot p-2 text-base-100 text-shadow shadow-black cursor-pointer bg-no-repeat bg-contain bg-center" 
+              [ngStyle]="{'background-image': (hs.header_thumbnail_path != null || hs.header_image_path != null) ? 'url('+getImageUrl(hs.header_thumbnail_path ?? hs.header_image_path)+')' : ''}"
+              routerLink="/service-provider/{{ hs.id }}"
+              >
+              <h2 class="card-title text-base-100 my-0">{{ hs.display_name }}</h2>
+              <p class="my-0"><b>{{ hs.sub_title }}</b></p>
+              <p class="my-0 text-sm"><b>{{ hs.distance | number: '1.0-0' }}mi. away</b></p>
+              <app-rating size="md" [value]="hs.rating" />
+            </div>
+          }
+        </div>
+      </div>
+    }
+    <!-- Top-rated Providers -->
+    <div class="flex flex-col px-8 pt-9">
+      <h2 class="my-0 text-base-100 shadow-xl">Top-rated Providers</h2>
+      <app-loading-error-block color="base-100" [data]="list" [error]="listError" />
+      @for (sp of list; track $index) {
+        <div class="card card-compact w-96 max-w-full rounded-b-none shadow-xl mx-auto mt-4">
+          <figure class="my-0 bg-base-100"><img src="{{getImageUrl(sp.header_image_path)}}" /></figure>
+          <div class="card-body bg-base-100 rounded-b-none flex flex-col">
+            <div class="flex flex-row items-center">
+              <h2 class="card-title my-0">{{sp.display_name}}</h2>
+              <div class="flex-auto flex flex-row-reverse">
+                <app-rating class="" size="md" [value]="sp.provider_rating" />
+              </div>
+            </div>
+            <div class="flex flex-row">
+              <p class="my-0"><b>{{sp.sub_title}}</b></p>
+              <div class="flex-auto flex flex-row-reverse">
+                <p class="my-0 text-right">{{ sp.city }}, {{ sp.state }}</p>
+              </div>
+            </div>
+            <div class="card-actions justify-end rounded-b-none">
+              <button class="btn btn-primary" [routerLink]="'/service-provider/' + sp.id">Details</button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+

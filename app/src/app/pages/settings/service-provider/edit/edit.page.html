@@ -1,0 +1,333 @@
+<div class="prose text-center flex flex-col gap-2 m-4">
+    <details class="collapse collapse-arrow border border-base-300">
+        <summary class="collapse-title text-xl font-bold">
+          General
+        </summary>
+        <div class="collapse-content flex flex-col">
+            <app-loading-error-block [data]="sp?.data" [error]="sp?.error" />
+            @if(sp?.data?.header_image_path) {
+                <app-s3-img [src]="sp?.data?.header_image_path" [bustCache]="true" bucket="service_providers" (click)="uploadHeaderPhoto()"/>
+            } @else {
+                <div class="skeleton w-64 h-32 mx-auto" (click)="uploadHeaderPhoto()"></div>
+            }
+            <button (click)="uploadHeaderPhoto()" class="btn btn-primary m-4">Replace Header Image</button>
+            <app-service-provider-form #spForm [data]="sp?.data" />
+            <button class="btn btn-primary m-4" (click)="openQrModal('provider', sp?.data?.id ?? '')">
+                <span class="material-symbols-outlined">qr_code</span> Generate Review QR Code
+            </button>
+            @if(sp?.data?.promo_image_path) {
+                <app-s3-img [src]="sp?.data?.promo_image_path" [bustCache]="true" bucket="service_providers" (click)="promoUploader.click()"/>
+            } @else {
+                <div class="skeleton w-64 h-32 mx-auto" (click)="promoUploader.click()"></div>
+            }
+            <input hidden type="file" #promoUploader accept="image/*" (change)="uploadPromoPhoto($event)"/>
+            <div class="flex-row">
+                <button (click)="clearPromoPhoto()" class="btn btn-warning m-4">Clear Promo Image</button>
+                <button (click)="promoUploader.click()" class="btn btn-primary m-4">Replace Promo Image</button>
+            </div>
+            <button (click)="updateBase(spForm.value())" [disabled]="!spForm.valid()" class="btn btn-primary m-4">Update General Info</button>
+        </div>
+    </details>
+    <details class="collapse collapse-arrow border border-base-300">
+        <summary class="collapse-title text-xl font-bold">
+          Menu/Products
+        </summary>
+        <div class="collapse-content flex flex-col">
+            <app-loading-error-block [data]="products?.data" [error]="products?.error" />
+            @if (editProduct == null && newProduct == false) {
+                <div class="flex items-center gap-4">
+                    <div>
+                        <b>Featured Product</b>
+                    </div>
+                    <div>
+                        <select class="select select-bordered w-full max-w-xs" (change)="setFeaturedProduct($event.target)">
+                            <option [value]="null" [selected]="sp?.data?.featured_product == null ? 'selected' : ''">None</option>
+                            @for (item of products?.data; track $index) {
+                                <option [value]="item.id" [selected]="sp?.data?.featured_product == item.id ? 'selected' : ''">{{ item.display_name }}</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            }
+            @for (item of products?.data; track $index) {
+                @if(item.id == editProduct) {
+                    <ng-container *ngTemplateOutlet="productInput" />
+                    <div class="flex gap-4 my-2">
+                        <button (click)="cancelEditProduct()" class="flex-auto btn">Cancel</button>
+                        <button (click)="saveEditProduct()" class="flex-auto btn btn-primary">Save</button>
+                    </div>
+                } @else if (editProduct == null && newProduct == false) {
+                    <div class="flex items-center">
+                        <div class="flex-grow truncate text-left"><b>{{ item.display_name }}</b> - {{ item.description }}</div>
+                        
+                        <button *ngIf="!editProduct && !newProduct" class="btn btn-square btn-sm btn-outline m-1" (click)="startEditProduct(item.id)">
+                            <span class="material-symbols-outlined">edit</span>
+                        </button>
+                        <button *ngIf="!editProduct && !newProduct" class="btn btn-square btn-sm {{ item.product_prices.length == 0 ? 'btn-warning' : 'btn-outline' }} m-1" (click)="startEditPricesForProduct(item.id)">
+                            <span class="material-symbols-outlined">attach_money</span>
+                        </button>
+                        <button *ngIf="!editProduct && !newProduct" class="btn btn-square btn-sm btn-outline m-1" (click)="deleteProduct(item.id)">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    </div>
+                }
+            }
+            @if(newProduct) {
+                <ng-container *ngTemplateOutlet="productInput" />
+                <div class="flex gap-4 my-2">
+                    <button (click)="cancelNewProduct()" class="flex-auto btn">Cancel</button>
+                    <button (click)="saveNewProduct()" class="flex-auto btn btn-primary">Save New Product</button>
+                </div>
+            } @else if(editProduct == null) {
+                <div class="flex gap-4 my-2">
+                    <button class="flex-auto btn btn-secondary" onclick="reorderMenuModal.showModal()">Reorder Menu</button>
+                    <button class="flex-auto btn btn-primary" (click)="startNewProduct()">Add Product</button>
+                </div>
+            }
+        </div>
+        <ng-template #productInput>
+            <form [formGroup]="productForm">
+                @if(editProductImagePath) {
+                    <app-s3-img [src]="editProductImagePath" [bustCache]="true" bucket="service_providers" (click)="uploadMenuPhoto()" />
+                    <div class="flex-row">
+                        <button (click)="editProductImagePath = null; productForm.get('thumbnail_path')?.setValue(null)" class="btn btn-warning m-4">Clear Menu Image</button>
+                        <button (click)="uploadMenuPhoto()" class="btn btn-primary m-4">Replace Menu Image</button>
+                    </div>
+                } @else {
+                    <div class="skeleton w-64 h-32 mx-auto" (click)="uploadMenuPhoto()"></div>
+                    <button (click)="uploadMenuPhoto()" class="btn btn-primary m-4">Add Menu Image</button>
+                }
+                <app-text-field 
+                    [form]="productForm"
+                    name="display_name"
+                    type="text"
+                    label="Name"
+                />
+                <app-text-field 
+                    [form]="productForm"
+                    name="description"
+                    type="textarea"
+                    label="Description"
+                />
+            </form>
+        </ng-template>
+    </details>
+    <details class="collapse collapse-arrow border border-base-300">
+        <summary class="collapse-title text-xl font-bold">
+          Hours
+        </summary>
+        <div class="collapse-content flex flex-col">
+            <app-loading-error-block [data]="hours?.data" [error]="hours?.error" />
+            @for (item of hours?.data; track $index) {
+                @if(item.id == editHour) {
+                    <ng-container *ngTemplateOutlet="hoursInput" />
+                    <div class="flex gap-4 my-2">
+                        <button (click)="cancelEditHours()" class="flex-auto btn">Cancel</button>
+                        <button (click)="saveEditHours()" class="flex-auto btn btn-primary">Save</button>
+                    </div>
+                } @else {
+                    <div class="flex items-center">
+                        <div class="flex-grow text-left">{{ DateService.daysOfWeek[item.day_of_week] }}: {{DateService.formatTime(item.open_time)}}-{{DateService.formatTime(item.close_time)}}</div>
+                        <div>
+                            <button *ngIf="!editHour && !newHour" class="btn btn-square btn-sm btn-outline m-2" (click)="startEditHour(item.id)">
+                                <span class="material-symbols-outlined">edit</span>
+                            </button>
+                            <button *ngIf="!editHour && !newHour" class="btn btn-square btn-sm btn-outline m-2" (click)="deleteHour(item.id)">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+            @if(newHour) {
+                <ng-container *ngTemplateOutlet="hoursInput" />
+                <div class="flex gap-4 my-2">
+                    <button (click)="cancelNewHours()" class="flex-auto btn">Cancel</button>
+                    <button (click)="saveNewHours()" class="flex-auto btn btn-primary">Save New Hours</button>
+                </div>
+            } @else if(editHour == null) {
+                <button (click)="startNewHours()" class="btn btn-primary">Add Open Hours</button>
+            }
+        </div>
+        <ng-template #hoursInput>
+            <form [formGroup]="hourForm">
+                <app-select-field 
+                    [form]="hourForm"
+                    name="day_of_week"
+                    [options]="daysOfWeekSelect()"
+                    label="Day of Week"
+                />
+                <app-text-field 
+                    [form]="hourForm"
+                    name="open_time"
+                    type="time"
+                    label="Open Time"
+                />
+                <app-text-field 
+                    [form]="hourForm"
+                    name="close_time"
+                    type="time"
+                    label="Close Time"
+                />
+            </form>
+        </ng-template>
+    </details>
+    <details class="collapse collapse-arrow border border-base-300">
+        <summary class="collapse-title text-xl font-bold">
+          Team
+        </summary>
+        <div class="collapse-content flex flex-col">
+            <app-loading-error-block [data]="team?.data" [error]="team?.error" />
+            @for (item of team?.data; track $index) {
+                <div class="flex items-center gap-2">
+                    <app-avatar [path]="item.service_member_user?.user?.profile_path" size="sm"/>
+                    <div class="flex-grow text-left">{{ item.service_member_user?.user?.name }}</div>
+                    <div>
+                        <button *ngIf="!newServiceMember" class="btn btn-square btn-sm btn-outline m-2" (click)="openQrModal('member', item.id)">
+                            <span class="material-symbols-outlined">qr_code</span>
+                        </button>
+                        <button *ngIf="!newServiceMember" class="btn btn-square btn-sm btn-outline m-2" (click)="deleteServiceMember(item.id)">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    </div>
+                </div>
+            }
+            @if(newServiceMember) {
+                <ng-container *ngTemplateOutlet="serviceMemberInput" />
+                <div class="flex gap-4 my-2">
+                    <button (click)="cancelNewServiceMember()" class="flex-auto btn">Cancel</button>
+                    <button (click)="saveNewServiceMember()" class="flex-auto btn btn-primary">Invite</button>
+                </div>
+            } @else if(editHour == null) {
+                <button (click)="startNewServiceMember()" class="btn btn-primary">Invite New Team Member</button>
+            }
+        </div>
+        <ng-template #serviceMemberInput>
+            <form [formGroup]="serviceMemberForm">
+                <app-text-field 
+                    [form]="serviceMemberForm"
+                    name="email"
+                    type="email"
+                    label="Email Address"
+                />
+                <app-text-field 
+                    [form]="serviceMemberForm"
+                    name="display_name"
+                    type="text"
+                    label="Team Member Name"
+                />
+            </form>
+        </ng-template>
+    </details>
+</div>
+
+<app-toast #infoToast type="info" />
+<app-toast #successToast type="success" />
+<app-toast #errorToast type="error" />
+
+<dialog id="reorderMenuModal" class="modal" (close)="loadProducts(this.id)">
+    <div class="modal-box">
+        <h3 class="font-bold text-lg">Re-order menu items</h3>
+        @if(products && products.data) {
+            <div class="overflow-y-scroll h-96 max-w-full">
+                <table cdkDropList class="table table-sm" (cdkDropListDropped)="dropProduct($event)">
+                    <tbody>
+                        @for (p of products.data; track $index) {
+                            <tr cdkDrag>
+                                <td>
+                                    <span cdkDragHandle class="material-symbols-outlined">
+                                        drag_handle
+                                    </span>
+                                </td>
+                                <td>
+                                    <b>{{ p.display_name }}</b>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        <div class="modal-action">
+            <form method="dialog">
+            <!-- if there is a button in form, it will close the modal -->
+                <button class="btn">Close</button>
+            </form>
+        </div>
+    </div>
+</dialog>
+
+<form [formGroup]="modalForm">
+    <input type="checkbox" id="my_modal_6" class="modal-toggle" formControlName="priceModal" (change)="priceModalChange($event)" />
+    <div class="modal" role="dialog">
+        <div class="modal-box">
+            @if(editProductPrice) {
+                <h3 class="font-bold text-lg">Prices for {{ editProductPrice.display_name }}</h3>
+                @for(p of editPrices; track $index) {
+                    @if(p.id == editPrice) {
+                        <ng-container *ngTemplateOutlet="priceInput" />
+                        <div class="flex gap-4 my-2">
+                            <button (click)="cancelEditPrice()" class="flex-auto btn">Cancel</button>
+                            <button (click)="saveEditPrice()" class="flex-auto btn btn-primary">Save</button>
+                        </div>
+                    } @else {
+                        <div class="flex items-center">
+                            <div class="flex-grow truncate text-left"><b>{{ p.name }}:</b> {{ priceString(p) }}</div>
+                            
+                            <button *ngIf="!editPrice && !newPrice" class="btn btn-square btn-sm btn-outline m-1" (click)="startEditPrice(p.id)">
+                                <span class="material-symbols-outlined">edit</span>
+                            </button>
+                            <button *ngIf="!editPrice && !newPrice" class="btn btn-square btn-sm btn-outline m-1" (click)="deletePrice(p.id)">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
+                        </div>
+                    }
+                }
+                @if(newPrice) {
+                    <ng-container *ngTemplateOutlet="priceInput" />
+                    <div class="flex gap-4 my-2">
+                        <button (click)="cancelNewPrice()" class="flex-auto btn">Cancel</button>
+                        <button (click)="saveNewPrice()" class="flex-auto btn btn-primary">Save New Price</button>
+                    </div>
+                } @else if(editPrice == null) {
+                    <button (click)="startNewPrice()" class="btn btn-primary">Add New Price</button>
+                }
+                <div class="modal-action">
+                    <label for="my_modal_6" class="btn">Close</label>
+                </div>
+            }
+        </div>
+    </div>
+    <ng-template #priceInput>
+        <form [formGroup]="priceForm">
+            <app-text-field 
+                [form]="priceForm"
+                name="name"
+                type="text"
+                label="Name"
+            />
+            <app-text-field 
+                [form]="priceForm"
+                name="price"
+                type="money"
+                label="Price"
+            />
+        </form>
+    </ng-template>
+
+    <input type="checkbox" id="my_modal_qr" class="modal-toggle" formControlName="qrModal" />
+    <div class="modal" role="dialog">
+        <div class="modal-box">
+            @if(qrState) {
+                <div class="flex flex-col text-center">
+                    <h3 class="font-bold text-lg">QR Code for {{ qrState.name }}</h3>
+                    <qr-code #qrComponent class="mx-auto" [value]="qrState.url" errorCorrectionLevel="H" size="300" centerImageSrc="assets/bell-black-outline.svg" centerImageSize="75" />
+                </div>
+            }
+            <div class="modal-action">
+                <button class="btn btn-primary mr-4" (click)="downloadQR()">Download</button>
+                <label for="my_modal_qr" class="btn">Close</label>
+            </div>
+        </div>
+    </div>
+</form>

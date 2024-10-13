@@ -1,0 +1,25 @@
+<div [formGroup]="form" class="w-full max-w-xs">
+    <label class="form-control w-full">
+        <div *ngIf="label" class="label">
+            <span class="label-text"><strong>{{label}}</strong></span>
+        </div>
+        <select [id]="name" [formControlName]="name" class="select select-bordered {{classes}}">
+            @for (opt of options; track $index) {
+                <option [value]="opt.value">{{opt.label}}</option>
+            }
+        </select>
+        <div class="label">
+            <span class="label-text">
+                <ng-container *ngIf="form.controls[name] as ctl">
+                    <div *ngIf="ctl.invalid && (ctl.dirty || ctl.touched)" class="text-error">
+                        <ng-container *ngFor="let v of validation">
+                            <div *ngIf="ctl.errors?.[v.name]">
+                                {{ v.message }}
+                            </div>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </span>
+        </div>
+    </label>
+</div>

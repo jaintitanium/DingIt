@@ -1,0 +1,24 @@
+import { Injectable, signal } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class TitleService {
+  public readonly prefix: string = 'DINGit'; 
+  public short = signal('');
+  public long = signal(this.prefix);
+  constructor(
+    private title: Title
+  ) { }
+
+  setTitle(title: string) {
+    this.short.set(title);
+    if(title?.length > 0) {
+      this.long.set(this.prefix + ' | ' + title);
+    } else {
+      this.long.set(this.prefix);
+    }
+    this.title.setTitle(this.long());
+  }
+}

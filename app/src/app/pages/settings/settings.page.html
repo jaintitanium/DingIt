@@ -1,0 +1,6 @@
+<div class="flex items-center">
+    <app-back-button [size]="36" /> <span class="text-md"><strong>{{ titleService.short() }}</strong></span>
+</div>
+<div [@routeAnimations]="getRouteAnimationData()">
+    <router-outlet></router-outlet>
+</div>

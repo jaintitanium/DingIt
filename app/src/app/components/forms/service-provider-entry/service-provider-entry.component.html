@@ -1,0 +1,69 @@
+<form [formGroup]="form" class="flex flex-col gap-2 pb-6 my-2 w-full max-w-xs mx-auto">
+    <app-text-field
+        name="display_name"
+        [form]="form"
+        label="Name"
+        placeholder="Delicious Donuts"
+        [validation]="[
+            { name: 'required', message: 'Name is required'}]" 
+    />
+    <app-text-field
+        name="sub_title"
+        [form]="form"
+        label="Sub-title"
+        placeholder="Coffee and Donuts"
+    />
+    <app-text-field
+        name="phone_number"
+        [form]="form"
+        label="Phone Number"
+        placeholder="(888) 555-1212"
+    />
+    <app-text-field
+        name="website"
+        [form]="form"
+        label="Website"
+        placeholder="https://www.donuts.com"
+    />
+    <label class="form-control w-full max-w-xs">
+        <div class="label">
+            <span class="label-text"><strong>Address Lookup</strong></span>
+        </div>
+        <input id="address_search" type="text" placeholder="Start typing the address to search"
+            class="input input-block" />
+    </label>
+    <app-text-field
+        name="address_1"
+        [form]="form"
+        label="Address 1"
+        placeholder="129 W. 81st St."
+    />
+    <app-text-field
+        name="address_2"
+        [form]="form"
+        label="Address 2"
+        placeholder="Unit 5A"
+    />
+    <app-text-field
+        name="city"
+        [form]="form"
+        label="City"
+        placeholder="New York City"
+        [validation]="[
+            { name: 'required', message: 'City is required'}]" 
+    />
+    <app-text-field
+        name="state"
+        [form]="form"
+        label="State"
+        placeholder="NY"
+        [validation]="[
+            { name: 'required', message: 'State is required'}]" 
+    />
+    <app-text-field
+        name="postal_code"
+        [form]="form"
+        label="Postal Code"
+        placeholder="10024"
+    />
+</form>

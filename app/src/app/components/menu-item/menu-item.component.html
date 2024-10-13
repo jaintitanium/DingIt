@@ -1,0 +1,9 @@
+<div class="divider divider-primary px-1 my-2"></div>
+<div class="flex cursor-pointer" [routerLink]="link">
+    <div class="grow pl-4 text-primary">{{ text }}</div>
+    <div class="pr-4 text-primary" *ngIf="showArrow">
+        <span class="material-symbols-outlined">
+        arrow_forward_ios
+        </span>
+    </div>
+</div>

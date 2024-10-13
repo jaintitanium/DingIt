@@ -1,0 +1,7 @@
+<div class="flex flex-col items-center cursor-pointer" routerLink="/service-member/{{ member.id }}">
+    <app-avatar shape="square" [path]="member.service_member_user?.user?.thumbnail_path ?? member.service_member_user?.user?.profile_path" class="" />
+    <button class="btn btn-active btn-link">{{member.service_member_user?.user?.name}}</button>
+    @if(member.member_rating) {
+        <app-rating [value]="member.member_rating" />
+    }
+</div>
