@@ -8,6 +8,7 @@ on:
 
 jobs:
   deploy:
+    name: Build and Deploy
     runs-on: ubuntu-latest
 
     env:
@@ -53,7 +54,7 @@ jobs:
 
       - name: Build App
         working-directory: ./app
-        run: npm run build-dev
+        run: npm run build-prod
 
       - name: copy file via ssh password
         uses: appleboy/scp-action@v0.1.7
