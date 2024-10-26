@@ -1,10 +1,6 @@
-<div class="bg-secondary pb-12 pt-8">
-  <div class="max-w-96 w-3/4 rounded-xl bg-base-100 shadow-inner-xl p-4 mx-auto">
-    <img class="m-0" src="assets/wordlogo.svg" />
-  </div>
-</div>
-<div class="bg-secondary">
-  <div class="rounded-t-4xl bg-neutral relative">
+<div class="bg-neutral">
+  <app-monthly-spotlight />
+  <div class="rounded-t-4xl relative">
     <div class="absolute inset-x-0 -top-10 mb-12">
       <form [formGroup]="searchForm" (ngSubmit)="search()">
         <label class="input input-bordered flex items-center gap-2 mt-4 mx-12">

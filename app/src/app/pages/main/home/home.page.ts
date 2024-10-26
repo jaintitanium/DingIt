@@ -9,21 +9,23 @@ import { LocationHelperService } from '@app/services/location-helper.service';
 import { S3ImgComponent } from "../../../components/s3-img/s3-img.component";
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MonthlySpotlightComponent } from "../../../components/monthly-spotlight/monthly-spotlight.component";
 
 @Component({
-    selector: 'app-home',
-    standalone: true,
-    templateUrl: './home.page.html',
-    styleUrl: './home.page.scss',
-    imports: [
-      LoadingErrorBlockComponent,
-      RouterModule,
-      RatingComponent,
-      S3ImgComponent,
-      CommonModule,
-      DecimalPipe,
-      ReactiveFormsModule,
-    ]
+  selector: 'app-home',
+  standalone: true,
+  templateUrl: './home.page.html',
+  styleUrl: './home.page.scss',
+  imports: [
+    LoadingErrorBlockComponent,
+    RouterModule,
+    RatingComponent,
+    S3ImgComponent,
+    CommonModule,
+    DecimalPipe,
+    ReactiveFormsModule,
+    MonthlySpotlightComponent
+  ]
 })
 export class HomePage {
   list?: Tables<'service_provider'>[];
