@@ -49,7 +49,11 @@ export class CompleteProfilePage {
       if(data) {
         await this.userService.checkProfileComplete();
         if(url) {
-          this.router.navigateByUrl(url);
+          if(url.includes('complete-profile')) {
+            this.router.navigate(['profile']);
+          } else {
+            this.router.navigateByUrl(url);
+          }
           this.userService.clearRedirectUrl();
         } else {
           this.router.navigate(['profile']);

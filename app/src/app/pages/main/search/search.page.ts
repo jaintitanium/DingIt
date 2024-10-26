@@ -10,7 +10,7 @@ import { AvatarComponent } from "../../../components/avatar/avatar.component";
 import { S3ImgComponent } from "../../../components/s3-img/s3-img.component";
 
 @Component({
-  selector: 'app-search',
+  selector: 'app-search-page',
   standalone: true,
   imports: [
     BackButtonComponent,
@@ -51,7 +51,7 @@ export class SearchPage {
     this.searchActive = true;
     this.results = null;
     if(!initial) {
-      this.router.navigate(['search'], {queryParams: { search_text: this.searchForm.value.input, replaceUrl: true }})
+      this.router.navigate(['search'], {queryParams: { search_text: this.searchForm.value.input }, replaceUrl: true})
     }
     this.results = await this.location.searchProviders(this.searchForm.value.input ?? '');
   }

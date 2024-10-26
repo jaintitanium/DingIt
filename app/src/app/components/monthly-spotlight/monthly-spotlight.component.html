@@ -1,0 +1,36 @@
+<div class="bg-neutral">
+    <app-loading-error-block [data]="spotlights" [error]="error" color="base-100" />
+    @if(spotlights) {
+        <div class="carousel w-full">
+            @for (spotlight of spotlights; track $index) {
+                <div class="carousel-item w-full text-base-100 text-shadow shadow-black cursor-pointer bg-no-repeat bg-center"
+                    [ngClass]="{ 'bg-contain': spotlight.service_provider_member != null, 'bg-cover': spotlight.service_provider != null }"
+                    [ngStyle]="{ 'background-image': getHeaderPath(spotlight) }"
+                    [routerLink]="spotlight.service_provider ? '/service-provider/'+spotlight.service_provider.id : '/service-member/'+spotlight.service_provider_member?.id"
+                >
+                    <div class="pb-8">
+                        <h2 class="bg-secondary/75 text-base-100 rounded-r-lg py-4 px-2 mt-4 mb-2 w-fit">Monthly Spotlight</h2>
+                        <div class="mx-4">
+                            @if(spotlight.service_provider) {
+                                <h3 class="my-0 text-base-100">{{ spotlight.service_provider.display_name }}</h3>
+                                <p class="my-0"><b>{{ spotlight.service_provider.sub_title }}</b></p>
+                                <p class="my-0"><b>{{ spotlight.service_provider.city }}, {{ spotlight.service_provider.state }}</b></p>
+                            }
+                            @if(spotlight.service_provider_member) {
+                                <h3 class="my-0 text-base-100">{{ spotlight.service_provider_member.service_member_user?.user?.name }}</h3>
+                                <p class="my-0"><b>{{ spotlight.service_provider_member.service_provider?.display_name }}</b></p>
+                                <p class="my-0"><b>{{ spotlight.service_provider_member.service_provider?.city }}, {{ spotlight.service_provider_member.service_provider?.state }}</b></p>
+                                <div class="flex flex-row gap-2 h-8">
+                                    <div>
+                                        <b class="my-auto">{{ spotlight.service_provider_member.member_rating | number: '1.1-1' }}</b>
+                                    </div>
+                                    <div><app-rating class="my-auto" [value]="spotlight.service_provider_member.member_rating" size="md" /></div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

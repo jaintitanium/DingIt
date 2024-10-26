@@ -69,7 +69,7 @@
       }
 
       // Create service_member_user entry
-      let result = await userClient.from('service_provider_member').insert({
+      const result = await userClient.from('service_provider_member').insert({
         service_member_id: currentId,
         service_provider_id: input.provider_id
       });

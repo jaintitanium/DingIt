@@ -147,7 +147,7 @@
           data = {};
         }
       } else if(input.action == 'getSubscription') {
-        let serviceProviderUser = userObj?.service_provider_user;
+        const serviceProviderUser = userObj?.service_provider_user;
         if(serviceProviderUser?.active && serviceProviderUser.stripe_customer_id && serviceProviderUser.stripe_subscription_id) {
           console.log(serviceProviderUser)
           const sub = await stripe.subscriptions.retrieve(serviceProviderUser.stripe_subscription_id)
@@ -194,6 +194,7 @@
                 quantity: Math.max(1, spCount?.count ?? 1),
               },
             ],
+            allow_promotion_codes: true,
             customer: serviceProviderUser?.stripe_customer_id ?? undefined,
             mode: 'subscription',
             success_url: `${appUrl?.value}/settings/financial?delay=5000`,
