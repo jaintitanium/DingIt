@@ -29,7 +29,7 @@ export class CompleteProfilePage {
     if(redir) {
       userService.checkProfileComplete().then((complete) => {
         if(complete && redir) {
-          this.router.navigateByUrl(redir);
+          this.router.navigateByUrl(redir, {skipLocationChange: true});
           this.userService.clearRedirectUrl();
         } else {
 
@@ -52,7 +52,7 @@ export class CompleteProfilePage {
           if(url.includes('complete-profile')) {
             this.router.navigate(['profile']);
           } else {
-            this.router.navigateByUrl(url);
+            this.router.navigateByUrl(url, {skipLocationChange: true});
           }
           this.userService.clearRedirectUrl();
         } else {
