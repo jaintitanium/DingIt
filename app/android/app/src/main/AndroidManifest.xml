@@ -25,7 +25,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" android:host="dev.app.2dingit.com" />
-                <data android:scheme="https" android:host="app.2dingit.com" />
+                <!-- <data android:scheme="https" android:host="app.2dingit.com" /> -->
             </intent-filter>
         </activity>
 

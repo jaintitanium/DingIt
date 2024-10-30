@@ -21,6 +21,7 @@ export class BackButtonComponent {
   ) { }
 
   backClicked() {
+    console.log(this.app.getPreviousUrl())
     if (!['/loading', '/complete-profile'].includes(this.app.getPreviousUrl())) {
       this._location.back()
     } else {
