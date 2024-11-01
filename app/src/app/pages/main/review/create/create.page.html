@@ -54,7 +54,7 @@
                     [form]="memberForm"
                     label="Employee Comments"
                     type="textarea"
-                    placeholder="Great care was given..."
+                    [placeholder]="promptText(memberForm.get('rating')?.value ?? 0)"
                     [validation]="[
                         { name: 'required', message: 'Comments are required'}]" 
                 />
@@ -134,7 +134,7 @@
                         [form]="memberForm"
                         label="Comments"
                         type="textarea"
-                        placeholder="Great care was given..."
+                        [placeholder]="promptText(memberForm.get('rating')?.value ?? 0)"
                         [validation]="[
                             { name: 'required', message: 'Comments are required'}]" 
                     />

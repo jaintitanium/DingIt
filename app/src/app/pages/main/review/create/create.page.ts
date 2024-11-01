@@ -326,14 +326,34 @@ export class CreateReviewPage {
       return '';
     } else if(v <= 1) {
       return 'Highly Dissatisfied (too many negative bells could affect your DINGit credibility as a reviewer)';
-    } else if (v <= 2) {
+    } else if (v <= 1.5) {
       return 'Dissatisfied (too many negative bells could affect your DINGit credibility as a reviewer)';
+    } else if (v <= 2) {
+      return 'Dissatisfied';
     } else if (v <= 3) {
       return 'OK';
     } else if (v <= 4) {
       return 'Satisfied';
     } else if (v > 4) {
       return 'Highly Satisfied';
+    } else {
+      return '';
+    }
+  }
+
+  promptText(v: number): string {
+    if(v == 0) {
+      return '';
+    } else if(v <= 1) {
+      return 'Unsatisfactory, some improvement is necessary';
+    } else if (v <= 2) {
+      return 'Below Average customer performance, can be improved with training';
+    } else if (v <= 3) {
+      return 'Above Average customer performance';
+    } else if (v <= 4) {
+      return 'Very satisfied with customer care';
+    } else if (v > 4) {
+      return 'Amazing, Personable, Hands-On';
     } else {
       return '';
     }
