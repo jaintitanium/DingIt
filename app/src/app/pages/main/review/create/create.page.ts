@@ -325,9 +325,9 @@ export class CreateReviewPage {
     if(v == 0) {
       return '';
     } else if(v <= 1) {
-      return 'Highly Dissatisfied';
+      return 'Highly Dissatisfied (too many negative bells could affect your DINGit credibility as a reviewer)';
     } else if (v <= 2) {
-      return 'Dissatisfied';
+      return 'Dissatisfied (too many negative bells could affect your DINGit credibility as a reviewer)';
     } else if (v <= 3) {
       return 'OK';
     } else if (v <= 4) {
