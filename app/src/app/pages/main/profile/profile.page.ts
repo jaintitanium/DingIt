@@ -39,6 +39,10 @@ export class ProfilePage {
   data?: Tables<'user'>;
   error: PostgrestError | null = null;
 
+  nameForm = new FormGroup({
+    name: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
+  });
+
   passwordForm = new FormGroup({
     password: new FormControl<string>('', [Validators.required, Validators.minLength(6)]),
     confirmPassword: new FormControl<string>('', [Validators.required]),
@@ -64,6 +68,7 @@ export class ProfilePage {
       this.error = error;
       if(data) {
         this.data = data;
+        this.nameForm.get('name')?.setValue(data.name)
       }
     }
   }
@@ -129,6 +134,25 @@ export class ProfilePage {
             }
           });
       });
+    }
+  }
+
+  async updateName() {
+    if(this.nameForm.valid) {
+      let name = this.nameForm.get('name')?.value;
+      if(name && this.data) {
+        const resp = await this.api.client().from('user').update({
+          name: name
+        })
+        .eq('id', this.data?.id).select('*').single();
+        if(resp.data) {
+          this.infoToast.message('Name updated')
+          this.data = resp.data;
+        }
+        if(resp.error) {
+          this.errorToast.message(resp.error.message);
+        }
+      }
     }
   }
 
