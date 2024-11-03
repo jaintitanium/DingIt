@@ -36,6 +36,10 @@
                         <p>Monthly cost: <b>{{ (sub.quantity * sub.plan.amount / 100) | currency }}</b></p>
                         <p>Next Payment: <b>{{ sub.current_period_end * 1000 | date: 'shortDate' }}</b></p>
                     </div>
+                } @else {
+                    <div>
+                        <app-loading />
+                    </div>
                 }
             } @else {
                 <div>No Active Subscription</div>

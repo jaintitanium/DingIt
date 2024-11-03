@@ -58,7 +58,7 @@ export class AppComponent {
         console.log("Navigate to " + slug)
         if (slug) {
           this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-            this.router.navigateByUrl(slug, {onSameUrlNavigation: 'reload'})
+            this.router.navigateByUrl(slug, { skipLocationChange: true })
           });
         }
         // If no match, do nothing - let regular routing
