@@ -57,7 +57,9 @@ export class AppComponent {
         const slug = event.url.split("2dingit.com").pop();
         console.log("Navigate to " + slug)
         if (slug) {
-          this.router.navigateByUrl(slug, {onSameUrlNavigation: 'reload'});
+          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            this.router.navigateByUrl(slug, {onSameUrlNavigation: 'reload'})
+          });
         }
         // If no match, do nothing - let regular routing
         // logic take over
