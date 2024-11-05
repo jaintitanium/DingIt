@@ -21,7 +21,12 @@
     <!-- Local Hotspots -->
     @if(hotspots) {
       <div class="flex flex-col px-8 pt-8">
-        <h2 class="my-0 text-base-100 shadow-xl">Local Hotspots</h2>
+        <h2 class="my-0 text-base-100 shadow-xl">
+          <div class="flex flex-row">
+            <img class="h-6 my-0 mx-2 text-base-100" src="assets/ratingbell-white.svg" />
+            <div>Businesses</div>
+          </div>
+        </h2>
         <div class="flex flex-row gap-4 overflow-x-scroll mt-4">
           @for(hs of hotspots; track $index) {
             <div class="min-w-40 min-h-52 max-w-160 bg-base-100 rounded-xl hotspot p-2 text-base-100 text-shadow shadow-black cursor-pointer bg-no-repeat bg-contain bg-center" 
