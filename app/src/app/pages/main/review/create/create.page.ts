@@ -62,7 +62,7 @@ export class CreateReviewPage {
   });
 
   memberForm = new FormGroup({
-    description: new FormControl<string>('', { validators: [Validators.required], nonNullable: true }),
+    description: new FormControl<string>(''),
     service_member: new FormControl<string>('', { validators: [Validators.required], nonNullable: true }),
     rating: new FormControl<number | null>(null, { validators: [Validators.required], nonNullable: true }),
     tip: new FormControl<number | null>(null),
@@ -100,7 +100,7 @@ export class CreateReviewPage {
       this.deleteMember(review.service_member);
       this.memberRatings.push({
         id: review.service_member,
-        description: review.description ?? '',
+        description: (review.description != '' ? review.description : this.promptText(review.rating ?? 0)) ?? '',
         rating: review.rating ?? 5,
         tip: this.member(review.service_member)?.onboarded ? (review.tip ?? null) : null,
       });
@@ -118,7 +118,7 @@ export class CreateReviewPage {
     if(review.service_member) {
       this.memberRatings.push({
         id: review.service_member,
-        description: review.description ?? '',
+        description: (review.description != '' ? review.description : this.promptText(review.rating ?? 0)) ?? '',
         rating: review.rating ?? 5,
         tip: this.member(review.service_member)?.onboarded ? (review.tip ?? null) : null,
       });
@@ -261,7 +261,7 @@ export class CreateReviewPage {
       if(this.type == 'member') {
         this.memberRatings.push({
           id: this.id,
-          description: this.memberForm.get('description')?.value ?? '',
+          description: (this.memberForm.get('description')?.value != '' ? this.memberForm.get('description')?.value : this.promptText(this.memberForm.get('rating')?.value ?? 0)) ?? '',
           rating: this.memberForm.get('rating')?.value ?? 0,
           tip: this.memberForm.get('tip')?.value ?? null
         });

@@ -47,7 +47,7 @@ export class ServiceProviderEntryComponent {
       strictBounds: false,
     };
     const loader = new Loader({
-      apiKey: LocationHelperService.getMapsApiKey(),
+      apiKey: LocationHelperService.getMapsApiKey(true),
       version: "weekly",
       libraries: [
         'places'

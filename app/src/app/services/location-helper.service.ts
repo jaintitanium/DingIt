@@ -94,12 +94,12 @@ export class LocationHelperService {
     }
   }
 
-  public static getMapsApiKey(): string {
+  public static getMapsApiKey(autocomplete: boolean = false): string {
     const platform = Capacitor.getPlatform();
     if(platform == 'android') {
       return 'AIzaSyAvtxOsQrLMaSUiP7pz10wn9ZaXuvZrgD8';
     } else if (platform == 'ios') {
-      return 'AIzaSyDkIXFdZlvCNksXLK2h4A0vE7zCCPA4yt0';
+      return autocomplete ? 'AIzaSyDkIXFdZlvCNksXLK2h4A0vE7zCCPA4yt0' : 'AIzaSyAykGpK7mKf6nIVRxlq0s6DlloVhIEcAmA';
     } else {
       return 'AIzaSyATfNk0xrd9c-S8Orw6_mS_fecupe8zr2s';
     }

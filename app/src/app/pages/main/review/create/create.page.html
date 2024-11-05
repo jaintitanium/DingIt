@@ -55,8 +55,6 @@
                     label="Employee Comments"
                     type="textarea"
                     [placeholder]="promptText(memberForm.get('rating')?.value ?? 0)"
-                    [validation]="[
-                        { name: 'required', message: 'Comments are required'}]" 
                 />
                 @if(member(id)?.onboarded) {
                     <app-text-field

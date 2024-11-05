@@ -47,7 +47,8 @@
       <h2 class="my-0 text-base-100 shadow-xl">Top-rated Providers</h2>
       <app-loading-error-block color="base-100" [data]="list" [error]="listError" />
       @for (sp of list; track $index) {
-        <div class="card card-compact w-96 max-w-full rounded-b-none shadow-xl mx-auto mt-4">
+        <div class="card card-compact w-96 max-w-full rounded-b-none shadow-xl mx-auto mt-4 cursor-pointer"
+        [routerLink]="'/service-provider/' + sp.id">
           <figure class="my-0 bg-base-100"><img src="{{getImageUrl(sp.header_image_path)}}" /></figure>
           <div class="card-body bg-base-100 rounded-b-none flex flex-col">
             <div class="flex flex-row items-center">
@@ -62,9 +63,9 @@
                 <p class="my-0 text-right">{{ sp.city }}, {{ sp.state }}</p>
               </div>
             </div>
-            <div class="card-actions justify-end rounded-b-none">
+            <!-- <div class="card-actions justify-end rounded-b-none">
               <button class="btn btn-primary" [routerLink]="'/service-provider/' + sp.id">Details</button>
-            </div>
+            </div> -->
           </div>
         </div>
       }
