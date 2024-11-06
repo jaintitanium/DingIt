@@ -75,7 +75,7 @@ export class AppComponent {
 
     // Set Android background to transparent for Google Maps plugin
     if(Capacitor.getPlatform() == 'android') {
-      document.documentElement.style.setProperty('background', 'transparent');
+      document.documentElement.style.setProperty('background-color', 'transparent');
     }
   }
   
