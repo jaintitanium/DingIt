@@ -22,6 +22,7 @@ import { FileService } from '@app/services/file.service';
 import { Capacitor } from '@capacitor/core';
 import { Directory } from '@capacitor/filesystem';
 import write_blob from 'capacitor-blob-writer';
+import { Clipboard } from '@capacitor/clipboard';
 
 @Component({
   selector: 'app-edit',
@@ -657,8 +658,11 @@ export class EditPage {
     console.log(qr)
     if(qr) {
       let b64 = qr.nativeElement.children[0].toDataURL("image/png");
-      console.log(b64)
       let blobData = this.convertBase64ToBlob(b64)
+      // copy to clipboard
+      await Clipboard.write({
+        image: b64
+      });
       // saves as image
       const blob = new Blob([blobData], { type: "image/png" })
       const filename = (this.qrState?.name ?? 'team') + '-qrcode.png';
@@ -668,14 +672,12 @@ export class EditPage {
           directory: Directory.External,
           blob: blob,
         })
-        this.saveQrSuccess = true;
       } else if (Capacitor.getPlatform() == 'android') {
         let loc = await write_blob({
           path: filename,
           directory: Directory.Documents,
           blob: blob,
         })
-        this.saveQrSuccess = true;
       } else {
         const url = window.URL.createObjectURL(blob)
         const link = document.createElement("a")
@@ -684,6 +686,7 @@ export class EditPage {
         link.download = filename;
         link.click()
       }
+      this.saveQrSuccess = true;
     }
   }
   private convertBase64ToBlob(Base64Image: string) {

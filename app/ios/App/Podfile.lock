@@ -6,6 +6,8 @@ PODS:
   - CapacitorBlobWriter (0.0.1):
     - Capacitor
     - GCDWebServer (~> 3.0)
+  - CapacitorClipboard (6.0.1):
+    - Capacitor
   - CapacitorCordova (6.1.2)
   - CapacitorFilesystem (6.0.1):
     - Capacitor
@@ -30,6 +32,7 @@ DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorApp (from `../../node_modules/@capacitor/app`)"
   - CapacitorBlobWriter (from `../../node_modules/capacitor-blob-writer`)
+  - "CapacitorClipboard (from `../../node_modules/@capacitor/clipboard`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorFilesystem (from `../../node_modules/@capacitor/filesystem`)"
   - "CapacitorGeolocation (from `../../node_modules/@capacitor/geolocation`)"
@@ -48,6 +51,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/app"
   CapacitorBlobWriter:
     :path: "../../node_modules/capacitor-blob-writer"
+  CapacitorClipboard:
+    :path: "../../node_modules/@capacitor/clipboard"
   CapacitorCordova:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorFilesystem:
@@ -61,6 +66,7 @@ SPEC CHECKSUMS:
   Capacitor: 679f9673fdf30597493a6362a5d5bf233d46abc2
   CapacitorApp: 0bc633b4eae40a1f32cd2834788fad3bc42da6a1
   CapacitorBlobWriter: 110eeaf80611f19bf01a8a05ff3672149ed0baad
+  CapacitorClipboard: 756cd7e83e8d5d19b0c74f40b57517c287bd5fe2
   CapacitorCordova: f48c89f96c319101cd2f0ce8a2b7449b5fb8b3dd
   CapacitorFilesystem: 37fb3aa5c945b4539ab11c74a5c57925a302bf24
   CapacitorGeolocation: 39dca51d755f08ed1d43e51be55291a402cdc64f
@@ -69,6 +75,6 @@ SPEC CHECKSUMS:
   Google-Maps-iOS-Utils: 66d6de12be1ce6d3742a54661e7a79cb317a9321
   GoogleMaps: 8939898920281c649150e0af74aa291c60f2e77d
 
-PODFILE CHECKSUM: c4a06c80641ea1fa7bf7e4b482f62872f6fce9d7
+PODFILE CHECKSUM: cce4e1009835455066a014ad7ed23ef9fc9e3688
 
 COCOAPODS: 1.16.1
