@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '@app/services/api.service';
 import { PostgrestError, QueryData } from '@supabase/supabase-js';
 import { LoadingErrorBlockComponent } from "@app/components/loading-error-block/loading-error-block.component";
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { RatingComponent } from "@app/components/rating/rating.component";
 import { TextFieldComponent } from "@app/components/forms/text-field/text-field.component";
 import { FieldValidationComponent } from "@app/components/forms/field-validation/field-validation.component";
@@ -15,6 +15,7 @@ import { ToastComponent } from "@app/components/toast/toast.component";
 import { StripeService } from '@app/services/stripe.service';
 import { BackButtonComponent } from "../../../../components/back-button/back-button.component";
 import { LoadingComponent } from "../../../../components/loading/loading.component";
+import { WholeFormValidationComponent } from "../../../../components/forms/whole-form-validation/whole-form-validation.component";
 
 @Component({
   selector: 'app-create',
@@ -31,7 +32,8 @@ import { LoadingComponent } from "../../../../components/loading/loading.compone
     S3ImgComponent,
     ToastComponent,
     BackButtonComponent,
-    LoadingComponent
+    LoadingComponent,
+    WholeFormValidationComponent
 ],
   templateUrl: './create.page.html',
   styleUrl: './create.page.scss'
@@ -57,16 +59,16 @@ export class CreateReviewPage {
   createButtonLoading = false;
 
   generalForm = new FormGroup({
-    description: new FormControl<string>('', [Validators.required]),
+    description: new FormControl<string | null>(null),
     rating: new FormControl<number | null>(null, [Validators.required]),
-  });
+  }, [this.lowRatingRequiresComment]);
 
   memberForm = new FormGroup({
-    description: new FormControl<string>(''),
+    description: new FormControl<string | null>(null),
     service_member: new FormControl<string>('', { validators: [Validators.required], nonNullable: true }),
     rating: new FormControl<number | null>(null, { validators: [Validators.required], nonNullable: true }),
     tip: new FormControl<number | null>(null),
-  });
+  }, [this.lowRatingRequiresComment]);
   memberRatings: { id: string, description: string, rating: number, tip: number | null }[] = [];
   membersInRating(): string[] {
     return this.memberRatings.map((x) => x.id);
@@ -134,10 +136,10 @@ export class CreateReviewPage {
 
 
   productForm = new FormGroup({
-    description: new FormControl<string>('', { validators: [Validators.required], nonNullable: true }),
+    description: new FormControl<string | null>(null),
     product: new FormControl<string>('', { validators: [Validators.required], nonNullable: true }),
     rating: new FormControl<number | null>(null, { validators: [Validators.required], nonNullable: true }),
-  });
+  }, [this.lowRatingRequiresComment]);
   productRatings: { id: string, description: string, rating: number }[] = [];
   productsInRating(): string[] {
     return this.productRatings.map((x) => x.id);
@@ -357,5 +359,11 @@ export class CreateReviewPage {
     } else {
       return '';
     }
+  }
+
+  lowRatingRequiresComment (group: AbstractControl):  ValidationErrors | null { 
+    let rating = group.get('rating')?.value ?? 0;
+    let comment = group.get('description')?.value ?? '';
+    return (rating < 2 && comment == '') ? { lowRatingRequiresComment: true } : null;
   }
 }

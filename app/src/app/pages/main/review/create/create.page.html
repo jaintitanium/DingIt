@@ -23,8 +23,11 @@
                 label="Comments"
                 type="textarea"
                 placeholder="The atmosphere was pleasant..."
+            />
+            <app-whole-form-validation 
+                [form]="generalForm"
                 [validation]="[
-                    { name: 'required', message: 'Comments are required'}]" 
+                    { name: 'lowRatingRequiresComment', message: 'Comments are helpful (and required) for low ratings' }]"
             />
         </form>
         @if(type == 'member' && spMember) {
@@ -55,6 +58,11 @@
                     label="Employee Comments"
                     type="textarea"
                     [placeholder]="promptText(memberForm.get('rating')?.value ?? 0)"
+                />
+                <app-whole-form-validation 
+                    [form]="memberForm"
+                    [validation]="[
+                        { name: 'lowRatingRequiresComment', message: 'Comments are helpful (and required) for low ratings' }]"
                 />
                 @if(member(id)?.onboarded) {
                     <app-text-field
@@ -133,8 +141,11 @@
                         label="Comments"
                         type="textarea"
                         [placeholder]="promptText(memberForm.get('rating')?.value ?? 0)"
+                    />
+                    <app-whole-form-validation 
+                        [form]="memberForm"
                         [validation]="[
-                            { name: 'required', message: 'Comments are required'}]" 
+                            { name: 'lowRatingRequiresComment', message: 'Comments are helpful (and required) for low ratings' }]"
                     />
                     @if((editMember && member(memberForm.get('service_member')?.value ?? '')?.onboarded) || 
                     (newMember && member(memberForm.get('service_member')?.value ?? '')?.onboarded)) {
@@ -220,8 +231,11 @@
                     label="Comments"
                     type="textarea"
                     placeholder="So tasty..."
+                />
+                <app-whole-form-validation 
+                    [form]="productForm"
                     [validation]="[
-                        { name: 'required', message: 'Comments are required'}]" 
+                        { name: 'lowRatingRequiresComment', message: 'Comments are helpful (and required) for low ratings' }]"
                 />
             </form>
         </ng-template>

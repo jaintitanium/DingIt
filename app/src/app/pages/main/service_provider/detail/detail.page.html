@@ -79,7 +79,12 @@
     }
     @if(reviews.length > 0) {
         <div>
-            <h2 class="text-md text-shadow shadow-white my-2 px-2">Reviews</h2>
+            <div class="flex flex-row">
+                <h2 class="text-md text-shadow shadow-white my-2 px-2">Reviews</h2>
+                <div class="flex-grow text-right">
+                    <button class="btn btn-primary mx-2" routerLink="/review/create/provider/{{ sp.id }}">Leave a review</button>
+                </div>
+            </div>
             <div class="flex flex-col py-4 px-8 gap-4">
                 @for (review of [highestReview(), lowestReview()]; track $index) {
                     @if(review) {
