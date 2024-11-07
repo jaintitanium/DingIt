@@ -68,7 +68,7 @@
               });
             tips?.forEach(async (t) => {
               await stripe.transfers.create({
-                amount: Math.round(t.amount * 95),
+                amount: Math.floor(t.amount * 97.1) - 30,
                 currency: 'usd',
                 destination: t.account_id,
                 transfer_group: reviewId,
