@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '@app/services/api.service';
@@ -17,8 +17,12 @@ import { CdkDrag, CdkDragDrop, CdkDropList, DragDropModule, moveItemInArray } fr
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { AvatarComponent } from "@app/components/avatar/avatar.component";
 import { environment } from 'environments/environment';
-import { QrCodeComponent, QrCodeModule } from 'ng-qrcode';
+import { QrCodeModule } from 'ng-qrcode';
 import { FileService } from '@app/services/file.service';
+import { Capacitor } from '@capacitor/core';
+import { Directory } from '@capacitor/filesystem';
+import write_blob from 'capacitor-blob-writer';
+import { Clipboard } from '@capacitor/clipboard';
 
 @Component({
   selector: 'app-edit',
@@ -632,6 +636,8 @@ export class EditPage {
       });
     }
   }
+
+  saveQrSuccess: boolean = false;
   openQrModal(type: string, id: string) {
     if(type == 'member') {
       this.qrState = {
@@ -644,23 +650,43 @@ export class EditPage {
         url: environment.appUrl + 'review/create/provider/' + id
       };
     }
+    this.saveQrSuccess = false;
     this.modalForm.get('qrModal')?.setValue(true);
   }
-  downloadQR() {
+  async downloadQR() {
     let qr = this.qrComponent;
     console.log(qr)
     if(qr) {
       let b64 = qr.nativeElement.children[0].toDataURL("image/png");
-      console.log(b64)
       let blobData = this.convertBase64ToBlob(b64)
+      // copy to clipboard
+      await Clipboard.write({
+        image: b64
+      });
       // saves as image
       const blob = new Blob([blobData], { type: "image/png" })
-      const url = window.URL.createObjectURL(blob)
-      const link = document.createElement("a")
-      link.href = url
-      // name of the file
-      link.download = (this.qrState?.name ?? 'team') + '-qrcode'
-      link.click()
+      const filename = (this.qrState?.name ?? 'team') + '-qrcode.png';
+      if(Capacitor.getPlatform() == 'ios') {
+        let loc = await write_blob({
+          path: filename,
+          directory: Directory.External,
+          blob: blob,
+        })
+      } else if (Capacitor.getPlatform() == 'android') {
+        let loc = await write_blob({
+          path: filename,
+          directory: Directory.Documents,
+          blob: blob,
+        })
+      } else {
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement("a")
+        link.href = url
+        // name of the file
+        link.download = filename;
+        link.click()
+      }
+      this.saveQrSuccess = true;
     }
   }
   private convertBase64ToBlob(Base64Image: string) {

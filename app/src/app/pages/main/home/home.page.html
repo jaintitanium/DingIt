@@ -21,7 +21,12 @@
     <!-- Local Hotspots -->
     @if(hotspots) {
       <div class="flex flex-col px-8 pt-8">
-        <h2 class="my-0 text-base-100 shadow-xl">Local Hotspots</h2>
+        <h2 class="my-0 text-base-100 shadow-xl">
+          <div class="flex flex-row">
+            <img class="h-6 my-0 mx-2 text-base-100" src="assets/ratingbell-white.svg" />
+            <div>Businesses</div>
+          </div>
+        </h2>
         <div class="flex flex-row gap-4 overflow-x-scroll mt-4">
           @for(hs of hotspots; track $index) {
             <div class="min-w-40 min-h-52 max-w-160 bg-base-100 rounded-xl hotspot p-2 text-base-100 text-shadow shadow-black cursor-pointer bg-no-repeat bg-contain bg-center" 
@@ -42,7 +47,8 @@
       <h2 class="my-0 text-base-100 shadow-xl">Top-rated Providers</h2>
       <app-loading-error-block color="base-100" [data]="list" [error]="listError" />
       @for (sp of list; track $index) {
-        <div class="card card-compact w-96 max-w-full rounded-b-none shadow-xl mx-auto mt-4">
+        <div class="card card-compact w-96 max-w-full rounded-b-none shadow-xl mx-auto mt-4 cursor-pointer"
+        [routerLink]="'/service-provider/' + sp.id">
           <figure class="my-0 bg-base-100"><img src="{{getImageUrl(sp.header_image_path)}}" /></figure>
           <div class="card-body bg-base-100 rounded-b-none flex flex-col">
             <div class="flex flex-row items-center">
@@ -57,9 +63,9 @@
                 <p class="my-0 text-right">{{ sp.city }}, {{ sp.state }}</p>
               </div>
             </div>
-            <div class="card-actions justify-end rounded-b-none">
+            <!-- <div class="card-actions justify-end rounded-b-none">
               <button class="btn btn-primary" [routerLink]="'/service-provider/' + sp.id">Details</button>
-            </div>
+            </div> -->
           </div>
         </div>
       }

@@ -324,6 +324,9 @@
                     <qr-code #qrComponent class="mx-auto" [value]="qrState.url" errorCorrectionLevel="H" size="300" centerImageSrc="assets/bell-black-outline.svg" centerImageSize="75" />
                 </div>
             }
+            @if(saveQrSuccess) {
+                <p class="m-2"><span class="material-symbols-outlined text-primary">inventory</span> Saved QR to your files and copied to your clipboard</p>
+            }
             <div class="modal-action">
                 <button class="btn btn-primary mr-4" (click)="downloadQR()">Download</button>
                 <label for="my_modal_qr" class="btn">Close</label>

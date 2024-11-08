@@ -9,6 +9,20 @@
         </p>
         <h3>Full Name</h3>
         <p>{{ data.name }}</p>
+        <form [formGroup]="nameForm" class="flex flex-col items-center">
+            <app-text-field 
+                [form]="nameForm"
+                name="name"
+                type="text"
+                label="Name"
+                [validation]="[
+                    { name: 'required', message: 'Name is required'},
+                    { name: 'minlength', message: 'Must be at least 3 characters long'}]"
+            />
+            <div>
+                <button class="btn btn-primary" (click)="updateName()" [disabled]="!nameForm.valid">Update Name</button>
+            </div>
+        </form>
         <h3>Your Reviews</h3>
         <p><button class="btn btn-primary" routerLink="/user/{{ data.id }}">See your reviews</button></p>
         <h3>Reset Password</h3>

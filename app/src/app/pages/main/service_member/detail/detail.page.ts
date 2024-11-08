@@ -52,7 +52,7 @@ export class ServiceMemberDetailPage {
         member_rating,\
         service_member_user(user(*)),\
         service_provider(*,service_provider_member(id)),\
-        reviews:review_service_member!inner(*,review_tip_total:tip,parent:review!inner(*,user(*)))')
+        reviews:review_service_member!left(*,review_tip_total:tip,parent:review!inner(*,user(*)))')
       .eq('id', this.id)
       .single();
   }

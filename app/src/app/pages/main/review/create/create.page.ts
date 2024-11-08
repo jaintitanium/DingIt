@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '@app/services/api.service';
 import { PostgrestError, QueryData } from '@supabase/supabase-js';
 import { LoadingErrorBlockComponent } from "@app/components/loading-error-block/loading-error-block.component";
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { RatingComponent } from "@app/components/rating/rating.component";
 import { TextFieldComponent } from "@app/components/forms/text-field/text-field.component";
 import { FieldValidationComponent } from "@app/components/forms/field-validation/field-validation.component";
@@ -15,6 +15,7 @@ import { ToastComponent } from "@app/components/toast/toast.component";
 import { StripeService } from '@app/services/stripe.service';
 import { BackButtonComponent } from "../../../../components/back-button/back-button.component";
 import { LoadingComponent } from "../../../../components/loading/loading.component";
+import { WholeFormValidationComponent } from "../../../../components/forms/whole-form-validation/whole-form-validation.component";
 
 @Component({
   selector: 'app-create',
@@ -31,7 +32,8 @@ import { LoadingComponent } from "../../../../components/loading/loading.compone
     S3ImgComponent,
     ToastComponent,
     BackButtonComponent,
-    LoadingComponent
+    LoadingComponent,
+    WholeFormValidationComponent
 ],
   templateUrl: './create.page.html',
   styleUrl: './create.page.scss'
@@ -57,16 +59,16 @@ export class CreateReviewPage {
   createButtonLoading = false;
 
   generalForm = new FormGroup({
-    description: new FormControl<string>('', [Validators.required]),
+    description: new FormControl<string | null>(null),
     rating: new FormControl<number | null>(null, [Validators.required]),
-  });
+  }, [this.lowRatingRequiresComment]);
 
   memberForm = new FormGroup({
-    description: new FormControl<string>('', { validators: [Validators.required], nonNullable: true }),
+    description: new FormControl<string | null>(null),
     service_member: new FormControl<string>('', { validators: [Validators.required], nonNullable: true }),
     rating: new FormControl<number | null>(null, { validators: [Validators.required], nonNullable: true }),
     tip: new FormControl<number | null>(null),
-  });
+  }, [this.lowRatingRequiresComment]);
   memberRatings: { id: string, description: string, rating: number, tip: number | null }[] = [];
   membersInRating(): string[] {
     return this.memberRatings.map((x) => x.id);
@@ -100,7 +102,7 @@ export class CreateReviewPage {
       this.deleteMember(review.service_member);
       this.memberRatings.push({
         id: review.service_member,
-        description: review.description ?? '',
+        description: (review.description != '' ? review.description : this.promptText(review.rating ?? 0)) ?? '',
         rating: review.rating ?? 5,
         tip: this.member(review.service_member)?.onboarded ? (review.tip ?? null) : null,
       });
@@ -118,7 +120,7 @@ export class CreateReviewPage {
     if(review.service_member) {
       this.memberRatings.push({
         id: review.service_member,
-        description: review.description ?? '',
+        description: (review.description != '' ? review.description : this.promptText(review.rating ?? 0)) ?? '',
         rating: review.rating ?? 5,
         tip: this.member(review.service_member)?.onboarded ? (review.tip ?? null) : null,
       });
@@ -134,10 +136,10 @@ export class CreateReviewPage {
 
 
   productForm = new FormGroup({
-    description: new FormControl<string>('', { validators: [Validators.required], nonNullable: true }),
+    description: new FormControl<string | null>(null),
     product: new FormControl<string>('', { validators: [Validators.required], nonNullable: true }),
     rating: new FormControl<number | null>(null, { validators: [Validators.required], nonNullable: true }),
-  });
+  }, [this.lowRatingRequiresComment]);
   productRatings: { id: string, description: string, rating: number }[] = [];
   productsInRating(): string[] {
     return this.productRatings.map((x) => x.id);
@@ -261,7 +263,7 @@ export class CreateReviewPage {
       if(this.type == 'member') {
         this.memberRatings.push({
           id: this.id,
-          description: this.memberForm.get('description')?.value ?? '',
+          description: (this.memberForm.get('description')?.value != '' ? this.memberForm.get('description')?.value : this.promptText(this.memberForm.get('rating')?.value ?? 0)) ?? '',
           rating: this.memberForm.get('rating')?.value ?? 0,
           tip: this.memberForm.get('tip')?.value ?? null
         });
@@ -325,7 +327,9 @@ export class CreateReviewPage {
     if(v == 0) {
       return '';
     } else if(v <= 1) {
-      return 'Highly Dissatisfied';
+      return 'Highly Dissatisfied (too many negative bells could affect your DINGit credibility as a reviewer)';
+    } else if (v <= 1.5) {
+      return 'Dissatisfied (too many negative bells could affect your DINGit credibility as a reviewer)';
     } else if (v <= 2) {
       return 'Dissatisfied';
     } else if (v <= 3) {
@@ -337,5 +341,29 @@ export class CreateReviewPage {
     } else {
       return '';
     }
+  }
+
+  promptText(v: number): string {
+    if(v == 0) {
+      return '';
+    } else if(v <= 1) {
+      return 'Unsatisfactory, some improvement is necessary';
+    } else if (v <= 2) {
+      return 'Below Average customer performance, can be improved with training';
+    } else if (v <= 3) {
+      return 'Above Average customer performance';
+    } else if (v <= 4) {
+      return 'Very satisfied with customer care';
+    } else if (v > 4) {
+      return 'Amazing, Personable, Hands-On';
+    } else {
+      return '';
+    }
+  }
+
+  lowRatingRequiresComment (group: AbstractControl):  ValidationErrors | null { 
+    let rating = group.get('rating')?.value ?? 0;
+    let comment = group.get('description')?.value ?? '';
+    return (rating < 2 && comment == '') ? { lowRatingRequiresComment: true } : null;
   }
 }

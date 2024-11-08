@@ -57,7 +57,9 @@ export class AppComponent {
         const slug = event.url.split("2dingit.com").pop();
         console.log("Navigate to " + slug)
         if (slug) {
-          this.router.navigateByUrl(slug, {onSameUrlNavigation: 'reload'});
+          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            this.router.navigateByUrl(slug, { skipLocationChange: true })
+          });
         }
         // If no match, do nothing - let regular routing
         // logic take over
@@ -73,7 +75,7 @@ export class AppComponent {
 
     // Set Android background to transparent for Google Maps plugin
     if(Capacitor.getPlatform() == 'android') {
-      document.documentElement.style.setProperty('background', 'transparent');
+      document.documentElement.style.setProperty('background-color', 'transparent');
     }
   }
   

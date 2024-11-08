@@ -23,8 +23,11 @@
                 label="Comments"
                 type="textarea"
                 placeholder="The atmosphere was pleasant..."
+            />
+            <app-whole-form-validation 
+                [form]="generalForm"
                 [validation]="[
-                    { name: 'required', message: 'Comments are required'}]" 
+                    { name: 'lowRatingRequiresComment', message: 'Comments are helpful (and required) for low ratings' }]"
             />
         </form>
         @if(type == 'member' && spMember) {
@@ -42,6 +45,7 @@
                     formControlName="rating"
                     size="md"
                 />
+                <div *ngIf="memberForm" class="text-primary text-sm mt-0 pt-0">{{ ratingText(memberForm.get('rating')?.value ?? 0) }}</div>
                 <app-field-validation 
                     [form]="memberForm"
                     name="rating"
@@ -53,9 +57,12 @@
                     [form]="memberForm"
                     label="Employee Comments"
                     type="textarea"
-                    placeholder="Great care was given..."
+                    [placeholder]="promptText(memberForm.get('rating')?.value ?? 0)"
+                />
+                <app-whole-form-validation 
+                    [form]="memberForm"
                     [validation]="[
-                        { name: 'required', message: 'Comments are required'}]" 
+                        { name: 'lowRatingRequiresComment', message: 'Comments are helpful (and required) for low ratings' }]"
                 />
                 @if(member(id)?.onboarded) {
                     <app-text-field
@@ -121,6 +128,7 @@
                         formControlName="rating"
                         size="md"
                     />
+                    <div *ngIf="memberForm" class="text-primary text-sm mt-0 pt-0">{{ ratingText(memberForm.get('rating')?.value ?? 0) }}</div>
                     <app-field-validation 
                         [form]="memberForm"
                         name="rating"
@@ -132,9 +140,12 @@
                         [form]="memberForm"
                         label="Comments"
                         type="textarea"
-                        placeholder="Great care was given..."
+                        [placeholder]="promptText(memberForm.get('rating')?.value ?? 0)"
+                    />
+                    <app-whole-form-validation 
+                        [form]="memberForm"
                         [validation]="[
-                            { name: 'required', message: 'Comments are required'}]" 
+                            { name: 'lowRatingRequiresComment', message: 'Comments are helpful (and required) for low ratings' }]"
                     />
                     @if((editMember && member(memberForm.get('service_member')?.value ?? '')?.onboarded) || 
                     (newMember && member(memberForm.get('service_member')?.value ?? '')?.onboarded)) {
@@ -220,8 +231,11 @@
                     label="Comments"
                     type="textarea"
                     placeholder="So tasty..."
+                />
+                <app-whole-form-validation 
+                    [form]="productForm"
                     [validation]="[
-                        { name: 'required', message: 'Comments are required'}]" 
+                        { name: 'lowRatingRequiresComment', message: 'Comments are helpful (and required) for low ratings' }]"
                 />
             </form>
         </ng-template>

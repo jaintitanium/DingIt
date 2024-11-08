@@ -8,6 +8,8 @@ input.input {
 }
 body {
     background-color: transparent;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    color-scheme: only light;
 }
 
 @keyframes enter {
@@ -46,4 +48,8 @@ body {
     animation-timing-function: ease-in-out;
     animation-duration: 1s;
     animation-delay: 100ms;
+}
+
+:root {
+    color-scheme: only light;
 }

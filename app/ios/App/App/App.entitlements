@@ -4,7 +4,6 @@
 <dict>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:app.2dingit.com</string>
 		<string>applinks:dev.app.2dingit.com</string>
 	</array>
 </dict>

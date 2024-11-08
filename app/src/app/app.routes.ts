@@ -30,12 +30,14 @@ import { RedirectPage } from './pages/auth/redirect/redirect.page';
 import { FinancialTransfersPage } from './pages/settings/financial/transfers/transfers.page';
 import { UserDetailPage } from './pages/main/user/detail/detail.page';
 import { SearchPage } from './pages/main/search/search.page';
+import { PrivacyPolicyPage } from './pages/privacy-policy/privacy-policy.page';
 
 export const routes: Routes = [
     { path: 'redirect', component: RedirectPage },
     { path: '', canActivate: [splashGuard], data: {animation: 'b'}, children: [
         { path: 'login', data: {animation: 'login'}, component: LoginPage },
         { path: 'signup', data: {animation: 'signup'}, component: SignUpPage },
+        { path: 'privacy-policy', data: {animation: 'privacy-policy'}, component: PrivacyPolicyPage },
         { path: 'complete-profile', data: {animation: 'slide'}, component: CompleteProfilePage },
         { path: 'settings', component: SettingsPage, data: {animation: 'settings'}, canActivate: [authenticatedGuard, profileCompleteGuard], children: [
             { path: 'financial', data: {animation: 'sf'}, component: FinancialSettingsPage },

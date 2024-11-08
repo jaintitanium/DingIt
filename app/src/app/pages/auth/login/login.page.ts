@@ -56,7 +56,7 @@ export class LoginPage {
         let url = this.usr.getRedirectUrl();
         if(url) {
           this.usr.clearRedirectUrl();
-          this.router.navigateByUrl(url);
+          this.router.navigateByUrl(url, {skipLocationChange: true});
         } else {
           this.router.navigate(['']);
         }
