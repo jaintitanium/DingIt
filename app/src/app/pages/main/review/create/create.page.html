@@ -23,11 +23,8 @@
                 label="Comments"
                 type="textarea"
                 placeholder="The atmosphere was pleasant..."
-            />
-            <app-whole-form-validation 
-                [form]="generalForm"
                 [validation]="[
-                    { name: 'lowRatingRequiresComment', message: 'Comments are helpful (and required) for low ratings' }]"
+                    { name: 'required', message: 'Comments are required'}]" 
             />
         </form>
         @if(type == 'member' && spMember) {
@@ -231,11 +228,8 @@
                     label="Comments"
                     type="textarea"
                     placeholder="So tasty..."
-                />
-                <app-whole-form-validation 
-                    [form]="productForm"
                     [validation]="[
-                        { name: 'lowRatingRequiresComment', message: 'Comments are helpful (and required) for low ratings' }]"
+                        { name: 'required', message: 'Comments are required'}]" 
                 />
             </form>
         </ng-template>
