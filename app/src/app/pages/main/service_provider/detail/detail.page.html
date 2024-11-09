@@ -8,6 +8,28 @@
             <app-rating *ngIf="sp.provider_rating" [value]="sp.provider_rating" size="md" />
         </div>
     </div>
+    <div class="flex flex-row gap-6 justify-center my-4">
+        @if(sp.phone_number) {
+            <a href="tel:{{ sp.phone_number }}">
+                <div class="text-center">
+                    <span class="material-symbols-outlined text-primary">phone_in_talk</span>
+                    <p class="my-0 text-primary"><b>Call</b></p>
+                </div>
+            </a>
+        }
+        @if(sp.website) {
+            <a [href]="sp.website" target="_blank">
+                <div class="text-center">
+                    <span class="material-symbols-outlined text-primary">open_in_new</span>
+                    <p class="my-0 text-primary"><b>Website</b></p>
+                </div>
+            </a>
+        }
+        <div (click)="share(sp)" class="text-center">
+            <span class="material-symbols-outlined text-primary">ios_share</span>
+            <p class="my-0 text-primary"><b><u>Share</u></b></p>
+        </div>
+    </div>
     <div class="bg-neutral rounded-t-4xl">
         @if(featured) {
             <div class="p-6 text-base-100">
@@ -125,3 +147,4 @@
         </div>
     </div>
 }
+<app-toast type="info" #infoToast />

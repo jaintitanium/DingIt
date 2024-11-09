@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { Capacitor } from '@capacitor/core';
 import { Geolocation as CapGeo } from '@capacitor/geolocation';
+import { Preferences } from '@capacitor/preferences';
 
 @Injectable({
   providedIn: 'root'
@@ -67,20 +68,40 @@ export class LocationHelperService {
       let promise = new Promise<GeolocationPosition>(function (resolve, reject) {
         navigator.geolocation.getCurrentPosition(resolve, reject, options);
       });
-      let coords: GeolocationCoordinates;
+      let coords: {
+        accuracy: number;
+        altitude: number | null;
+        altitudeAccuracy: number | null;
+        heading: number | null;
+        latitude: number;
+        longitude: number;
+        speed: number | null;
+      };
       try {
         const pos = await promise;
         coords = pos.coords;
+        Preferences.set({
+          key: 'last-location',
+          value: JSON.stringify(coords)
+        });
       } catch(err: any) {
         console.warn(`ERROR(${err.code}): ${err.message}`);
-        coords = {
-          accuracy: 0,
-          altitude: 0,
-          altitudeAccuracy: 0,
-          heading: 0,
-          speed: 0,
-          latitude: 49.263266,
-          longitude: -123.11747,
+        let keys = await Preferences.keys();
+        if(keys.keys.some((k) => k == 'last-location')) {
+          let saved = await Preferences.get({
+            key: 'last-location'
+          })
+          coords = JSON.parse(saved.value ?? '{}');
+        } else {
+          coords = {
+            accuracy: 0,
+            altitude: 0,
+            altitudeAccuracy: 0,
+            heading: 0,
+            speed: 0,
+            latitude: 49.263266,
+            longitude: -123.11747,
+          }
         }
       }
       return coords;

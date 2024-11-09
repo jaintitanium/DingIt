@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, QueryList, signal, ViewChildren } from '@angular/core';
+import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, QueryList, signal, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ApiService } from '@app/services/api.service';
 import { TitleService } from '@app/services/title.service';
@@ -17,6 +17,9 @@ import { ReviewBadgeComponent } from "@app/components/review-badge/review-badge.
 import { ServiceMemberBadgeComponent } from "@app/components/service-member-badge/service-member-badge.component";
 import { GoogleMap } from '@capacitor/google-maps';
 import { Capacitor } from '@capacitor/core';
+import { Clipboard } from '@capacitor/clipboard';
+import { environment } from 'environments/environment';
+import { ToastComponent } from "../../../../components/toast/toast.component";
 
 @Component({
     selector: 'app-detail',
@@ -24,21 +27,23 @@ import { Capacitor } from '@capacitor/core';
     templateUrl: './detail.page.html',
     styleUrl: './detail.page.scss',
     imports: [
-      CommonModule,
-      LoadingErrorBlockComponent,
-      BackButtonComponent,
-      RatingComponent,
-      MapMarker,
-      RouterModule,
-      AvatarComponent,
-      ReviewBadgeComponent,
-      ServiceMemberBadgeComponent
-    ],
+    CommonModule,
+    LoadingErrorBlockComponent,
+    BackButtonComponent,
+    RatingComponent,
+    MapMarker,
+    RouterModule,
+    AvatarComponent,
+    ReviewBadgeComponent,
+    ServiceMemberBadgeComponent,
+    ToastComponent
+],
     schemas: [
       CUSTOM_ELEMENTS_SCHEMA
     ]
 })
 export class ServiceProviderDetailPage {
+  @ViewChild('infoToast') infoToast!: ToastComponent;
   @ViewChildren("map") map!: QueryList<ElementRef>;
   id: string;
   query;
@@ -185,5 +190,11 @@ export class ServiceProviderDetailPage {
     // } else {
     // var mapUrlType = "geo:" + mapUrl;
     // }
+  }
+  share(sp: typeof this.sp) {
+    Clipboard.write({
+      url: environment.appUrl + 'service-provider/' + sp?.id
+    })
+    this.infoToast.message("Copied link to Clipboard");
   }
 }
