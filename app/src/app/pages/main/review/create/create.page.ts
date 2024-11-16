@@ -120,7 +120,7 @@ export class CreateReviewPage {
     if(review.service_member) {
       this.memberRatings.push({
         id: review.service_member,
-        description: (review.description != '' ? review.description : this.promptText(review.rating ?? 0)) ?? '',
+        description: ((review.description && review.description != '') ? review.description : this.promptText(review.rating ?? 0)) ?? '',
         rating: review.rating ?? 5,
         tip: this.member(review.service_member)?.onboarded ? (review.tip ?? null) : null,
       });
@@ -260,7 +260,7 @@ export class CreateReviewPage {
         return;
       }
 
-      if(this.type == 'member') {
+      if(this.type == 'member' && !this.memberRatings.some(mr => mr.id == this.id)) {
         this.memberRatings.push({
           id: this.id,
           description: (this.memberForm.get('description')?.value != '' ? this.memberForm.get('description')?.value : this.promptText(this.memberForm.get('rating')?.value ?? 0)) ?? '',
