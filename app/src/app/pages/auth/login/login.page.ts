@@ -28,6 +28,7 @@ export class LoginPage {
   });
   @ViewChild('errorToast') errorToast!: ToastComponent;
   @ViewChild('infoToast') infoToast!: ToastComponent;
+  passVisible = false;
 
   constructor(
     private api: ApiService,
