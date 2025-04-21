@@ -56,8 +56,21 @@
         <div class="py-4">
             <button (click)="signOut()" class="btn btn-warning">Sign Out</button>
         </div>
+        <div class="py-4">
+            <button onclick="deleteAccountModal.showModal()" class="btn btn-error">Delete Account</button>
+        </div>
     </ng-container>
 </div>
 <app-toast #infoToast type="info" />
 <app-toast #successToast type="success" />
 <app-toast #errorToast type="error" />
+<dialog id="deleteAccountModal" class="modal">
+    <div class="modal-box">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+        <h3 class="text-lg font-bold">Delete Account?</h3>
+        <p class="py-4">All Data will be deleted. Are you sure you want to continue?</p>
+        <button (click)="deleteAccount()" class="btn btn-error">Confirm Delete</button>
+    </div>
+</dialog>

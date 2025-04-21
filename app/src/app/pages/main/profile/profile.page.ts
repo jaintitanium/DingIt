@@ -77,7 +77,17 @@ export class ProfilePage {
     this.usr.isLoggedIn.set(false);
     this.api.supabase.auth.signOut();
     this.userService.profilePhoto.set(null);
+    this.userService.profileCompleted.set(false);
     this.router.navigate(['']);
+  }
+
+  async deleteAccount() {
+    const { data, error } = await this.api.client().functions.invoke('delete-user');
+    if(error) {
+      this.errorToast.message(error.message);
+    } else {
+      this.signOut();
+    }
   }
 
   // uploadProfilePhoto(event: Event) {
