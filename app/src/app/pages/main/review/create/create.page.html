@@ -23,11 +23,8 @@
                 label="Comments"
                 type="textarea"
                 placeholder="The atmosphere was pleasant..."
-            />
-            <app-whole-form-validation 
-                [form]="generalForm"
                 [validation]="[
-                    { name: 'lowRatingRequiresComment', message: 'Comments are helpful (and required) for low ratings' }]"
+                    { name: 'required', message: 'Comments are helpful (and required)'}]" 
             />
         </form>
         @if(type == 'member' && spMember) {
@@ -106,7 +103,7 @@
                     <ng-container *ngTemplateOutlet="memberInput" />
                     <div class="flex gap-4 my-2">
                         <button (click)="cancelNewMember()" class="flex-auto btn">Cancel</button>
-                        <button (click)="saveNewMember()" class="flex-auto btn btn-primary">Save Review</button>
+                        <button (click)="saveNewMember()" class="flex-auto btn btn-primary">Save Employee Review</button>
                     </div>
                 } @else if(editMember == null && membersForSelect().length > 0) {
                     <div class="flex-col gap-4 my-2">
@@ -197,7 +194,7 @@
                 <ng-container *ngTemplateOutlet="productInput" />
                 <div class="flex gap-4 my-2">
                     <button (click)="cancelNewProduct()" class="flex-auto btn">Cancel</button>
-                    <button (click)="saveNewProduct()" class="flex-auto btn btn-primary">Save Review</button>
+                    <button (click)="saveNewProduct()" class="flex-auto btn btn-primary">Save Product/Service Review</button>
                 </div>
             } @else if(editProduct == null && productsForSelect().length > 0) {
                 <div class="flex-col gap-4 my-2">
@@ -231,11 +228,8 @@
                     label="Comments"
                     type="textarea"
                     placeholder="So tasty..."
-                />
-                <app-whole-form-validation 
-                    [form]="productForm"
                     [validation]="[
-                        { name: 'lowRatingRequiresComment', message: 'Comments are helpful (and required) for low ratings' }]"
+                        { name: 'required', message: 'Comments are helpful (and required)'}]" 
                 />
             </form>
         </ng-template>

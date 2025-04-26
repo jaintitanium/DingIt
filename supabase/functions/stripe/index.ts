@@ -60,7 +60,8 @@
             },
           })
           console.log(acct)
-          serviceMemberUser = (await supabaseAdminClient.from('service_member_user').update({ stripe_account_id: acct.id }).eq('id', authUser.id).select().single()).data;
+          await supabaseAdminClient.from('service_member_user').update({ stripe_account_id: acct.id }).eq('id', authUser.id);
+          serviceMemberUser = (await supabaseAdminClient.from('service_member_user').select().eq('id', authUser.id).single()).data;
           console.log(serviceMemberUser)
           newAccount = true;
         }
@@ -68,7 +69,8 @@
           stripeAccount: serviceMemberUser?.stripe_account_id ?? ''
         })
         if(serviceMemberUser?.onboarded == false && acct.payouts_enabled) {
-          serviceMemberUser = (await supabaseAdminClient.from('service_member_user').update({ onboarded: true }).eq('id', authUser.id).select().single()).data;
+          await supabaseAdminClient.from('service_member_user').update({ onboarded: true }).eq('id', authUser.id);
+          serviceMemberUser = (await supabaseAdminClient.from('service_member_user').select().eq('id', authUser.id).single()).data;
         }
         const link = await stripe.accountLinks.create({
           account: serviceMemberUser?.stripe_account_id ?? '',
@@ -159,14 +161,16 @@
       } else if(input.action == 'createOrUpdateSubscription') {
         let serviceProviderUser = userObj?.service_provider_user;
         if(!serviceProviderUser) {
-          serviceProviderUser = (await supabaseAdminClient.from('service_provider_user').insert({id: authUser.id, active: false}).select().single()).data;
+          await supabaseAdminClient.from('service_provider_user').insert({id: authUser.id, active: false});
+          serviceProviderUser = (await supabaseAdminClient.from('service_provider_user').select().single()).data;
         }
         if(serviceProviderUser?.stripe_customer_id == null || serviceProviderUser?.stripe_customer_id == undefined) {
           const stripeCustomer = await stripe.customers.create({
             email: authUser.email,
             name: userObj?.name,
           });
-          serviceProviderUser = (await supabaseAdminClient.from('service_provider_user').update({stripe_customer_id: stripeCustomer.id}).eq('id', authUser.id).select().single()).data;
+          await supabaseAdminClient.from('service_provider_user').update({stripe_customer_id: stripeCustomer.id}).eq('id', authUser.id);
+          serviceProviderUser = (await supabaseAdminClient.from('service_provider_user').select().eq('id', authUser.id).single()).data;
         }
         const spCount = (await supabaseAdminClient.from('service_provider').select('count').eq('owner', authUser.id).single()).data;
         if(serviceProviderUser?.stripe_subscription_id) {
@@ -200,7 +204,8 @@
             success_url: `${appUrl?.value}/settings/financial?delay=5000`,
             cancel_url: `${appUrl?.value}/settings/financial`,
           });
-          serviceProviderUser = (await supabaseAdminClient.from('service_provider_user').update({stripe_subscription_id: checkout.subscription?.toString()}).eq('id', authUser.id).select().single()).data;
+          await supabaseAdminClient.from('service_provider_user').update({stripe_subscription_id: checkout.subscription?.toString()}).eq('id', authUser.id);
+          serviceProviderUser = (await supabaseAdminClient.from('service_provider_user').select().eq('id', authUser.id).single()).data;
           data = checkout;
         }
       } else if(input.action == 'updateSubscriptionQty') {

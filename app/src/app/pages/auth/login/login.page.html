@@ -6,8 +6,17 @@
     <div class="flex-1 items-start bg-primary rounded-t-lg">
         <div class="grid justify-items-center items-start pt-8 px-10 gap-4">
             <form [formGroup]="loginForm" class="w-full max-w-xs flex flex-col gap-4 pb-6">
-                <input type="text" formControlName="username" placeholder="Username" class="input input-block text-lg rounded-lg" />
-                <input type="password" formControlName="password" placeholder="Password" class="input input-block text-lg rounded-lg" />
+                <label class="input input-block flex items-center">
+                    <input type="text" formControlName="username" placeholder="Username" class="text-lg rounded-lg" />
+                </label>
+                <label class="input input-block flex items-center">
+                    <input [type]="passVisible ? 'text' : 'password'" formControlName="password" placeholder="Password" class="flex-grow text-lg rounded-lg" />
+                    @if(passVisible) {
+                        <span class="text-base-400 material-symbols-outlined" (click)="passVisible = false">visibility_off</span>
+                    } @else {
+                        <span class="text-base-400 material-symbols-outlined" (click)="passVisible = true">visibility</span>
+                    }
+                </label>
                 <button (click)="signIn()" class="btn btn-secondary rounded-lg btn-block text-lg">Sign In</button>
             </form>
 

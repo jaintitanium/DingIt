@@ -17,6 +17,8 @@ PODS:
     - Capacitor
     - Google-Maps-iOS-Utils (~> 5.0)
     - GoogleMaps (~> 8.4)
+  - CapacitorPreferences (6.0.2):
+    - Capacitor
   - GCDWebServer (3.5.4):
     - GCDWebServer/Core (= 3.5.4)
   - GCDWebServer/Core (3.5.4)
@@ -37,6 +39,7 @@ DEPENDENCIES:
   - "CapacitorFilesystem (from `../../node_modules/@capacitor/filesystem`)"
   - "CapacitorGeolocation (from `../../node_modules/@capacitor/geolocation`)"
   - "CapacitorGoogleMaps (from `../../node_modules/@capacitor/google-maps`)"
+  - "CapacitorPreferences (from `../../node_modules/@capacitor/preferences`)"
 
 SPEC REPOS:
   trunk:
@@ -61,20 +64,23 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/geolocation"
   CapacitorGoogleMaps:
     :path: "../../node_modules/@capacitor/google-maps"
+  CapacitorPreferences:
+    :path: "../../node_modules/@capacitor/preferences"
 
 SPEC CHECKSUMS:
-  Capacitor: 679f9673fdf30597493a6362a5d5bf233d46abc2
-  CapacitorApp: 0bc633b4eae40a1f32cd2834788fad3bc42da6a1
-  CapacitorBlobWriter: 110eeaf80611f19bf01a8a05ff3672149ed0baad
-  CapacitorClipboard: 756cd7e83e8d5d19b0c74f40b57517c287bd5fe2
+  Capacitor: 69c7f687aabb8d85e543497411e40638b5cc08c0
+  CapacitorApp: f51c08c64df914fc934239fd1b3fc809d62a02f6
+  CapacitorBlobWriter: d709e5d22ab9989afd730eb4773873d1ded5fd08
+  CapacitorClipboard: 0ceeee488e55bef7cced5c8097d97f330c109f61
   CapacitorCordova: f48c89f96c319101cd2f0ce8a2b7449b5fb8b3dd
-  CapacitorFilesystem: 37fb3aa5c945b4539ab11c74a5c57925a302bf24
-  CapacitorGeolocation: 39dca51d755f08ed1d43e51be55291a402cdc64f
-  CapacitorGoogleMaps: bafda318e41a1aab9f00571f6a87fb376b63c0c9
+  CapacitorFilesystem: 30941c0fea0773fcaedab18e262b339f5b9c06bc
+  CapacitorGeolocation: 2621f3cbd11be93377d633c8eac7b99bfbf060b6
+  CapacitorGoogleMaps: 100ac41573598161cdd9e06d8ba52667596ca2fd
+  CapacitorPreferences: 997d375b1962f98511e8b3d27a24d90cb8ca87fe
   GCDWebServer: 2c156a56c8226e2d5c0c3f208a3621ccffbe3ce4
   Google-Maps-iOS-Utils: 66d6de12be1ce6d3742a54661e7a79cb317a9321
   GoogleMaps: 8939898920281c649150e0af74aa291c60f2e77d
 
-PODFILE CHECKSUM: cce4e1009835455066a014ad7ed23ef9fc9e3688
+PODFILE CHECKSUM: f05ca082982f8b2841f3ca8269f1e61f71e279ca
 
-COCOAPODS: 1.16.1
+COCOAPODS: 1.16.2

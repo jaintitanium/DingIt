@@ -69,13 +69,16 @@
       }
 
       // Create service_member_user entry
-      const result = await userClient.from('service_provider_member').insert({
-        service_member_id: currentId,
-        service_provider_id: input.provider_id
-      });
-      console.log(result)
-      if(result.error) {
-        throw result.error;
+      const serviceProviderMember = (await userClient.from('service_provider_member').select().eq('service_member_id', currentId).eq('service_provider_id', input.provider_id).single()).data;
+      if(serviceProviderMember == null) {
+        const result = await userClient.from('service_provider_member').insert({
+          service_member_id: currentId,
+          service_provider_id: input.provider_id
+        });
+        console.log(result)
+        if(result.error) {
+          throw result.error;
+        }
       }
 
       if(!userCreated) {
