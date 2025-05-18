@@ -29,9 +29,6 @@ jobs:
       - name: Write db to Supabase Dev
         run: supabase db push
 
-      - name: Deploy edge functions to Supabase Dev
-        run: supabase functions deploy
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -55,6 +52,9 @@ jobs:
       - name: Build App
         working-directory: ./app
         run: npm run build-prod
+
+      - name: Deploy edge functions to Supabase Dev
+        run: supabase functions deploy
 
       - name: copy file via ssh password
         uses: appleboy/scp-action@v0.1.7

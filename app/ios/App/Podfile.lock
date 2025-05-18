@@ -1,23 +1,23 @@
 PODS:
-  - Capacitor (6.1.2):
+  - Capacitor (6.2.1):
     - CapacitorCordova
-  - CapacitorApp (6.0.1):
+  - CapacitorApp (6.0.2):
     - Capacitor
   - CapacitorBlobWriter (0.0.1):
     - Capacitor
     - GCDWebServer (~> 3.0)
-  - CapacitorClipboard (6.0.1):
+  - CapacitorClipboard (6.0.2):
     - Capacitor
-  - CapacitorCordova (6.1.2)
-  - CapacitorFilesystem (6.0.1):
+  - CapacitorCordova (6.2.1)
+  - CapacitorFilesystem (6.0.3):
     - Capacitor
-  - CapacitorGeolocation (6.0.1):
+  - CapacitorGeolocation (6.1.0):
     - Capacitor
   - CapacitorGoogleMaps (6.0.1):
     - Capacitor
     - Google-Maps-iOS-Utils (~> 5.0)
     - GoogleMaps (~> 8.4)
-  - CapacitorPreferences (6.0.2):
+  - CapacitorPreferences (6.0.3):
     - Capacitor
   - GCDWebServer (3.5.4):
     - GCDWebServer/Core (= 3.5.4)
@@ -68,15 +68,15 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/preferences"
 
 SPEC CHECKSUMS:
-  Capacitor: 69c7f687aabb8d85e543497411e40638b5cc08c0
-  CapacitorApp: f51c08c64df914fc934239fd1b3fc809d62a02f6
+  Capacitor: c95400d761e376be9da6be5a05f226c0e865cebf
+  CapacitorApp: e1e6b7d05e444d593ca16fd6d76f2b7c48b5aea7
   CapacitorBlobWriter: d709e5d22ab9989afd730eb4773873d1ded5fd08
-  CapacitorClipboard: 0ceeee488e55bef7cced5c8097d97f330c109f61
-  CapacitorCordova: f48c89f96c319101cd2f0ce8a2b7449b5fb8b3dd
-  CapacitorFilesystem: 30941c0fea0773fcaedab18e262b339f5b9c06bc
-  CapacitorGeolocation: 2621f3cbd11be93377d633c8eac7b99bfbf060b6
+  CapacitorClipboard: 4443c3cdb7c77b1533dfe3ff0f9f7756aa8579df
+  CapacitorCordova: 8d93e14982f440181be7304aa9559ca631d77fff
+  CapacitorFilesystem: 59270a63c60836248812671aa3b15df673fbaf74
+  CapacitorGeolocation: 3f6c960e6d9d11c83fcdd181c4912604857afb51
   CapacitorGoogleMaps: 100ac41573598161cdd9e06d8ba52667596ca2fd
-  CapacitorPreferences: 997d375b1962f98511e8b3d27a24d90cb8ca87fe
+  CapacitorPreferences: f3eadae2369ac3ab8e21743a2959145b0d1286a3
   GCDWebServer: 2c156a56c8226e2d5c0c3f208a3621ccffbe3ce4
   Google-Maps-iOS-Utils: 66d6de12be1ce6d3742a54661e7a79cb317a9321
   GoogleMaps: 8939898920281c649150e0af74aa291c60f2e77d
