@@ -17,10 +17,10 @@
                                 </span>
                                 Ready to receive Tips
                             </div>
-                            <button class="btn btn-primary" (click)="external(url)">Manage Stripe Account</button>
+                            <button class="btn btn-primary" (click)="external(url)">Manage Stripe Account{{ Capacitor.getPlatform() == 'ios' ? ' (link)' : '' }}</button>
                             <button class="btn btn-primary ml-4" routerLink="transfers">View Transactions</button>
                         } @else {
-                            <button class="btn btn-primary" (click)="external(url)">Set up Stripe Account</button>
+                            <button class="btn btn-primary" (click)="external(url)">Set up Stripe Account{{ Capacitor.getPlatform() == 'ios' ? ' (link)' : '' }}</button>
                         }
                     } @else {
                         <app-loading />
@@ -48,7 +48,7 @@
                 @if(subLinkLoading) {
                     <app-loading class="mr-4" />
                 }
-                Manage Subscription</button>
+                Manage Subscription{{ Capacitor.getPlatform() == 'ios' ? ' (link)' : '' }}</button>
             @if(subLinkError) {
                 <div class="alert alert-error">{{ subLinkError }}</div>
             }

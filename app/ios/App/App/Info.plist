@@ -32,7 +32,7 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Allow permission to use your camera in order to add photos</string>
+	<string>Uses your camera to add a profile photo or add menu photos</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Allow your location to see businesses near you</string>
 	<key>UIFileSharingEnabled</key>
