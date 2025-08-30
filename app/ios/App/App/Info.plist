@@ -31,8 +31,10 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Uses your camera to add a profile photo or add menu photos</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Allow your location to see business near you</string>
+	<string>Allow your location to see businesses near you</string>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

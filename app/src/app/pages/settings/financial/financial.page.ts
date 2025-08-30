@@ -9,6 +9,7 @@ import { StripeService } from '@app/services/stripe.service';
 import { CurrencyPipe, DatePipe, JsonPipe } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { LoadingComponent } from "@app/components/loading/loading.component";
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-financial',
@@ -39,6 +40,8 @@ export class FinancialSettingsPage {
   subLink: string | null = null;
   subLinkLoading = false;
   subLinkError: any;
+
+  Capacitor = Capacitor;
 
   constructor(
     public titleService: TitleService,

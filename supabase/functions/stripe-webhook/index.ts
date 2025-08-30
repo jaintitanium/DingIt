@@ -79,7 +79,7 @@
         }
       } else if(event.type === 'customer.subscription.created' || event.type === 'customer.subscription.updated' || event.type === 'customer.subscription.deleted') {
         let subscription = event.data.object;
-        let active = subscription.status == 'active';
+        let active = subscription.status == 'active' || subscription.status == 'trialing';
         console.log("Subscription " + subscription.id + " active set to " + active);
         await supabaseAdminClient.from('service_provider_user').update({ active: active, stripe_subscription_id: subscription.id }).eq('stripe_customer_id', subscription.customer.toString());
       } else {
