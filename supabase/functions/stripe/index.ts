@@ -195,10 +195,9 @@
           if(useFree) {
             const newSubscription = await stripe.subscriptions.create({
               customer: serviceProviderUser?.stripe_customer_id ?? '',
-              add_invoice_items: [
+              items: [
                 {
                   price: subscriptionPriceFree!.value,
-                  // For metered billing, do not pass quantity
                   quantity: Math.max(1, spCount?.count ?? 1),
                 },
               ],
