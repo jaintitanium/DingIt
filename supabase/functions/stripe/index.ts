@@ -22,6 +22,8 @@
       const key = settings.data?.find((x) => x.key == 'STRIPE_KEY');
       const appUrl = settings.data?.find((x) => x.key == 'APP_URL');
       const subscriptionPrice = settings.data?.find((x) => x.key == 'STRIPE_SUBSCRIPTION_PRICE_ID');
+      const subscriptionPriceFree = settings.data?.find((x) => x.key == 'STRIPE_SUBSCRIPTION_PRICE_ID_FREE');
+      const useFreeMode = settings.data?.find((x) => x.key == 'USE_FREE_MODE');
       const stripe = new Stripe(key!.value, {
         apiVersion: "2024-06-20",
       })
@@ -189,24 +191,50 @@
             return_url: `${appUrl?.value}/settings/financial?delay=5000`,
           });
         } else {
-          const checkout = await stripe.checkout.sessions.create({
-            billing_address_collection: 'auto',
-            line_items: [
-              {
-                price: subscriptionPrice!.value,
-                // For metered billing, do not pass quantity
-                quantity: Math.max(1, spCount?.count ?? 1),
+          let useFree = useFreeMode?.value == 'TRUE' && subscriptionPriceFree?.value != undefined;
+          if(useFree) {
+            const newSubscription = await stripe.subscriptions.create({
+              customer: serviceProviderUser?.stripe_customer_id ?? '',
+              add_invoice_items: [
+                {
+                  price: subscriptionPriceFree!.value,
+                  // For metered billing, do not pass quantity
+                  quantity: Math.max(1, spCount?.count ?? 1),
+                },
+              ],
+              trial_period_days: 720,
+              payment_settings: {
+                save_default_payment_method: 'on_subscription',
               },
-            ],
-            allow_promotion_codes: true,
-            customer: serviceProviderUser?.stripe_customer_id ?? undefined,
-            mode: 'subscription',
-            success_url: `${appUrl?.value}/settings/financial?delay=5000`,
-            cancel_url: `${appUrl?.value}/settings/financial`,
-          });
-          await supabaseAdminClient.from('service_provider_user').update({stripe_subscription_id: checkout.subscription?.toString()}).eq('id', authUser.id);
-          serviceProviderUser = (await supabaseAdminClient.from('service_provider_user').select().eq('id', authUser.id).single()).data;
-          data = checkout;
+              trial_settings: {
+                end_behavior: {
+                  missing_payment_method: 'pause',
+                },
+              },
+            });
+            data = {
+              url: appUrl + '/settings/financial?delay=5000'
+            };
+          } else {
+            const checkout = await stripe.checkout.sessions.create({
+              billing_address_collection: 'auto',
+              line_items: [
+                {
+                  price: subscriptionPrice!.value,
+                  // For metered billing, do not pass quantity
+                  quantity: Math.max(1, spCount?.count ?? 1),
+                },
+              ],
+              allow_promotion_codes: true,
+              customer: serviceProviderUser?.stripe_customer_id ?? undefined,
+              mode: 'subscription',
+              success_url: `${appUrl?.value}/settings/financial?delay=5000`,
+              cancel_url: `${appUrl?.value}/settings/financial`,
+            });
+            await supabaseAdminClient.from('service_provider_user').update({stripe_subscription_id: checkout.subscription?.toString()}).eq('id', authUser.id);
+            serviceProviderUser = (await supabaseAdminClient.from('service_provider_user').select().eq('id', authUser.id).single()).data;
+            data = checkout;
+          }
         }
       } else if(input.action == 'updateSubscriptionQty') {
         let serviceProviderUser = userObj?.service_provider_user;
