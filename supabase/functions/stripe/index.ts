@@ -211,8 +211,10 @@
                 },
               },
             });
+            await supabaseAdminClient.from('service_provider_user').update({stripe_subscription_id: newSubscription.id.toString()}).eq('id', authUser.id);
+            serviceProviderUser = (await supabaseAdminClient.from('service_provider_user').select().eq('id', authUser.id).single()).data;
             data = {
-              url: appUrl + '/settings/financial?delay=5000'
+              url: '/settings/financial?delay=5000'
             };
           } else {
             const checkout = await stripe.checkout.sessions.create({
