@@ -1,0 +1,7 @@
+node_modules
+dist
+.angular
+android
+ios
+nul
+npm-debug.log

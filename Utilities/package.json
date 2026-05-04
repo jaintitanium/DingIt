@@ -1,0 +1,11 @@
+{
+  "name": "dingit-utilities",
+  "version": "1.0.0",
+  "description": "Utility scripts for DingIt project",
+  "scripts": {
+    "generate-pdf": "node generate-pdf.js"
+  },
+  "dependencies": {
+    "md-to-pdf": "^5.2.4"
+  }
+}

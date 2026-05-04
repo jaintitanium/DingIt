@@ -1,2 +1,7 @@
 .generate
 .DS_Store
+credentials.md
+node_modules/
+test-results/
+playwright-report/
+nul

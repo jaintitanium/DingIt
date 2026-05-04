@@ -1,0 +1,10 @@
+services:
+  web:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    image: dingit-web:local
+    container_name: dingit-web
+    ports:
+      - "8080:80"
+    restart: unless-stopped
