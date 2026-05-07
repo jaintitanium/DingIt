@@ -5,6 +5,7 @@ import { ApiService } from '@app/services/api.service';
 import { AvatarComponent } from "../../../components/avatar/avatar.component";
 import { UserService } from '@app/services/user.service';
 import { slideInAnimation } from '@app/animations';
+import { environment } from '@app/../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +23,7 @@ import { slideInAnimation } from '@app/animations';
   ],
 })
 export class RootPage {
+  isLocal = !environment.production;
 
   constructor(
     private api: ApiService,

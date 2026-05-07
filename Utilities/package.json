@@ -3,9 +3,17 @@
   "version": "1.0.0",
   "description": "Utility scripts for DingIt project",
   "scripts": {
-    "generate-pdf": "node generate-pdf.js"
+    "generate-pdf": "node generate-pdf.js",
+    "check-google-maps-keys": "node google-maps-key-check.js",
+    "dingit-importer": "node dingit-importer.js",
+    "restaurant-data-generator": "node restaurant-data-generator.js",
+    "import-log-server": "node import-log-server.js",
+    "smoke-import-data": "node import-data-smoke.js"
   },
   "dependencies": {
     "md-to-pdf": "^5.2.4"
+  },
+  "devDependencies": {
+    "playwright": "^1.59.1"
   }
 }

@@ -4,4 +4,5 @@ export interface Environment {
     supabaseKey: string,
     stripeKey: string,
     appUrl: string,
+    importLogUrl?: string,
 }

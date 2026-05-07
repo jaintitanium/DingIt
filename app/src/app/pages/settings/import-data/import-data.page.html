@@ -1,0 +1,336 @@
+<div class="import-admin">
+  @if(!isLocal) {
+    <div role="alert" class="alert alert-warning">
+      <span class="material-symbols-outlined">lock</span>
+      <span>This importer is local-only and is disabled for production builds.</span>
+    </div>
+  } @else {
+    <aside class="admin-sidebar">
+      <a class="brand" href="/">
+        <img class="brand-logo" src="assets/wordlogo.svg" alt="DingIt" />
+        <span>
+          <small>Local Importer</small>
+        </span>
+      </a>
+
+      <nav class="admin-nav" aria-label="Importer sections">
+        <button type="button" [class.active]="activeTab == 'import'" (click)="setTab('import')">
+          <span class="material-symbols-outlined">upload_file</span>
+          Import Run
+        </button>
+        <button type="button" [class.active]="activeTab == 'logs'" (click)="setTab('logs')">
+          <span class="material-symbols-outlined">receipt_long</span>
+          Import Logs
+        </button>
+      </nav>
+
+      <div class="side-status">
+        <span>Environment</span>
+        <b>Local Docker</b>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-header">
+        <div>
+          <span class="eyebrow">Operations Console</span>
+          <h1>{{ activeTab == 'import' ? 'Restaurant Import' : 'Import Logs' }}</h1>
+        </div>
+        <div class="header-actions">
+          @if(duplicateChecking) {
+            <span class="status-pill warning">Checking duplicates</span>
+          }
+          @if(importing) {
+            <span class="status-pill info">Import running</span>
+          }
+          <a class="ghost-button" href="/">
+            <span class="material-symbols-outlined">arrow_back</span>
+            Back to DingIt
+          </a>
+        </div>
+      </header>
+
+      @if(activeTab == 'import') {
+        <section class="metric-grid">
+          <div class="metric-card"><span>Rows</span><b>{{ rows.length }}</b></div>
+          <div class="metric-card"><span>Valid</span><b>{{ validRows() }}</b></div>
+          <div class="metric-card"><span>Products</span><b>{{ productRows() }}</b></div>
+          <div class="metric-card"><span>Product Images</span><b>{{ productImageRows() }}</b></div>
+          <div class="metric-card"><span>Imported</span><b>{{ completeRows() }}</b></div>
+          <div class="metric-card"><span>Failed</span><b>{{ failedRows() }}</b></div>
+          <div class="metric-card"><span>Duplicates</span><b>{{ duplicateRows() }}</b></div>
+        </section>
+
+        <section class="import-layout">
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <h2>Source Files</h2>
+                <p>{{ selectedCsvName || 'No CSV selected' }}</p>
+              </div>
+              <span class="status-pill neutral">{{ selectedImageCount }} images</span>
+            </div>
+
+            <div class="file-grid">
+              <label class="file-drop">
+                <span class="material-symbols-outlined">table_view</span>
+                <b>CSV file</b>
+                <small>{{ selectedCsvName || 'Choose restaurant CSV' }}</small>
+                <input type="file" accept=".csv,text/csv" (change)="loadCsv($event)" [disabled]="importing" />
+              </label>
+              <label class="file-drop">
+                <span class="material-symbols-outlined">photo_library</span>
+                <b>Image folder</b>
+                <small>{{ selectedImageCount ? selectedImageCount + ' images selected' : 'Choose staged image folder' }}</small>
+                <input type="file" accept="image/*" multiple webkitdirectory directory (change)="loadImages($event)" [disabled]="importing" />
+              </label>
+            </div>
+
+            <div class="schema-panel">
+              <div>
+                <span>Required restaurant columns</span>
+                <code>{{ requiredColumns.join(', ') }}</code>
+              </div>
+              <div>
+                <span>Restaurant details</span>
+                <code>{{ restaurantColumns.join(', ') }}</code>
+              </div>
+              <div>
+                <span>Restaurant image columns</span>
+                <code>{{ restaurantImageColumns.join(', ') }}</code>
+              </div>
+              <div>
+                <span>Hours columns</span>
+                <code>{{ hoursColumns.join(', ') }}</code>
+              </div>
+              <div>
+                <span>Product columns repeat for products 1-20</span>
+                <code>{{ productColumnPattern }}</code>
+              </div>
+              <div>
+                <span>First two product groups</span>
+                <code>{{ sampleProductColumns.join(', ') }}</code>
+              </div>
+            </div>
+
+            <div class="action-bar">
+              <button class="primary-button" (click)="startImport()" [disabled]="importDisabled()">
+                <span class="material-symbols-outlined">play_arrow</span>
+                Start Background Import
+              </button>
+              <button class="secondary-button" (click)="stopImport()" [disabled]="!importing">
+                <span class="material-symbols-outlined">stop_circle</span>
+                Stop
+              </button>
+              @if(progressMessage) {
+                <span class="inline-message">{{ progressMessage }}</span>
+              }
+            </div>
+          </div>
+
+          <aside class="panel run-panel">
+            <div class="panel-header">
+              <div>
+                <h2>Current Run</h2>
+                <p>{{ activeLog ? (activeLog.startedAt | date:'short') : 'Waiting for import' }}</p>
+              </div>
+              @if(activeLog) {
+                <span class="status-pill" [class.success]="activeLog.status == 'complete'" [class.warning]="activeLog.status == 'completed_with_errors' || activeLog.status == 'stopped'" [class.danger]="activeLog.status == 'failed'">
+                  {{ activeLog.status }}
+                </span>
+              }
+            </div>
+
+            @if(activeLog) {
+              <div class="run-stats">
+                <div><span>Total</span><b>{{ activeLog.summary.totalRows }}</b></div>
+                <div><span>Imported</span><b>{{ activeLog.summary.completeRows }}</b></div>
+                <div><span>Errors</span><b>{{ activeLog.summary.failedRows }}</b></div>
+                <div><span>Skipped</span><b>{{ activeLog.summary.skippedRows }}</b></div>
+              </div>
+
+              @if(logSaveState) {
+                <div class="notice success">
+                  <span class="material-symbols-outlined">description</span>
+                  <span>{{ logSaveState }}</span>
+                </div>
+              }
+              @if(logSaveError) {
+                <div class="notice danger">
+                  <span class="material-symbols-outlined">error</span>
+                  <span>Could not save log file: {{ logSaveError }}</span>
+                </div>
+              }
+            } @else {
+              <div class="empty-block">
+                <span class="material-symbols-outlined">pending_actions</span>
+                <p>No active run</p>
+              </div>
+            }
+          </aside>
+        </section>
+
+        @if(rows.length > 0) {
+          <section class="panel data-panel">
+            <div class="panel-header">
+              <div>
+                <h2>Import Preview</h2>
+                <p>{{ duplicateRows() }} duplicates, {{ failedRows() }} errors</p>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Status</th>
+                    <th>Restaurant</th>
+                    <th>Location</th>
+                    <th>Products</th>
+                    <th>Images</th>
+                    <th>Duplicate</th>
+                    <th>Message</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for(row of rows; track row.index) {
+                    <tr [class.error-row]="row.status == 'failed'" [class.done-row]="row.status == 'complete'" [class.skipped-row]="row.status == 'skipped'">
+                      <td data-label="#">{{ row.index }}</td>
+                      <td data-label="Status"><span class="status-pill compact">{{ row.status }}</span></td>
+                      <td data-label="Restaurant"><b>{{ row.input['display_name'] }}</b></td>
+                      <td data-label="Location">{{ row.input['city'] }}, {{ row.input['state'] }}</td>
+                      <td data-label="Products">{{ row.products.length }}</td>
+                    <td data-label="Images">{{ rowImageCount(row) }}</td>
+                      <td data-label="Duplicate">
+                        @if(row.duplicateReason) {
+                          <span class="status-pill warning compact">Duplicate</span>
+                        } @else {
+                          <span class="status-pill neutral compact">New</span>
+                        }
+                      </td>
+                      <td data-label="Message">{{ row.errors.length ? row.errors.join('; ') : (row.duplicateReason ?? row.message) }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </section>
+        }
+      }
+
+      @if(activeTab == 'logs') {
+        <section class="metric-grid logs-metrics">
+          <div class="metric-card"><span>Runs</span><b>{{ logHistory.length }}</b></div>
+          <div class="metric-card"><span>Imported</span><b>{{ historyImportedTotal() }}</b></div>
+          <div class="metric-card"><span>Errors</span><b>{{ historyFailedTotal() }}</b></div>
+        </section>
+
+        <section class="logs-layout">
+          <div class="panel history-list">
+            <div class="panel-header">
+              <div>
+                <h2>Run History</h2>
+                <p>Recent local log files</p>
+              </div>
+              <button type="button" class="secondary-button compact-button" (click)="loadImportLogs()" [disabled]="historyLoading">
+                <span class="material-symbols-outlined">refresh</span>
+                Refresh
+              </button>
+            </div>
+
+            @if(historyError) {
+              <div class="notice danger">{{ historyError }}</div>
+            }
+
+            <div class="table-wrap history-table">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Started</th>
+                    <th>Status</th>
+                    <th>CSV</th>
+                    <th>Total</th>
+                    <th>Imported</th>
+                    <th>Errors</th>
+                    <th>Skipped</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for(log of logHistory; track log.fileName) {
+                    <tr class="clickable" [class.selected]="selectedHistoryLog?.fileName == log.fileName" (click)="selectImportLog(log)">
+                      <td data-label="Started">{{ log.startedAt | date:'short' }}</td>
+                      <td data-label="Status"><span class="status-pill compact">{{ log.status }}</span></td>
+                      <td data-label="CSV"><b>{{ log.csvName || log.fileName }}</b></td>
+                      <td data-label="Total">{{ log.summary?.totalRows ?? 0 }}</td>
+                      <td data-label="Imported">{{ log.summary?.completeRows ?? 0 }}</td>
+                      <td data-label="Errors">{{ log.summary?.failedRows ?? 0 }}</td>
+                      <td data-label="Skipped">{{ log.summary?.skippedRows ?? 0 }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <aside class="panel detail-panel">
+            @if(selectedHistoryLog) {
+              <div class="panel-header">
+                <div>
+                  <h2>Run Detail</h2>
+                  <p>{{ selectedHistoryLog.fileName }}</p>
+                </div>
+                <span class="status-pill">{{ selectedHistoryLog.status }}</span>
+              </div>
+
+              <div class="run-stats">
+                <div><span>Total</span><b>{{ selectedHistoryLog.summary.totalRows }}</b></div>
+                <div><span>Imported</span><b>{{ selectedHistoryLog.summary.completeRows }}</b></div>
+                <div><span>Errors</span><b>{{ selectedHistoryLog.summary.failedRows }}</b></div>
+                <div><span>Skipped</span><b>{{ selectedHistoryLog.summary.skippedRows }}</b></div>
+              </div>
+
+              <dl class="detail-list">
+                <div><dt>CSV</dt><dd>{{ selectedHistoryLog.csvName }}</dd></div>
+                <div><dt>Started</dt><dd>{{ selectedHistoryLog.startedAt | date:'medium' }}</dd></div>
+                <div><dt>Finished</dt><dd>{{ selectedHistoryLog.finishedAt ? (selectedHistoryLog.finishedAt | date:'medium') : 'Still running' }}</dd></div>
+                <div><dt>File</dt><dd>{{ selectedHistoryLog.savedPath || selectedHistoryLog.fileName }}</dd></div>
+              </dl>
+
+              @if(selectedHistoryErrors().length > 0) {
+                <section class="error-box">
+                  <h3>Errors</h3>
+                  @for(entry of selectedHistoryErrors(); track entry.at + entry.message) {
+                    <div>
+                      <b>Row {{ entry.rowIndex }}</b>
+                      <span>{{ entry.restaurant }} - {{ entry.message }}</span>
+                    </div>
+                  }
+                </section>
+              }
+
+              <section class="timeline">
+                @for(entry of selectedHistoryEntries(); track entry.at + entry.message) {
+                  <article class="log-entry" [class.error]="entry.level == 'error'" [class.warning]="entry.level == 'warning'" [class.success]="entry.level == 'success'">
+                    <time>{{ entry.at | date:'shortTime' }}</time>
+                    <span>{{ entry.level }}</span>
+                    <p>
+                      @if(entry.rowIndex) {
+                        Row {{ entry.rowIndex }}:
+                      }
+                      {{ entry.message }}
+                    </p>
+                  </article>
+                }
+              </section>
+            } @else {
+              <div class="empty-block tall">
+                <span class="material-symbols-outlined">receipt_long</span>
+                <p>No log selected</p>
+              </div>
+            }
+          </aside>
+        </section>
+      }
+    </main>
+  }
+</div>

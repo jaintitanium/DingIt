@@ -17,9 +17,9 @@
                                 <p class="my-0"><b>{{ spotlight.service_provider.city }}, {{ spotlight.service_provider.state }}</b></p>
                             }
                             @if(spotlight.service_provider_member) {
-                                <h3 class="my-0 text-base-100">{{ spotlight.service_provider_member.service_member_user?.user?.name }}</h3>
-                                <p class="my-0"><b>{{ spotlight.service_provider_member.service_provider?.display_name }}</b></p>
-                                <p class="my-0"><b>{{ spotlight.service_provider_member.service_provider?.city }}, {{ spotlight.service_provider_member.service_provider?.state }}</b></p>
+                                <h3 class="my-0 text-base-100">{{ spotlight.service_provider_member.service_member_user.user.name }}</h3>
+                                <p class="my-0"><b>{{ spotlight.service_provider_member.service_provider.display_name }}</b></p>
+                                <p class="my-0"><b>{{ spotlight.service_provider_member.service_provider.city }}, {{ spotlight.service_provider_member.service_provider.state }}</b></p>
                                 <div class="flex flex-row gap-2 h-8">
                                     <div>
                                         <b class="my-auto">{{ spotlight.service_provider_member.member_rating | number: '1.1-1' }}</b>

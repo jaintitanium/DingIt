@@ -30,7 +30,7 @@
         <div class="flex flex-row gap-4 overflow-x-scroll mt-4">
           @for(hs of hotspots; track $index) {
             <div class="min-w-40 min-h-52 max-w-160 bg-base-100 rounded-xl hotspot p-2 text-base-100 text-shadow shadow-black cursor-pointer bg-no-repeat bg-contain bg-center" 
-              [ngStyle]="{'background-image': (hs.header_thumbnail_path != null || hs.header_image_path != null) ? 'url('+getImageUrl(hs.header_thumbnail_path ?? hs.header_image_path)+')' : ''}"
+              [ngStyle]="{'background-image': (hs.header_thumbnail_path != null || hs.header_image_path != null) ? 'url('+getImageUrl(hs.header_thumbnail_path ? hs.header_thumbnail_path : hs.header_image_path)+')' : ''}"
               routerLink="/service-provider/{{ hs.id }}"
               >
               <h2 class="card-title text-base-100 my-0">{{ hs.display_name }}</h2>

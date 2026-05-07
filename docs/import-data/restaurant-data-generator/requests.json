@@ -1,0 +1,13 @@
+{
+  "requests": [
+    {
+      "id": "cupertino-ca",
+      "city": "Cupertino",
+      "state": "CA",
+      "country": "USA",
+      "query": "restaurants in Cupertino CA",
+      "limit": 10,
+      "status": "pending"
+    }
+  ]
+}

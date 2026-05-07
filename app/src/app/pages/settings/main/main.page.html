@@ -1,3 +1,6 @@
 <app-menu-item text="Service Providers" link="/settings/service-providers"/>
+@if(isLocal) {
+    <app-menu-item text="Import Data" link="/import-data"/>
+}
 <app-menu-item text="Financial Settings" link="/settings/financial"/>
 <app-menu-item text="Privacy Policy" link="/privacy-policy" [showArrow]="false"/>

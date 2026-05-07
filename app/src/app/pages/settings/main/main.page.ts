@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { MenuItemComponent } from "@app/components/menu-item/menu-item.component";
 import { SettingsPage } from '../settings.page';
 import { TitleService } from '@app/services/title.service';
+import { environment } from '@app/../environments/environment';
 
 @Component({
     selector: 'app-main',
@@ -11,6 +12,7 @@ import { TitleService } from '@app/services/title.service';
     imports: [MenuItemComponent],
 })
 export class MainSettingsPage {
+  isLocal = !environment.production;
 
   constructor(
     public settings: SettingsPage,

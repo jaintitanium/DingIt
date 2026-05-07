@@ -5,3 +5,8 @@ node_modules/
 test-results/
 playwright-report/
 nul
+docs/import-data/generated/
+docs/import-data/imports/generated/
+docs/import-data/logs/*.json
+.mcp.json
+.claude/

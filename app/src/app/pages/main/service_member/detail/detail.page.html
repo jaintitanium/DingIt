@@ -4,7 +4,7 @@
         <app-back-button color="base-100" />
         <div class="flex flex-row gap-8 p-8">
             <div class="relative">
-                <app-avatar size="xl" shape="square" [path]="spm.service_member_user?.user?.profile_path" />
+                <app-avatar size="xl" shape="square" [path]="spm.service_member_user.user.profile_path" />
                 @if(spm.member_rating) {
                     <div class="absolute inset-x-0 -bottom-4 text-center">
                         <div class="badge badge-secondary p-6 text-xl shadow-black shadow-xl">
@@ -15,9 +15,9 @@
                 }
             </div>
             <div class="flex-auto text-center text-justify-middle">
-                <h2 class="text-base-100 mt-2">{{ spm.service_member_user?.user?.name }}</h2>
-                <h3 class="text-base-100 mb-0">{{ spm.service_provider?.display_name }}</h3>
-                <p  class="text-base-100">{{ spm.service_provider?.city }}, {{ spm.service_provider?.state }}</p>
+                <h2 class="text-base-100 mt-2">{{ spm.service_member_user.user.name }}</h2>
+                <h3 class="text-base-100 mb-0">{{ spm.service_provider.display_name }}</h3>
+                <p  class="text-base-100">{{ spm.service_provider.city }}, {{ spm.service_provider.state }}</p>
             </div>
             
         </div>
@@ -43,7 +43,7 @@
                         <h3 class="text-primary-content my-2">Overall Rating</h3>
                         <div class="flex flex-row gap-2">
                             <div class="basis-1/2"><img class="w-full max-w-12 m-0 ml-auto" src="assets/bell-white-outline.svg" /></div>
-                            <div class="basis-1/2 text-xl place-content-center"><h2 class="my-auto mr-auto text-primary-content text-left">{{ spm.member_rating ?? 0 | number: '1.1-1' }}</h2></div>
+                            <div class="basis-1/2 text-xl place-content-center"><h2 class="my-auto mr-auto text-primary-content text-left">{{ (spm.member_rating ?? 0) | number: '1.1-1' }}</h2></div>
                         </div>
                     </div>
                 </div>
@@ -81,18 +81,18 @@
             <div class="flex flex-row gap-4 p-6">
                 <div class="avatar">
                     <div class="w-24 rounded">
-                        <app-s3-img class="not-prose" [src]="spm.service_provider?.header_image_path" />
+                        <app-s3-img class="not-prose" [src]="spm.service_provider.header_image_path" />
                     </div>
                 </div>
                 <div>
-                    <h2 class="my-0">{{ spm.service_provider?.display_name }}</h2>
-                    @if(spm.service_provider?.sub_title) {
-                        <h3 class="my-0">{{ spm.service_provider?.sub_title }}</h3>
+                    <h2 class="my-0">{{ spm.service_provider.display_name }}</h2>
+                    @if(spm.service_provider.sub_title) {
+                        <h3 class="my-0">{{ spm.service_provider.sub_title }}</h3>
                     }
-                    <h3 class="my-0">{{ spm.service_provider?.service_provider_member?.length }} DINGit Employees</h3>
+                    <h3 class="my-0">{{ spm.service_provider.service_provider_member.length }} DINGit Employees</h3>
                 </div>
                 <div class="flex-auto text-end">
-                    <div>{{ spm.service_provider?.city }}, {{ spm.service_provider?.state }}</div>
+                    <div>{{ spm.service_provider.city }}, {{ spm.service_provider.state }}</div>
                     @if(distance) {
                         <div>{{ distance | number: '1.1-1' }}mi away</div>
                     }

@@ -1,4 +1,17 @@
+name: dingit-app
+
 services:
+  import-log:
+    image: node:20-alpine
+    container_name: dingit-import-log
+    working_dir: /workspace
+    command: ["node", "Utilities/import-log-server.js"]
+    volumes:
+      - ./:/workspace
+    ports:
+      - "8091:8091"
+    restart: unless-stopped
+
   web:
     build:
       context: ./app

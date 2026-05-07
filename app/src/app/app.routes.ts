@@ -31,9 +31,11 @@ import { FinancialTransfersPage } from './pages/settings/financial/transfers/tra
 import { UserDetailPage } from './pages/main/user/detail/detail.page';
 import { SearchPage } from './pages/main/search/search.page';
 import { PrivacyPolicyPage } from './pages/privacy-policy/privacy-policy.page';
+import { ImportDataPage } from './pages/settings/import-data/import-data.page';
 
 export const routes: Routes = [
     { path: 'redirect', component: RedirectPage },
+    { path: 'import-data', data: {animation: 'import-data'}, component: ImportDataPage },
     { path: '', canActivate: [splashGuard], data: {animation: 'b'}, children: [
         { path: 'login', data: {animation: 'login'}, component: LoginPage },
         { path: 'signup', data: {animation: 'signup'}, component: SignUpPage },
@@ -42,6 +44,7 @@ export const routes: Routes = [
         { path: 'settings', component: SettingsPage, data: {animation: 'settings'}, canActivate: [authenticatedGuard, profileCompleteGuard], children: [
             { path: 'financial', data: {animation: 'sf'}, component: FinancialSettingsPage },
             { path: 'financial/transfers', data: {animation: 'sft'}, component: FinancialTransfersPage },
+            { path: 'import-data', data: {animation: 'sid'}, component: ImportDataPage },
             { path: 'service-providers', data: {animation: 'sp'}, component: ServiceProviderPage },
             { path: 'service-providers/create', data: {animation: 'spc'}, component: CreatePage },
             { path: 'service-providers/edit/:id', data: {animation: 'spe'}, component: EditPage },
